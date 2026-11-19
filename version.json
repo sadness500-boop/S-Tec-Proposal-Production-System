@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "date": "2026-11-19",
+  "note": "최초 버전 — 견적 3종(용역인력·업무량 기반·단기인력) 연동, RFP 요구사항 분석, 업종 12·직종 9 제안서 13개 목차 자동 집필, 검토·승인, Word·PPT·PDF 제작, 통합 로그인·프로그램별 권한",
+  "html": "releases/S-Tec-Proposal-Production-System_v1.0.0.html",
+  "apk": "releases/S-Tec-Proposal-Production-System_v1.0.0.apk"
+}

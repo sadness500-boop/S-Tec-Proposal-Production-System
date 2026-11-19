@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="author" content="Rat Rae Choi">
+<title>S-Tec Proposal Production System · 에스텍 제안서 제작시스템</title>
+<meta name="description" content="에스텍 그룹 제안서 제작시스템 — 용역인력 견적·업무량 기반 산정·단기인력 견적과 연동해 업종·산업별 제안서(Word)·발표자료(PPT·PDF) 제작">
+<meta name="theme-color" content="#0B1F8A">
+<link rel="manifest" href="manifest.webmanifest?v=1.0.0">
+<link rel="icon" href="icons/favicon-48.png?v=1.0.0">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.0.0">
+<style>
+/* =====================================================================
+   S-Tec Proposal Production System — 화면 디자인
+   기본 베이스: S-Tec Operations and Sales Integrated Management System 메인 화면
+   (유리 효과 상단 바 · 디오라마 히어로 · 둥근 카드 · 남색 #0B1F8A / 초록 #1B7A34 / 은색 #C9CDD3)
+   Designed & Developed by Rat Rae Choi
+   ===================================================================== */
+:root{
+  --nv:#0B1F8A; --nvd:#071463; --nv2:#2A44D4; --gr:#1B7A34; --gr2:#22A04A; --grl:#E8F6EC; --sv:#C9CDD3; --rd:#D9302B; --or:#E8750A;
+  --bg:#F4F6FA; --panel:#FFFFFF; --panel2:#F5F7FB; --ink:#0F1530; --ink2:#2C3554; --mute:#667089; --muted:#667089; --line:#E4E8F1; --soft:#F5F7FB;
+  --warm:#EFE7DC; --warm2:#E2D6C6; --accent:#1530A0; --accent-ink:#fff; --accent-soft:#E3E8FA; --danger:#C53A3A; --band1:#0b1757; --band2:#14267e;
+  --r-lg:24px; --r-md:16px; --r-sm:12px;
+  --shadow:0 1px 2px rgba(15,21,48,.04),0 8px 24px -6px rgba(15,21,48,.10);
+  --shadow-lg:0 2px 4px rgba(15,21,48,.04),0 24px 48px -12px rgba(11,31,138,.22);
+  --ring:0 0 0 4px rgba(42,68,212,.14);
+  --font:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR",system-ui,sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#080C1A; --panel:#11172B; --panel2:#161E36; --ink:#EEF1FA; --ink2:#C9D0E6; --mute:#8F99B6; --muted:#8F99B6; --line:#222B47; --soft:#161E36; --grl:#12301C;
+  --warm:#2A2420; --warm2:#3A3029; --accent:#8ea6ff; --accent-ink:#0a0f2c; --accent-soft:#1d2a66;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -6px rgba(0,0,0,.45); --shadow-lg:0 24px 48px -12px rgba(0,0,0,.6); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.55;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 420px at 8% -8%,rgba(42,68,212,.10),transparent 60%),radial-gradient(700px 380px at 100% 0,rgba(34,160,74,.08),transparent 60%)}
+button{font:inherit;cursor:pointer;letter-spacing:inherit}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:none;box-shadow:var(--ring);border-radius:10px}
+.hidden{display:none!important}
+.sig{font-family:"Great Vibes","Segoe Script","Brush Script MT",cursive;color:#8A1C34;font-size:15px}
+html[data-theme="dark"] .sig{color:#E7A2B2}
+
+/* ---------- 상단 바 (유리 효과) ---------- */
+.band{position:sticky;top:0;z-index:50;color:var(--ink);background:rgba(255,255,255,.74);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid rgba(15,21,48,.07)}
+html[data-theme="dark"] .band{background:rgba(10,14,30,.74);border-bottom-color:rgba(255,255,255,.06)}
+.band-in{max-width:1480px;margin:0 auto;display:flex;align-items:center;gap:12px 14px;padding:10px max(20px,env(safe-area-inset-right,0px)) 10px max(20px,env(safe-area-inset-left,0px));flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;text-decoration:none;min-width:0;flex:1 1 auto}
+.appicon{width:46px;height:46px;border-radius:12px;box-shadow:0 4px 12px rgba(11,31,138,.28);flex:none}
+.brand-txt{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.brand-txt .eyebrow2{font-style:normal;font-size:10.5px;letter-spacing:.09em;color:var(--gr);font-weight:800}
+.brand-txt b{font-size:16px;font-weight:780;letter-spacing:-.025em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-txt small{font-size:12px;color:var(--mute);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ver{font-size:10.5px;font-weight:700;color:var(--nv2);background:rgba(42,68,212,.10);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+html[data-theme="dark"] .ver{color:#9DB0FF;background:rgba(157,176,255,.12)}
+.cards{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-left:auto}
+.bcard{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border:1px solid var(--line);background:var(--panel);border-radius:999px;color:var(--ink2);cursor:pointer;text-align:left;min-width:0;font-family:inherit;transition:background .15s,border-color .15s}
+.bcard:hover{border-color:#C8CFE2;background:var(--soft)}
+.bcard .ph{width:34px;height:34px;border-radius:50%;background:var(--soft);display:grid;place-items:center;overflow:hidden;flex:none;border:1px solid var(--line)}
+.bcard .ph img,.bcard .ph canvas{width:100%;height:100%;object-fit:cover;display:block}
+.bcard .ph svg{width:18px;height:18px;color:var(--nv)}
+.bcard .ph .ini{color:var(--nv);font-size:15px}
+.bcard .t1{font-size:10.5px;color:var(--mute);display:block;line-height:1.2;font-weight:600}
+.bcard .t2{font-size:13px;font-weight:700;display:block;line-height:1.25;white-space:nowrap;color:var(--ink)}
+.bcard .t2 em{font-style:normal;color:var(--gr)}
+.bcard .t3{display:none}
+.bcard.acct{background:var(--ink);border-color:var(--ink)}.bcard.acct .t1{color:#B9C3EC}.bcard.acct .t2{color:#fff}
+html[data-theme="dark"] .bcard.acct{background:#EEF1FA;border-color:#EEF1FA}html[data-theme="dark"] .bcard.acct .t2{color:#0F1530}html[data-theme="dark"] .bcard.acct .t1{color:#4A5370}
+.bcard.acct .ph{font-weight:800;color:var(--nv);font-size:15px;background:#fff}
+.acct-role{display:inline-block;margin-left:6px;font-size:10.5px;padding:0 6px;border-radius:6px;background:rgba(127,140,190,.25);vertical-align:1px}
+.seg{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;color:var(--ink2);border-radius:999px;padding:4px 10px;font-size:12.5px;opacity:.6;transition:all .15s;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--panel);opacity:1;box-shadow:0 1px 3px rgba(15,21,48,.15);font-weight:700}
+@media (max-width:1180px){.bcard .t1{display:none}}
+@media (max-width:760px){.band{position:static}.brand{flex-basis:100%}.cards{margin-left:0}.bcard .t2{font-size:12px}.appicon{width:40px;height:40px}}
+
+/* ---------- 본문 ---------- */
+.wrap{max-width:1480px;margin:0 auto;padding:22px 20px 30px}
+/* 히어로 — 통합관리 시스템 메인 화면과 같은 디오라마 히어로 (사진 1) */
+.hero{position:relative;overflow:hidden;border-radius:28px;margin-bottom:18px;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);background:linear-gradient(135deg,#F7F2EB 0%,var(--warm) 55%,var(--warm2) 100%);box-shadow:var(--shadow-lg);isolation:isolate}
+html[data-theme="dark"] .hero{background:linear-gradient(135deg,#1A1A22 0%,#231F1C 60%,#2E2722 100%)}
+.hero::before{content:"";position:absolute;left:-120px;top:-160px;width:520px;height:520px;border-radius:50%;z-index:-1;background:radial-gradient(circle,rgba(42,68,212,.16),transparent 65%)}
+.hero-txt{padding:36px 10px 30px 42px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--nv);background:rgba(255,255,255,.7);border:1px solid rgba(11,31,138,.12);border-radius:999px;padding:5px 12px 5px 8px}
+html[data-theme="dark"] .eyebrow{color:#B8C6FF;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.eyebrow i{width:18px;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--gr2) 50%,var(--nv2) 50%)}
+.hero .hi{margin-top:16px;font-size:15px;font-weight:600;color:var(--ink2)}
+.hero h1{margin:6px 0 10px;font-size:clamp(26px,3vw,40px);line-height:1.16;font-weight:800;letter-spacing:-.04em}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--gr) 0%,var(--nv2) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme="dark"] .hero h1 em{background-image:linear-gradient(90deg,#4CD07A,#8FA4FF)}
+.hero .meta{font-size:14px;color:var(--mute);max-width:470px}
+.hero-art{margin:0;position:relative;min-height:360px}
+.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%);mask-image:linear-gradient(90deg,transparent 0,#000 14%)}
+html[data-theme="dark"] .hero-art img{filter:brightness(.9)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:22px}
+.stat{background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-md);padding:11px 13px;box-shadow:0 6px 16px -8px rgba(15,21,48,.25);display:flex;gap:10px;align-items:center;min-width:0}
+html[data-theme="dark"] .stat{background:rgba(17,23,43,.7);border-color:rgba(255,255,255,.08)}
+.stat .ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--soft);flex:none}
+.stat small{display:block;color:var(--mute);font-size:11.5px;font-weight:600}
+.stat b{display:block;font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+.hero-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.cta{border:0;border-radius:999px;padding:10px 18px;font-weight:800;font-size:14px;color:#fff;background:linear-gradient(100deg,#1B7A34 0 22%,#0B1F8A 22% 100%);box-shadow:0 8px 18px -8px rgba(11,31,138,.6)}
+.cta.l{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:none;font-weight:700}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-art{min-height:230px;order:-1}.hero-art img{-webkit-mask-image:linear-gradient(180deg,#000 70%,transparent);mask-image:linear-gradient(180deg,#000 70%,transparent)}.hero-txt{padding:4px 22px 24px}}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr 1fr;gap:6px}.stat{padding:8px;flex-direction:column;align-items:flex-start;gap:4px}.stat .ic{display:none}}
+
+/* 진행 단계 (사진 1의 6단계: RFP 분석 → 기획 → 집필 → 검토·승인 → 제본 → 제출) */
+.stepper{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:0 0 18px}
+.stp{position:relative;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:10px 12px;text-align:left;color:var(--ink2);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.stp:hover{transform:translateY(-2px);border-color:#C8CFE2}
+.stp .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:17px;background:var(--soft);flex:none}
+.stp b{display:block;font-size:13.5px;color:var(--ink)}.stp small{display:block;font-size:11px;color:var(--mute);line-height:1.25}
+.stp.done{border-color:#A8DAB7;background:linear-gradient(180deg,var(--panel),var(--grl))}.stp.done .n{background:var(--gr);color:#fff}
+.stp.cur{border-color:var(--nv2);box-shadow:0 0 0 3px rgba(42,68,212,.14),var(--shadow)}.stp.cur .n{background:var(--nv);color:#fff}
+@media(max-width:1100px){.stepper{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.stepper{grid-template-columns:repeat(2,minmax(0,1fr))}.stp small{display:none}}
+
+/* 작업 영역 */
+.work{display:grid;grid-template-columns:370px minmax(0,1fr) minmax(0,1.05fr);gap:16px;align-items:start}
+@media(max-width:1320px){.work{grid-template-columns:350px minmax(0,1fr)}.c3{grid-column:1/-1}}
+@media(max-width:860px){.work{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.card>h2{margin:0;font-size:15.5px;font-weight:800;letter-spacing:-.025em;padding:14px 18px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);position:relative}
+.card>h2::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--c,var(--nv)),transparent)}
+.card>h2 .r{margin-left:auto;font-size:11.5px;font-weight:500;color:var(--mute)}
+.stepn{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:8px;background:var(--c,var(--nv));color:#fff;font-size:12.5px;font-weight:800;padding:0 4px}
+.body{padding:14px 18px 16px}
+.hint{color:var(--mute);font-size:12px;margin:4px 0}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 12px;font-weight:600;font-size:13px;transition:background .15s,border-color .15s}
+.btn:hover{border-color:#C8CFE2;background:var(--soft)}
+.btn.pri{background:linear-gradient(100deg,#1B7A34,#0B1F8A);border-color:transparent;color:#fff}
+.btn.sm{padding:4px 9px;font-size:12px;border-radius:8px}
+.btn.warn{color:var(--danger)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+input[type=text],input[type=date],input[type=number],input:not([type]),select,textarea{font-size:13.5px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);width:100%}
+textarea{resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(42,68,212,.25);border-color:var(--nv2);background:var(--panel)}
+.search{margin-bottom:8px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--mute)}
+label.f b{color:var(--rd)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.grid .full{grid-column:1/-1}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+@media(max-width:560px){.grid,.grid3{grid-template-columns:1fr}}
+.lbl{font-size:12px;font-weight:800;color:var(--mute);margin:12px 0 6px;display:flex;align-items:center;gap:6px}
+.lbl small{font-weight:500}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.pick{border:1px solid var(--line);background:var(--panel);color:var(--ink2);border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:600}
+.pick.on{background:var(--gr);border-color:var(--gr);color:#fff}
+#emphChips .pick.on{background:var(--nv);border-color:var(--nv)}
+#diffChips .pick.on{background:#0F766E;border-color:#0F766E}
+.tseg{display:flex;flex-wrap:wrap;gap:6px}
+.tseg button{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:7px 10px;font-size:12.5px;color:var(--ink2);font-weight:600}
+.tseg button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+html[data-theme="dark"] .tseg button[aria-pressed="true"]{background:#EEF1FA;color:#0F1530}
+.sck{display:flex;gap:6px;align-items:center;font-size:12.5px;padding:4px 6px;border-radius:8px}
+.sck:hover{background:var(--soft)}
+#secChecks{display:grid;grid-template-columns:1fr 1fr;gap:0 8px}
+.mode{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mode label{padding:8px 12px;font-size:12.5px;display:flex;gap:6px;align-items:center;background:var(--soft);cursor:pointer;font-weight:600}
+.big{width:100%;border:0;border-radius:14px;padding:14px;font-size:15.5px;font-weight:800;color:#fff;margin-top:14px;background:linear-gradient(100deg,#1B7A34 0%,#17552F 40%,#0B1F8A 100%);box-shadow:0 10px 22px -10px rgba(11,31,138,.6)}
+/* 견적 연동 */
+#linkCard{--c:#E8750A}#siteCard{--c:#1B7A34}#planCard{--c:#0B1F8A}#outPanel{--c:#7A2E8E}
+.ltabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.ltabs button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--ink2)}
+.ltabs button i{font-style:normal;margin-left:4px;font-size:10.5px;background:var(--soft);border-radius:999px;padding:0 6px;color:var(--mute)}
+.ltabs button[aria-pressed="true"]{background:var(--nv);border-color:var(--nv);color:#fff}.ltabs button[aria-pressed="true"] i{background:rgba(255,255,255,.2);color:#fff}
+#linkList{list-style:none;margin:0;padding:0;max-height:330px;overflow:auto;border:1px solid var(--line);border-radius:14px}
+li.lk{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer}
+li.lk:last-child{border-bottom:0}
+li.lk:hover{background:var(--soft)}
+li.lk.on{background:var(--grl);box-shadow:inset 4px 0 0 var(--gr)}
+li.lk input{margin-top:3px;accent-color:var(--gr)}
+li.lk .lb{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+li.lk .lb b{font-size:13px;line-height:1.3}
+li.lk .lb small{font-size:11.5px;color:var(--mute)}
+li.lk .amt{font-size:12.5px;font-weight:800;color:var(--nv)}html[data-theme="dark"] li.lk .amt{color:#9DB0FF}
+li.lk .amt small{font-weight:500;color:var(--mute)}
+.lx{border:0;background:none;color:var(--mute);padding:2px 4px;border-radius:6px}.lx:hover{background:var(--soft);color:var(--rd)}
+.sb{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);margin-right:4px}
+.sb.raw{--c:#667089}.sb.ok{--c:#1B7A34}
+.lb>.sb{display:inline-block}
+.need{font-style:normal;color:var(--or);font-weight:700}
+.lsum{margin-top:8px;font-size:12.5px;background:var(--soft);border-radius:12px;padding:8px 10px}
+.lacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.lacts .btn{font-size:12px;padding:7px 8px}
+.srcs{display:flex;flex-direction:column;gap:8px}
+.srcbtn{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-decoration:none;color:var(--ink);border-left:5px solid var(--c)}
+.srcbtn:hover{background:var(--soft)}.srcbtn .ic{font-size:22px}.srcbtn b{display:block}.srcbtn small{color:var(--mute);font-size:11.5px}.srcbtn i{margin-left:auto;font-style:normal;color:var(--mute)}
+/* 사업장 */
+#brChips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+#brChips button{border:1px solid var(--line);background:var(--panel);color:var(--ink2);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600}
+#brChips button[aria-pressed="true"]{background:var(--gr);border-color:var(--gr);color:#fff}
+#siteList{list-style:none;margin:0;padding:0;max-height:230px;overflow:auto;border:1px solid var(--line);border-radius:14px}
+li.st{display:flex;gap:8px;align-items:center;padding:7px 9px;border-bottom:1px solid var(--line);cursor:pointer;font-size:12.6px}
+li.st:hover{background:var(--soft)}li.st.on{background:var(--grl);box-shadow:inset 4px 0 0 var(--gr)}
+li.st .nm{flex:1;min-width:0;font-weight:700}li.st .nm small{display:block;font-weight:400;color:var(--mute);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+li.st .wk{text-align:right;font-size:11px;color:var(--mute);white-space:nowrap}li.st .wk b{display:block;color:var(--ink);font-size:12px}
+.brb{flex:none;font-size:10.5px;font-weight:800;color:#fff;padding:2px 7px;border-radius:6px}
+.b-동부{background:#1E8B3A}.b-서부{background:#0B1F8F}.b-남부{background:#C2410C}.b-중부{background:#6D28D9}
+#siteManual{margin-top:8px;width:100%}
+.empty{color:var(--mute);font-size:12.5px;text-align:center;padding:14px;list-style:none}
+.siteinfo{border:1.5px solid #A8DAB7;background:var(--grl);border-radius:14px;padding:10px 12px;margin:0 0 12px;font-size:12.6px}
+.siteinfo.empty{border-style:dashed;border-color:var(--line);background:var(--soft);display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px}
+.siteinfo.empty b{color:var(--nv)}html[data-theme="dark"] .siteinfo.empty b{color:#9DB0FF}
+.si-h{display:flex;align-items:center;gap:8px;margin-bottom:6px}.si-h b{font-size:14.5px;flex:1}
+.si-g{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px}.si-g span:first-child,.si-g span:last-child{grid-column:1/-1}
+.si-g i{font-style:normal;color:var(--gr);font-weight:700;margin-right:6px;font-size:11.5px}
+/* RFP */
+.intake{border:1.5px dashed #AFC0E6;border-radius:14px;padding:10px 12px;margin-bottom:8px;background:linear-gradient(135deg,rgba(30,139,58,.05),rgba(11,31,143,.05));transition:.15s}
+.intake.drag{border-color:var(--gr);background:rgba(30,139,58,.12)}
+.intake .in-t b{font-size:13.5px}.intake .in-t small{display:block;font-size:11.5px;color:var(--mute)}
+.intake .in-b{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.in-prog[hidden]{display:none}.in-prog{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12.5px;color:var(--nv);font-weight:600}
+.in-prog i{width:14px;height:14px;border-radius:50%;border:2px solid #b8c4e6;border-top-color:var(--gr);animation:sp .8s linear infinite}
+.in-files{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.in-files:empty{display:none}
+.inf{display:inline-flex;align-items:center;gap:4px;font-size:12px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:2px 4px 2px 9px}
+.inf button{border:0;background:none;color:var(--mute);font-size:14px;padding:0 4px}
+#rfpRes:empty{display:none}
+#rfpRes{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:var(--soft)}
+.rfp-h{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px}.rfp-h b{font-size:13.5px;margin-right:4px}
+.tg{display:inline-block;font-size:10.5px;font-weight:800;color:var(--nv);background:rgba(42,68,212,.1);border-radius:6px;padding:1px 6px;margin-right:4px}
+.rfp-hint{font-size:12px;color:var(--ink2);line-height:1.7}.rfp-hint .btn{margin-left:4px}
+.rfp-list{margin:8px 0 0;padding-left:20px;font-size:12px;max-height:180px;overflow:auto}.rfp-list li{margin:2px 0}.rfp-list .more{list-style:none;color:var(--mute)}
+/* 편집기 */
+#editor{max-height:62vh;overflow:auto;padding-right:4px}
+.ed-head{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:6px}.ed-head .doc-t{font-weight:800;font-size:14.5px}
+.badge{font-size:11px;font-weight:800;color:#fff;background:var(--c);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.ed-tip{font-size:11.8px;color:var(--mute);margin:0 0 8px;background:var(--soft);padding:7px 10px;border-radius:10px}
+details.ed{border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--panel)}
+details.ed>summary{display:flex;gap:8px;align-items:center;padding:8px 10px;cursor:pointer;list-style:none;font-size:13.5px}
+details.ed>summary small{margin-left:auto;color:var(--mute);font-size:11px}
+details.ed[open]>summary{border-bottom:1px solid var(--line);background:var(--soft);border-radius:12px 12px 0 0}
+details.ed textarea{border:0;border-radius:0 0 12px 12px;background:var(--panel);font-size:12.6px}
+details.ed.off>summary b{color:var(--mute);text-decoration:line-through}
+.sw input{accent-color:var(--gr);width:16px;height:16px}
+.placeholder{padding:10px 8px 18px;text-align:center;color:var(--mute)}
+.placeholder .flow{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.placeholder .flow span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:var(--soft)}
+/* 검토·승인 */
+#approval{border-top:1px solid var(--line);padding:12px 18px}
+.ap-flow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:10px}.ap-flow i{color:var(--mute);font-style:normal}
+.ap-flow button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700;color:var(--ink2)}
+.ap-flow button.on{background:var(--c);border-color:var(--c);color:#fff}
+.ap-chk{display:grid;grid-template-columns:1fr;gap:3px;margin:10px 0 8px;font-size:12.3px}.ap-chk label{display:flex;gap:6px;align-items:flex-start}.ap-chk input{margin-top:3px;accent-color:var(--gr)}
+.ap-bar{height:6px;border-radius:6px;background:var(--soft);overflow:hidden}.ap-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gr),var(--nv2))}
+.ap-log{margin:8px 0 0;padding-left:16px;font-size:11.5px;color:var(--mute)}
+.outbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--soft)}
+.outbtns .btn{color:#fff;border:0;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800}
+.outbtns .btn small{font-weight:500;font-size:10.5px;opacity:.85}
+.outbtns .all{grid-column:1/-1;background:linear-gradient(100deg,#1B7A34,#0B1F8A)}
+#outPanel:not(.ready) .outbtns{opacity:.45;pointer-events:none}
+#btnDocx{background:#2b579a}#btnPptx{background:#C43E1C}#btnPdf{background:#B71C1C}
+.pj-h{display:flex;align-items:center;gap:8px;margin:0 0 6px}.pj-h h3{margin:0;font-size:13.5px}.pj-h .row{margin-left:auto}
+#projList{list-style:none;margin:0;padding:0;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+#projList li{display:flex;gap:8px;align-items:center;padding:8px 9px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:12px}
+#projList li:hover{background:var(--soft)}
+#projList .hb{flex:1;min-width:0;display:flex;flex-direction:column}#projList .hb span{color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#projList em{font-style:normal;color:var(--mute);font-size:11px}
+.hdel{border:0;background:none;opacity:.55;padding:2px 4px;border-radius:6px}.hdel:hover{opacity:1}
+.foot-sign{display:flex;justify-content:space-between;align-items:center;margin:28px 4px 8px;padding-top:16px;border-top:1px solid var(--line);color:var(--mute);font-size:12.5px;flex-wrap:wrap;gap:8px}
+.foot-sign img{height:30px;background:#fff;border-radius:6px;padding:2px 8px}
+/* 모달 */
+.modal-bg{position:fixed;inset:0;z-index:9300;background:rgba(6,10,40,.55);display:grid;place-items:center;padding:16px}
+.modal{background:var(--panel);color:var(--ink);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.35);width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:20px}
+.modal.wide{width:min(760px,100%)}
+.modal h2{margin:0 0 4px;font-size:18px}.modal .sub{color:var(--mute);font-size:13px;margin-bottom:12px}
+.m-sign{margin-top:12px;text-align:right;font-size:11px;color:var(--mute);font-style:italic}
+.qrbig{display:grid;place-items:center;background:#fff;border-radius:12px;padding:14px;margin-bottom:12px}
+.urlbox{display:flex;gap:6px;margin-bottom:10px}.urlbox input{flex:1;min-width:0}
+.mrow{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px;align-items:center}
+.subtabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.subtabs button{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 12px}
+.subtabs button[aria-pressed="true"]{background:var(--nv);border-color:var(--nv);color:#fff}
+.avatar-edit{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.avatar-edit .av{width:64px;height:64px;border-radius:14px;background:var(--accent-soft);display:grid;place-items:center;overflow:hidden;font-weight:800;color:var(--nv);font-size:24px}.avatar-edit .av img{width:100%;height:100%;object-fit:cover}
+.field{display:flex;flex-direction:column;gap:3px;margin-bottom:9px}.field label{font-size:12.5px;color:var(--mute);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+.err{color:var(--danger);font-size:12.5px;min-height:1em}.confirm{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--danger)}
+.tblw{overflow:auto}table.me{border-collapse:collapse;width:100%;font-size:12.5px;min-width:620px}table.me th{background:var(--soft);padding:6px;text-align:left}table.me td{padding:3px}table.me input{padding:6px 7px;font-size:12.5px}
+/* 담당 지정 게이트 */
+#mgrGate{position:fixed;inset:0;z-index:60;overflow:auto;padding:20px;background:radial-gradient(1000px 520px at 15% -10%,rgba(27,122,52,.55) 0,transparent 60%),linear-gradient(160deg,#071463,#0B1F8A 60%,#13299E)}
+#mgrGate.hidden{display:none}body.gate-locked{overflow:hidden}
+.gate{max-width:540px;margin:4vh auto;background:var(--panel);color:var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.gate .ghero{background:linear-gradient(135deg,#F7F2EB,#EFE7DC);padding:22px;text-align:center;position:relative}
+.gate .ghero img{width:110px;height:110px;border-radius:24px;box-shadow:0 10px 24px rgba(11,31,138,.3)}
+.gate .gb{padding:18px 22px 22px}.gate h1{font-size:18px;margin:0 0 8px}
+.gate .lock{background:#FDF1EF;color:#B3261E;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;margin-bottom:10px}
+html[data-theme="dark"] .gate .lock{background:#3a1a18;color:#ffb4a9}
+/* 공통 */
+#toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,30px);opacity:0;background:#0F1530;color:#fff;padding:11px 20px;border-radius:24px;font-size:13px;transition:.25s;z-index:9800;border:1px solid #22A04A;pointer-events:none;max-width:92vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#busy{position:fixed;inset:0;background:rgba(5,12,62,.55);display:none;align-items:center;justify-content:center;z-index:9700;color:#fff;flex-direction:column;gap:14px;font-weight:700}#busy.on{display:flex}
+.spin{width:46px;height:46px;border:5px solid rgba(255,255,255,.25);border-top-color:#22A04A;border-radius:50%;animation:sp .9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#render{position:fixed;left:-20000px;top:0}
+.slide{position:relative;width:1280px;height:720px;overflow:hidden;background:#fff}
+</style>
+</head>
+<body>
+<header class="band"><div class="band-in">
+  <a class="brand" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false"><img class="appicon" id="appIcon" alt="에스텍 제안서 제작시스템 아이콘">
+    <span class="brand-txt"><em class="eyebrow2">S-TEC GROUP · 에스텍 그룹</em><b>S-Tec Proposal Production System<span class="ver" id="ver"></span></b><small>에스텍 제안서 제작시스템 · 견적 연동 · Word·PPT·PDF</small></span></a>
+  <div class="cards">
+    <button class="bcard" id="mgrCard" type="button" aria-label="제안 담당 지정"><span class="ph" id="mgrPh"></span><span><span class="t1">제안 담당</span><span class="t2" id="mgrName">미지정</span><span class="t3" id="mgrOrg"></span></span></button>
+    <button class="bcard" id="qrCard" type="button" aria-label="다운로드 QR"><span class="ph" id="qrMini"></span><span><span class="t1">다운로드</span><span class="t2">QR</span></span></button>
+    <button class="bcard" id="refCard" type="button" aria-label="친구 추천"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><path d="M19 8v6M16 11h6"/></svg></span><span><span class="t1">친구</span><span class="t2">추천</span></span></button>
+    <div class="seg" role="group" aria-label="화면 테마"><button type="button" data-theme-set="light">☀ 주간</button><button type="button" data-theme-set="dark">☾ 야간</button><button type="button" data-theme-set="system">▣ 시스템</button></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-txt">
+      <span class="eyebrow"><i></i>Proposal Production</span>
+      <div class="hi" id="heroHi">안녕하세요</div>
+      <h1>견적에서 출발해<br><em>수주로 끝나는</em> 제안서</h1>
+      <div class="meta">용역인력 견적 · 업무량 기반 산정 · 단기인력 견적을 그대로 불러와 업종·산업별 제안서(Word)와 발표자료(PPT·PDF)를 만듭니다.</div>
+      <div class="stats">
+        <div class="stat"><div class="ic">🔗</div><div><small>연동 견적</small><b id="statLink">0</b></div></div>
+        <div class="stat"><div class="ic">📑</div><div><small>작성 제안서</small><b id="statProj">0</b></div></div>
+        <div class="stat"><div class="ic">🏭</div><div><small>업종·직종</small><b id="statInd">-</b></div></div>
+      </div>
+      <div class="hero-act"><button class="cta" id="heroNew" type="button">＋ 새 제안서</button><button class="cta l" id="heroLink" type="button">🔗 견적 불러오기</button><button class="cta l" id="btnCompany" type="button">🏢 회사 정보</button></div>
+    </div>
+    <figure class="hero-art"><img id="heroImg" alt="에스텍 제안서 제작 시스템 — 기획·작성·검토·제본 디오라마" fetchpriority="high"></figure>
+  </section>
+
+  <nav class="stepper" id="stepper" aria-label="제안서 제작 단계">
+    <button class="stp" data-go="#linkCard" type="button"><span class="n">🔍</span><span><b>1. RFP 분석</b><small>견적 연동 · 요구사항</small></span></button>
+    <button class="stp" data-go="#planCard" type="button"><span class="n">🧭</span><span><b>2. 기획</b><small>업종·직종·전략</small></span></button>
+    <button class="stp" data-go="#outPanel" type="button"><span class="n">✍</span><span><b>3. 집필</b><small>13개 목차 초안</small></span></button>
+    <button class="stp" data-go="#approval" type="button"><span class="n">✅</span><span><b>4. 검토·승인</b><small>체크리스트·결재</small></span></button>
+    <button class="stp" data-go="#outBtns" type="button"><span class="n">🖨</span><span><b>5. 제작·제본</b><small>Word·PPT·PDF</small></span></button>
+    <button class="stp" data-go="#projBox" type="button"><span class="n">📤</span><span><b>6. 제출</b><small>제출 이력</small></span></button>
+  </nav>
+
+  <div class="work" id="work">
+    <div class="col c1">
+      <section class="card" id="linkCard">
+        <h2><span class="stepn">1</span> 견적 연동 <span class="r" id="linkMsg"></span></h2>
+        <div class="body">
+          <div class="ltabs" id="linkTabs" role="group" aria-label="견적 프로그램"></div>
+          <ul id="linkList"></ul>
+          <div class="lsum" id="linkSum"></div>
+          <div class="lacts">
+            <button class="btn" id="btnLinkOpen" type="button">↗ 견적 프로그램 열기</button>
+            <button class="btn" id="btnLinkRefresh" type="button">↻ 새로 불러오기</button>
+            <button class="btn" id="btnLinkManual" type="button">✍ 직접 입력</button>
+            <button class="btn" id="btnLinkFile" type="button">📂 연동 파일</button>
+          </div>
+          <input type="file" id="linkFile" accept=".json,application/json" hidden>
+          <p class="hint">용역인력 견적·업무량 기반 산정·단기인력 견적에서 <b>「📑 제안서로 보내기」</b>를 누르면 금액까지 자동으로 들어옵니다. 같은 계정으로 로그인하면 다른 기기에서 보낸 견적도 보입니다. <a href="#" id="btnLinkExport" onclick="return false">선택 견적 내보내기(.json)</a></p>
+        </div>
+      </section>
+      <section class="card" id="siteCard">
+        <h2><span class="stepn">2</span> 고객사·사업장 <span class="r" id="siteCnt"></span></h2>
+        <div class="body">
+          <div id="brChips" role="group" aria-label="지사"></div>
+          <input class="search" id="sq" placeholder="🔍 사업장명·주소·업종 검색">
+          <ul id="siteList"></ul>
+          <button class="btn" id="siteManual" type="button">✎ 신규 영업 고객사 직접 입력</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="col c2">
+      <section class="card" id="planCard">
+        <h2><span class="stepn">3</span> RFP 분석 · 제안 기획 <span class="r">업종 12 · 직종 9</span></h2>
+        <div class="body">
+          <div class="intake" id="intake" tabindex="0" aria-label="RFP 파일 올리기">
+            <input type="file" id="inFile" multiple hidden accept=".pdf,.docx,.hwpx,.hwp,.eml,.txt,image/*">
+            <div class="in-t"><b>📎 제안요청서(RFP)·과업지시서·공고문 불러오기</b><small>PDF · Word · 한글(HWPX) · 메일(.eml) · 사진(글자 인식) — 끌어다 놓거나 파일 선택. 이 기기 안에서만 처리됩니다.</small></div>
+            <div class="in-b"><button class="btn sm" type="button" id="inPick">📂 파일 선택</button><button class="btn sm" type="button" id="btnRfp">🔎 요구사항 분석</button><button class="btn sm" type="button" id="btnRfpClear">비우기</button></div>
+            <div class="in-prog" id="inProg" hidden><i></i><span></span></div>
+            <div class="in-files" id="inFiles"></div>
+          </div>
+          <textarea id="f_rfp" rows="4" placeholder="RFP·과업지시서 내용을 붙여넣으세요 (선택). 요구사항을 찾아 제안서 「현황 분석 및 요구사항」 대응표로 만듭니다."></textarea>
+          <div id="rfpRes"></div>
+
+          <div class="lbl">고객사·제안 정보</div>
+          <div class="siteinfo empty" id="siteInfo"></div>
+          <div class="grid">
+            <label class="f full"><span>제안서 제목 (비우면 자동)</span><input type="text" id="f_title" placeholder="예: ○○공장 보안·미화 통합 용역 운영 제안서"></label>
+            <label class="f"><span>고객사명 <b>*</b></span><input type="text" id="f_client" placeholder="② 사업장 선택 또는 직접 입력"></label>
+            <label class="f"><span>현장명(세부)</span><input type="text" id="f_site" placeholder="예: 온산공장, 본관"></label>
+            <label class="f full"><span>주소</span><input type="text" id="f_addr"></label>
+            <label class="f"><span>업종(산업)</span><select id="f_ind"></select></label>
+            <label class="f"><span>수신 (고객사 담당)</span><input type="text" id="f_recv" placeholder="예: 총무팀장 귀하"></label>
+            <label class="f"><span>계약 시작</span><input type="date" id="f_from"></label>
+            <label class="f"><span>계약 종료</span><input type="date" id="f_to"></label>
+          </div>
+          <div class="lbl">제안 유형</div>
+          <div class="tseg" id="typeSeg" role="group" aria-label="제안 유형"></div><div id="f_type" hidden></div>
+          <div class="lbl">제안 직종 <small>(복수 선택)</small></div>
+          <div class="picks" id="jobChips"></div>
+          <div class="lbl">평가 강조점 <small>— 운영 전략·기대효과에 반영</small></div>
+          <div class="picks" id="emphChips"></div>
+          <div class="lbl">차별화 포인트 <small>— 통합관리 시스템·프로젝트 자료 기반</small></div>
+          <div class="picks" id="diffChips"></div>
+          <div class="lbl">목차 (13개 · 끄면 출력에서 빠짐)</div>
+          <div id="secChecks"></div>
+          <label class="f full" style="margin-top:10px"><span>추가 강조 내용 (선택 · 「제안 배경」에 들어감)</span><textarea id="f_extra" rows="2" placeholder="예: 기존 업체 대비 결원 대체 시간 단축, 고객사 ESG 평가 대응"></textarea></label>
+          <div class="grid" style="margin-top:10px">
+            <label class="f"><span>작성 부서</span><input type="text" id="f_dept"></label>
+            <label class="f"><span>작성자</span><input type="text" id="f_author"></label>
+            <label class="f"><span>제출일</span><input type="date" id="f_date"></label>
+            <div class="f">문서 용도<div class="mode"><label><input type="radio" name="mode" value="client" checked>대외 제출용</label><label><input type="radio" name="mode" value="internal">내부 검토용</label></div></div>
+          </div>
+          <button class="big" id="btnGen" type="button">✍ 제안서 초안 집필</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="col c3">
+      <section class="card" id="outPanel">
+        <h2><span class="stepn">4</span> 집필 · 검토·승인 · 출력 <span class="r"><button class="btn sm" id="btnSave" type="button">💾 저장</button> <button class="btn sm" id="btnNew" type="button">＋ 새로</button></span></h2>
+        <div class="body"><div id="editor"></div></div>
+        <template id="editorEmpty"><div class="placeholder"><div class="flow"><span>🔍 RFP 분석</span><span>🧭 기획</span><span>✍ 집필</span><span>✅ 검토·승인</span><span>🖨 제작·제본</span><span>📤 제출</span></div>
+          <p>① 견적을 고르고 ③ 기획 항목을 채운 뒤 <b>[제안서 초안 집필]</b>을 누르세요.</p>
+          <p class="hint">13개 목차(개요·회사소개·현황분석·전략·인력·업무·교육·안전법규·품질·스마트관리·인수인계·가격·맺음말)가 업종·직종·견적에 맞춰 자동 작성됩니다.</p></div></template>
+        <div id="approval"></div>
+        <div class="outbtns" id="outBtns">
+          <button class="btn" id="btnDocx" type="button">📄 Word 제안서<small>표지·목차·머리글·바닥글</small></button>
+          <button class="btn" id="btnPptx" type="button">📊 PPT 발표자료<small>16:9 · 편집 가능</small></button>
+          <button class="btn" id="btnPdf" type="button">📕 PDF<small>PPT와 같은 디자인</small></button>
+          <button class="btn all" id="btnAll" type="button">⬇ 3종 일괄 제작 (Word + PPT + PDF)</button>
+        </div>
+        <div class="body" id="projBox">
+          <div class="pj-h"><h3>📤 제안서 · 제출 이력</h3><small class="hint">누르면 불러오기</small></div>
+          <ul id="projList"></ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="foot-sign">
+    <span>© 에스텍 그룹 · S-Tec Proposal Production System · <a href="https://github.com/sadness500-boop/S-Tec-Proposal-Production-System#readme" target="_blank" rel="noopener">사용 안내</a></span>
+    <span>Designed &amp; Developed by <span class="sig">Rat Rae Choi</span> <img id="sigImg" alt="Rat Rae Choi"></span>
+  </div>
+</main>
+
+<div id="mgrGate" class="hidden" role="dialog" aria-modal="true" aria-label="제안 담당 지정"><div class="gate">
+  <div class="ghero"><img id="gateLogo" alt="에스텍 제안서 제작시스템"></div>
+  <div class="gb"><h1>S-Tec Proposal Production System</h1>
+    <div class="lock">🔒 제안 담당이 지정되지 않아 프로그램이 잠겨 있습니다</div>
+    <p class="hint">제안서를 작성·관리할 담당자를 지정하면 프로그램이 열립니다. 담당 정보는 제안서 표지·연락처에 들어가며 언제든 바꿀 수 있습니다.</p>
+    <div id="gateForm"></div></div>
+</div></div>
+<div id="toast"></div>
+<div id="busy"><div class="spin"></div><div id="busyMsg">처리 중…</div></div>
+<div id="render"></div>
+
+<!--LIBS-->
+<!--QR-->
+<script>/*ASSETS*/</script>
+<script>/*HF*/</script>
+<script>/*SITES*/</script>
+<script>/*KB*/</script>
+<script>/*APP*/</script>
+<script>
+/* 제작자 관리(로그인) 설정 — 통합관리 시스템 8개 프로그램과 같은 모듈·같은 서버 · Designed & Developed by Rat Rae Choi */
+window.AUTH_APP_CONFIG = {
+  name: 'S-Tec Proposal Production System',
+  sub: '에스텍 제안서 제작시스템 · 로그인',
+  dataLabel: '제안서 · 회사 정보',
+  prefix: 'stpp',
+  globalName: 'STPP_AUTH',
+  webUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
+  cfgRaw: 'https://raw.githubusercontent.com/sadness500-boop/S-Tec-Proposal-Production-System/main/auth-config.json',
+  hooks: [['storeProjects', 'stec_pp_projects'], ['saveUI', 'stec_pp_ui'], ['saveCompany', 'stec_pp_company']],
+  keepKeys: ['stec_pp_ui']
+};
+</script>
+<!--AUTHCSS-->
+<div id="authGate" class="hidden" role="dialog" aria-modal="true" aria-label="로그인"><div class="ag-box" id="agBox"></div></div>
+<div id="agPop" class="hidden" role="dialog" aria-modal="true"><div class="ag-box" id="agPopBox"></div></div>
+<div id="admPanel" class="hidden" role="dialog" aria-modal="true" aria-label="관리자 페이지"></div>
+<script id="supabase-lib">/*SUPABASE*/</script>
+<script>/*AUTH*/</script>
+<script>window.APP_ACCESS_CFG = { app: 'stpp', auth: 'STPP_AUTH', name: 'S-Tec Proposal Production System' };</script>
+<script>/*APPACCESS*/</script>
+<script>
+if('serviceWorker' in navigator && location.protocol==='https:' && !window.Capacitor){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+</script>
+</body>
+</html>
