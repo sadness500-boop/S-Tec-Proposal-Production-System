@@ -7,9 +7,9 @@
 <title>S-Tec Proposal Production System · 에스텍 제안서 제작시스템</title>
 <meta name="description" content="에스텍 그룹 제안서 제작시스템 — 용역인력 견적·업무량 기반 산정·단기인력 견적과 연동해 업종·산업별 제안서(Word)·발표자료(PPT·PDF) 제작">
 <meta name="theme-color" content="#0B1F8A">
-<link rel="manifest" href="manifest.webmanifest?v=2.0.0">
-<link rel="icon" href="icons/favicon-48.png?v=2.0.0">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2.0.0">
+<link rel="manifest" href="manifest.webmanifest?v=2.1.0">
+<link rel="icon" href="icons/favicon-48.png?v=2.1.0">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2.1.0">
 <style>
 /* =====================================================================
    S-Tec Proposal Production System — 화면 디자인
@@ -181,12 +181,14 @@ li.lk .amt{font-size:12.5px;font-weight:800;color:var(--nv)}html[data-theme="dar
 li.lk .amt small{font-weight:500;color:var(--mute)}
 .lx{border:0;background:none;color:var(--mute);padding:2px 4px;border-radius:6px}.lx:hover{background:var(--soft);color:var(--rd)}
 .sb{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);margin-right:4px}
-.sb.raw{--c:#667089}.sb.ok{--c:#1B7A34}
+.sb.raw{--c:#667089}.sb.ok{--c:#1B7A34}.sb.xl{--c:#1D6F42}
 .lb>.sb{display:inline-block}
 .need{font-style:normal;color:var(--or);font-weight:700}
 .lsum{margin-top:8px;font-size:12.5px;background:var(--soft);border-radius:12px;padding:8px 10px}
 .lacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .lacts .btn{font-size:12px;padding:7px 8px}
+.lacts .btn.wide{grid-column:1/-1;background:linear-gradient(135deg,#1D6F42,#21A366);color:#fff;border-color:transparent;font-weight:800}.lacts .btn.wide small{font-weight:500;opacity:.85;margin-left:4px}
+#linkCard.drag{outline:3px dashed #21A366;outline-offset:-6px}
 .srcs{display:flex;flex-direction:column;gap:8px}
 .srcbtn{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-decoration:none;color:var(--ink);border-left:5px solid var(--c)}
 .srcbtn:hover{background:var(--soft)}.srcbtn .ic{font-size:22px}.srcbtn b{display:block}.srcbtn small{color:var(--mute);font-size:11.5px}.srcbtn i{margin-left:auto;font-style:normal;color:var(--mute)}
@@ -248,12 +250,12 @@ details.ed.off>summary b{color:var(--mute);text-decoration:line-through}
 .ap-chk{display:grid;grid-template-columns:1fr;gap:3px;margin:10px 0 8px;font-size:12.3px}.ap-chk label{display:flex;gap:6px;align-items:flex-start}.ap-chk input{margin-top:3px;accent-color:var(--gr)}
 .ap-bar{height:6px;border-radius:6px;background:var(--soft);overflow:hidden}.ap-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gr),var(--nv2))}
 .ap-log{margin:8px 0 0;padding-left:16px;font-size:11.5px;color:var(--mute)}
-.outbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--soft)}
+.outbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--soft)}
 .outbtns .btn{color:#fff;border:0;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800}
 .outbtns .btn small{font-weight:500;font-size:10.5px;opacity:.85}
 .outbtns .all{grid-column:1/-1;background:linear-gradient(100deg,#1B7A34,#0B1F8A)}
 #outPanel:not(.ready) .outbtns{opacity:.45;pointer-events:none}
-#btnDocx{background:#2b579a}#btnPptx{background:#C43E1C}#btnPdf{background:#B71C1C}
+#btnDocx{background:#2b579a}#btnPptx{background:#C43E1C}#btnPdf{background:#B71C1C}#btnHtml{background:#6A1B9A}
 .pj-h{display:flex;align-items:center;gap:8px;margin:0 0 6px}.pj-h h3{margin:0;font-size:13.5px}.pj-h .row{margin-left:auto}
 #projList{list-style:none;margin:0;padding:0;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:12px}
 #projList li{display:flex;gap:8px;align-items:center;padding:8px 9px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:12px}
@@ -351,9 +353,11 @@ html[data-theme="dark"] .gate .lock{background:#3a1a18;color:#ffb4a9}
             <button class="btn" id="btnLinkRefresh" type="button">↻ 새로 불러오기</button>
             <button class="btn" id="btnLinkManual" type="button">✍ 직접 입력</button>
             <button class="btn" id="btnLinkFile" type="button">📂 연동 파일</button>
+            <button class="btn xl wide" id="btnLinkXl" type="button">📊 엑셀 견적서 불러오기 <small>.xlsx · .xls · .csv · PDF</small></button>
           </div>
+          <input type="file" id="xlFile" accept=".xlsx,.xlsm,.xls,.xlsb,.ods,.csv,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple hidden>
           <input type="file" id="linkFile" accept=".json,application/json" hidden>
-          <p class="hint">용역인력 견적·업무량 기반 산정·단기인력 견적에서 <b>「📑 제안서로 보내기」</b>를 누르면 금액까지 자동으로 들어옵니다. 같은 계정으로 로그인하면 다른 기기에서 보낸 견적도 보입니다. <a href="#" id="btnLinkExport" onclick="return false">선택 견적 내보내기(.json)</a></p>
+          <p class="hint">용역인력 견적·업무량 기반 산정·단기인력 견적에서 <b>「📑 제안서로 보내기」</b>를 누르면 금액까지 자동으로 들어옵니다. 엑셀로 만든 견적서·원가분석표는 <b>「📊 엑셀 견적서 불러오기」</b>를 누르거나 이 칸에 끌어다 놓으세요. 같은 계정으로 로그인하면 다른 기기에서 보낸 견적도 보입니다. <a href="#" id="btnLinkExport" onclick="return false">선택 견적 내보내기(.json)</a></p>
         </div>
       </section>
       <section class="card" id="siteCard">
@@ -425,9 +429,10 @@ html[data-theme="dark"] .gate .lock{background:#3a1a18;color:#ffb4a9}
         <div id="approval"></div>
         <div class="outbtns" id="outBtns">
           <button class="btn" id="btnDocx" type="button">📄 Word 제안서<small>표지·목차·머리글·바닥글</small></button>
-          <button class="btn" id="btnPptx" type="button">📊 PPT 발표자료<small>16:9 · 편집 가능</small></button>
-          <button class="btn" id="btnPdf" type="button">📕 PDF<small>PPT와 같은 디자인</small></button>
-          <button class="btn all" id="btnAll" type="button">⬇ 3종 일괄 제작 (Word + PPT + PDF)</button>
+          <button class="btn" id="btnPptx" type="button">📊 PPT 발표자료<small>영상 내장 · 편집 가능</small></button>
+          <button class="btn" id="btnPdf" type="button">📕 PDF<small>영상은 누르면 재생</small></button>
+          <button class="btn" id="btnHtml" type="button">🎬 웹 발표본<small>영상 자동 재생</small></button>
+          <button class="btn all" id="btnAll" type="button">⬇ 4종 일괄 제작 (Word + PPT + PDF + 웹 발표본)</button>
         </div>
         <div class="body" id="projBox">
           <div class="pj-h"><h3>📤 제안서 · 제출 이력</h3><small class="hint">누르면 불러오기</small></div>

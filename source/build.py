@@ -13,7 +13,7 @@ asset['voc'] = asset['icon']                            # 표지 로고 = 앱 �
 asset['hero'] = uri(V + 'hero.jpg', 'image/jpeg')       # 메인화면 디오라마 (사진 1) · 제안서 표지
 asset['apps'] = {f[:-4]: uri(V + 'apps/' + f, 'image/png') for f in sorted(os.listdir(V + 'apps')) if f.endswith('.png')}
 html = rd(S + 'index.html')
-APPJS = '\n'.join(rd(S + f) for f in ['link.js', 'rfp.js', 'ui.js', 'app.js', 'engine.js', 'media.js', 'deck.js', 'out.js'])
+APPJS = '\n'.join(rd(S + f) for f in ['link.js', 'rfp.js', 'xlsest.js', 'ui.js', 'app.js', 'engine.js', 'media.js', 'deck.js', 'out.js'])
 for ph, val in [('<!--LIBS-->', rd(V + 'libs.html')), ('<!--QR-->', rd(V + 'qr.html')),
                 ('/*ASSETS*/', 'const ASSET=' + json.dumps(asset, ensure_ascii=False) + ';'),
                 ('/*HF*/', scr(rd(S + 'hf.js'))), ('/*SITES*/', scr(rd(S + 'sites.js'))), ('/*KB*/', scr(rd(S + 'kb.js'))),

@@ -1,5 +1,5 @@
 /* =====================================================================
- * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.0.0 — 앱 로직
+ * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.1.0 — 앱 로직
  * 흐름: RFP 분석 → 기획 → 집필 → 검토·승인 → 제작·제본(Word·PPT·PDF) → 제출
  * 견적 연동: S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate
  * Program & Design by Rat Rae Choi (제작자 서명 — 하드코딩)
@@ -7,7 +7,7 @@
 const APP = {
   name: 'S-Tec Proposal Production System',
   ko: '에스텍 제안서 제작시스템',
-  version: 'v2.0.0',
+  version: 'v2.1.0',
   build: '2026-11-19',
   shareUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
   apkUrl: 'https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk',
@@ -104,13 +104,13 @@ function pkgAmt(p) {
   return p.monthly != null ? `월 ${won(p.monthly)}원 <small>(VAT 별도)</small>` : '<em class="need">금액 연동 필요</em>';
 }
 function renderLinks() {
-  const tabs = [['all', '전체'], ['stqs', SRC.stqs.ic + ' 용역인력'], ['wbe', SRC.wbe.ic + ' 업무량'], ['stse', SRC.stse.ic + ' 단기'], ['manual', '✍ 직접·파일']];
-  const cnt = k => k === 'all' ? LINK.items.length : LINK.items.filter(p => k === 'manual' ? (p.src === 'manual' || p.origin === 'file') : p.src === k).length;
+  const tabs = [['all', '전체'], ['stqs', SRC.stqs.ic + ' 용역인력'], ['wbe', SRC.wbe.ic + ' 업무량'], ['stse', SRC.stse.ic + ' 단기'], ['manual', '✍ 직접·엑셀·파일']];
+  const cnt = k => k === 'all' ? LINK.items.length : LINK.items.filter(p => k === 'manual' ? (p.src === 'manual' || p.origin === 'file' || p.origin === 'excel') : p.src === k).length;
   $('#linkTabs').innerHTML = tabs.map(([k, n]) => `<button type="button" data-tab="${k}" aria-pressed="${state.tab === k}">${n}<i>${cnt(k)}</i></button>`).join('');
-  const list = LINK.items.filter(p => state.tab === 'all' || (state.tab === 'manual' ? (p.src === 'manual' || p.origin === 'file') : p.src === state.tab));
+  const list = LINK.items.filter(p => state.tab === 'all' || (state.tab === 'manual' ? (p.src === 'manual' || p.origin === 'file' || p.origin === 'excel') : p.src === state.tab));
   $('#linkList').innerHTML = list.length ? list.map(p => `<li class="lk ${LINK.picked.has(p.id) ? 'on' : ''}" data-id="${esc(p.id)}">
       <input type="checkbox" ${LINK.picked.has(p.id) ? 'checked' : ''} aria-label="제안서에 넣기">
-      <div class="lb">${srcBadge(p)}${p.origin === 'raw' ? '<span class="sb raw">보관함</span>' : p.origin === 'file' ? '<span class="sb raw">파일</span>' : p.origin === 'manual' ? '' : '<span class="sb ok">연동</span>'}
+      <div class="lb">${srcBadge(p)}${p.origin === 'raw' ? '<span class="sb raw">보관함</span>' : p.origin === 'file' ? '<span class="sb raw">파일</span>' : p.origin === 'excel' ? '<span class="sb xl">엑셀</span>' : p.origin === 'manual' ? '' : '<span class="sb ok">연동</span>'}
         <b>${esc(p.title)}</b><small>${esc(p.client || '')}${p.heads ? ` · ${p.heads}명` : ''}${p.rows.length ? ` · ${p.rows.length}개 직책` : ''}${p.at ? ` · ${esc(String(p.at).slice(0, 10))}` : ''}</small><span class="amt">${pkgAmt(p)}</span></div>
       <button type="button" class="lx" data-x="${esc(p.id)}" title="목록에서 빼기">✕</button></li>`).join('')
     : `<li class="empty">${state.tab === 'all' ? '연동된 견적이 없습니다.<br>아래 견적 프로그램에서 견적을 만든 뒤 <b>「📑 제안서로 보내기」</b>를 누르거나, 직접 입력하세요.' : '이 프로그램에서 보낸 견적이 없습니다.'}</li>`;

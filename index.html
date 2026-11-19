@@ -7,9 +7,9 @@
 <title>S-Tec Proposal Production System · 에스텍 제안서 제작시스템</title>
 <meta name="description" content="에스텍 그룹 제안서 제작시스템 — 용역인력 견적·업무량 기반 산정·단기인력 견적과 연동해 업종·산업별 제안서(Word)·발표자료(PPT·PDF) 제작">
 <meta name="theme-color" content="#0B1F8A">
-<link rel="manifest" href="manifest.webmanifest?v=2.0.0">
-<link rel="icon" href="icons/favicon-48.png?v=2.0.0">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2.0.0">
+<link rel="manifest" href="manifest.webmanifest?v=2.1.0">
+<link rel="icon" href="icons/favicon-48.png?v=2.1.0">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2.1.0">
 <style>
 /* =====================================================================
    S-Tec Proposal Production System — 화면 디자인
@@ -181,12 +181,14 @@ li.lk .amt{font-size:12.5px;font-weight:800;color:var(--nv)}html[data-theme="dar
 li.lk .amt small{font-weight:500;color:var(--mute)}
 .lx{border:0;background:none;color:var(--mute);padding:2px 4px;border-radius:6px}.lx:hover{background:var(--soft);color:var(--rd)}
 .sb{display:inline-block;align-self:flex-start;font-size:10.5px;font-weight:800;border-radius:6px;padding:1px 7px;color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent);margin-right:4px}
-.sb.raw{--c:#667089}.sb.ok{--c:#1B7A34}
+.sb.raw{--c:#667089}.sb.ok{--c:#1B7A34}.sb.xl{--c:#1D6F42}
 .lb>.sb{display:inline-block}
 .need{font-style:normal;color:var(--or);font-weight:700}
 .lsum{margin-top:8px;font-size:12.5px;background:var(--soft);border-radius:12px;padding:8px 10px}
 .lacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .lacts .btn{font-size:12px;padding:7px 8px}
+.lacts .btn.wide{grid-column:1/-1;background:linear-gradient(135deg,#1D6F42,#21A366);color:#fff;border-color:transparent;font-weight:800}.lacts .btn.wide small{font-weight:500;opacity:.85;margin-left:4px}
+#linkCard.drag{outline:3px dashed #21A366;outline-offset:-6px}
 .srcs{display:flex;flex-direction:column;gap:8px}
 .srcbtn{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-decoration:none;color:var(--ink);border-left:5px solid var(--c)}
 .srcbtn:hover{background:var(--soft)}.srcbtn .ic{font-size:22px}.srcbtn b{display:block}.srcbtn small{color:var(--mute);font-size:11.5px}.srcbtn i{margin-left:auto;font-style:normal;color:var(--mute)}
@@ -248,12 +250,12 @@ details.ed.off>summary b{color:var(--mute);text-decoration:line-through}
 .ap-chk{display:grid;grid-template-columns:1fr;gap:3px;margin:10px 0 8px;font-size:12.3px}.ap-chk label{display:flex;gap:6px;align-items:flex-start}.ap-chk input{margin-top:3px;accent-color:var(--gr)}
 .ap-bar{height:6px;border-radius:6px;background:var(--soft);overflow:hidden}.ap-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gr),var(--nv2))}
 .ap-log{margin:8px 0 0;padding-left:16px;font-size:11.5px;color:var(--mute)}
-.outbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--soft)}
+.outbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 18px;border-top:1px solid var(--line);background:var(--soft)}
 .outbtns .btn{color:#fff;border:0;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800}
 .outbtns .btn small{font-weight:500;font-size:10.5px;opacity:.85}
 .outbtns .all{grid-column:1/-1;background:linear-gradient(100deg,#1B7A34,#0B1F8A)}
 #outPanel:not(.ready) .outbtns{opacity:.45;pointer-events:none}
-#btnDocx{background:#2b579a}#btnPptx{background:#C43E1C}#btnPdf{background:#B71C1C}
+#btnDocx{background:#2b579a}#btnPptx{background:#C43E1C}#btnPdf{background:#B71C1C}#btnHtml{background:#6A1B9A}
 .pj-h{display:flex;align-items:center;gap:8px;margin:0 0 6px}.pj-h h3{margin:0;font-size:13.5px}.pj-h .row{margin-left:auto}
 #projList{list-style:none;margin:0;padding:0;max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:12px}
 #projList li{display:flex;gap:8px;align-items:center;padding:8px 9px;border-bottom:1px dashed var(--line);cursor:pointer;font-size:12px}
@@ -351,9 +353,11 @@ html[data-theme="dark"] .gate .lock{background:#3a1a18;color:#ffb4a9}
             <button class="btn" id="btnLinkRefresh" type="button">↻ 새로 불러오기</button>
             <button class="btn" id="btnLinkManual" type="button">✍ 직접 입력</button>
             <button class="btn" id="btnLinkFile" type="button">📂 연동 파일</button>
+            <button class="btn xl wide" id="btnLinkXl" type="button">📊 엑셀 견적서 불러오기 <small>.xlsx · .xls · .csv · PDF</small></button>
           </div>
+          <input type="file" id="xlFile" accept=".xlsx,.xlsm,.xls,.xlsb,.ods,.csv,.pdf,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" multiple hidden>
           <input type="file" id="linkFile" accept=".json,application/json" hidden>
-          <p class="hint">용역인력 견적·업무량 기반 산정·단기인력 견적에서 <b>「📑 제안서로 보내기」</b>를 누르면 금액까지 자동으로 들어옵니다. 같은 계정으로 로그인하면 다른 기기에서 보낸 견적도 보입니다. <a href="#" id="btnLinkExport" onclick="return false">선택 견적 내보내기(.json)</a></p>
+          <p class="hint">용역인력 견적·업무량 기반 산정·단기인력 견적에서 <b>「📑 제안서로 보내기」</b>를 누르면 금액까지 자동으로 들어옵니다. 엑셀로 만든 견적서·원가분석표는 <b>「📊 엑셀 견적서 불러오기」</b>를 누르거나 이 칸에 끌어다 놓으세요. 같은 계정으로 로그인하면 다른 기기에서 보낸 견적도 보입니다. <a href="#" id="btnLinkExport" onclick="return false">선택 견적 내보내기(.json)</a></p>
         </div>
       </section>
       <section class="card" id="siteCard">
@@ -425,9 +429,10 @@ html[data-theme="dark"] .gate .lock{background:#3a1a18;color:#ffb4a9}
         <div id="approval"></div>
         <div class="outbtns" id="outBtns">
           <button class="btn" id="btnDocx" type="button">📄 Word 제안서<small>표지·목차·머리글·바닥글</small></button>
-          <button class="btn" id="btnPptx" type="button">📊 PPT 발표자료<small>16:9 · 편집 가능</small></button>
-          <button class="btn" id="btnPdf" type="button">📕 PDF<small>PPT와 같은 디자인</small></button>
-          <button class="btn all" id="btnAll" type="button">⬇ 3종 일괄 제작 (Word + PPT + PDF)</button>
+          <button class="btn" id="btnPptx" type="button">📊 PPT 발표자료<small>영상 내장 · 편집 가능</small></button>
+          <button class="btn" id="btnPdf" type="button">📕 PDF<small>영상은 누르면 재생</small></button>
+          <button class="btn" id="btnHtml" type="button">🎬 웹 발표본<small>영상 자동 재생</small></button>
+          <button class="btn all" id="btnAll" type="button">⬇ 4종 일괄 제작 (Word + PPT + PDF + 웹 발표본)</button>
         </div>
         <div class="body" id="projBox">
           <div class="pj-h"><h3>📤 제안서 · 제출 이력</h3><small class="hint">누르면 불러오기</small></div>
@@ -3344,7 +3349,8 @@ const COMPANY_DEFAULT = {
   achievements: '',   // 주요 실적 (줄마다 한 건) — 비워두면 사업장 목록 기준 운영 현황만 기재
   certs: '경비업 허가(시설경비·신변보호 등) — 허가번호 확인 후 기재\n품질·환경경영시스템(ISO) 인증 — 인증번호·유효기간 확인 후 기재\n우수노사문화기업 인증 — 인증 연도 확인 후 기재',
   history: '1999.01 ㈜에스원 인력보안 조직 분사, ㈜에스텍시스템 설립 — 인력보안 산업의 새로운 문화 창조\n전국 본부·지사 네트워크 구축 — 공동주택·빌딩·공장·병원·공공기관 등 전 산업 인력 운영\n에스텍베스트(주) 설립 — 에스텍시스템 100% 출자, 경상남북도 인력운영 전담\n2026 에스텍시스템 유가증권시장(코스피) 상장 추진',
-  metrics: '1999|년 설립|㈜에스원 인력보안 분사\n7,316|억원|2025 매출 (NICE평가정보)\n9,672|명|임직원 (국민연금 가입, 2026.09)\n2|시간|비상시 대체·증원 인력 투입 목표',
+  metrics: '9,752|억원|2025 연결 매출 (감사보고서·계열사 포함)\n225|억원|2025 연결 영업이익\n8|개사|연결 종속기업 (2026.1Q)\n1999|년 설립|㈜에스원 인력보안 분사',
+  metricsNote: '실적: 에스텍시스템㈜과 종속기업 2025 연결재무제표(외부감사 감사보고서) 기준',
   updated: ''
 };
 
@@ -4140,6 +4146,172 @@ function initRfp() {
 }
 
 /* =====================================================================
+ * 엑셀·PDF 견적서 불러오기 — 사용자가 엑셀로 만든 견적서(.xlsx·.xls·.xlsm·.csv)나
+ * 그 PDF 출력본에서 고객사·용역기간·월 견적금액·투입 인력·단가·원가 구성을 읽어
+ * 제안서 연동 견적(normPkg 형식)으로 만듭니다. 모든 처리는 이 기기 안에서만 합니다.
+ * Designed & Developed by Rat Rae Choi
+ * ===================================================================== */
+const XL_EXT = /\.(xlsx|xlsm|xls|xlsb|ods|csv)$/i;
+async function xlsxLib() { if (!window.XLSX) await loadScriptOnce(libUrl('lib/xlsx/xlsx.full.min.js')); return window.XLSX; }
+
+/* ---------- 공통 도우미 ---------- */
+const xS = v => String(v ?? '').replace(/ /g, ' ').trim();
+const xK = v => xS(v).replace(/\s+/g, '');
+function xN(v) {
+  if (typeof v === 'number' && isFinite(v)) return v;
+  const s = xS(v).replace(/[₩원명,\s]/g, '').replace(/^\((.*)\)$/, '-$1');
+  if (/^[+\-]?\d+(\.\d+)?$/.test(s)) return +s;
+  const m = /^([+\-]?\d{1,3}(?:,\d{3})+)\s+\S/.exec(xS(v)); return m ? +m[1].replace(/,/g, '') : null;   // PDF에서 이웃 칸과 붙은 경우
+}
+/* 시트 = { name, rows: [[{v, x, w}]] } — 엑셀은 x=열 번호, PDF는 x=좌표 */
+function gridFromAoa(name, aoa) { return { name, rows: aoa.map(r => (r || []).map((v, i) => ({ v, x: i, w: 1 })).filter(c => xS(c.v) !== '')) }; }
+const rowText = r => r.map(c => xS(c.v)).join(' ');
+const cx = c => c.x + (c.w || 1) / 2;
+function nearest(cols, c) { let best = null, d = 1e9; cols.forEach(h => { const dd = Math.abs(cx(h) - cx(c)); if (dd < d) { d = dd; best = h; } }); return best; }
+
+/* ---------- 파일 → 시트 ---------- */
+async function sheetsFromFile(file) {
+  if (XL_EXT.test(file.name)) {
+    const X = await xlsxLib(), wb = X.read(new Uint8Array(await file.arrayBuffer()), { type: 'array', cellDates: false });
+    return wb.SheetNames.map(n => gridFromAoa(n, X.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: '', blankrows: true })));
+  }
+  if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') {
+    const pdfjs = await pdfLib(), doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()), cMapUrl: libUrl('lib/pdf/cmaps/'), cMapPacked: true }).promise;
+    const out = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      const pg = await doc.getPage(i), tc = await pg.getTextContent();
+      const it = tc.items.filter(t => t.str && t.str.trim()).map(t => ({ s: t.str, x: t.transform[4], y: t.transform[5], w: t.width || t.str.length * 5, f: Math.abs(t.transform[3]) || 9 }));
+      it.sort((a, b) => b.y - a.y || a.x - b.x);
+      const lines = []; it.forEach(t => { const L = lines.find(l => Math.abs(l.y - t.y) < Math.max(2.5, t.f * 0.35)); L ? L.items.push(t) : lines.push({ y: t.y, items: [t] }); });
+      const rows = lines.sort((a, b) => b.y - a.y).map(l => { const s = l.items.sort((a, b) => a.x - b.x), cells = [];
+        s.forEach(t => { const c = cells[cells.length - 1]; if (c && t.x - (c.x + c.w) < t.f * 1.6) { c.v += (t.x - (c.x + c.w) > t.f * 0.2 ? ' ' : '') + t.s; c.w = t.x + t.w - c.x; } else cells.push({ v: t.s, x: t.x, w: t.w }); });
+        return cells; });
+      out.push({ name: 'p' + i, rows });
+    }
+    return out;
+  }
+  throw new Error('엑셀(.xlsx·.xls·.csv) 또는 PDF 견적서만 읽을 수 있습니다.');
+}
+
+/* ---------- 항목(라벨 → 값) ---------- */
+function labelVal(sheets, re) {
+  for (const sh of sheets) for (const r of sh.rows) for (let i = 0; i < r.length; i++) {
+    const k = xK(r[i].v);
+    if (re.test(k)) { const rest = r.slice(i + 1).map(c => xS(c.v)).filter(Boolean); if (rest.length) return rest.join(' '); const m = xS(r[i].v).replace(/^[^\s:：]+[\s:：]+/, ''); if (m && m !== xS(r[i].v)) return m; }
+  }
+  return '';
+}
+function allText(sheets) { return sheets.map(sh => sh.rows.map(rowText).join('\n')).join('\n'); }
+function parsePeriod(t) {
+  const m = /(\d{4})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})\s*일?\s*[~∼\-–]\s*(\d{4})\s*[.\-/년]\s*(\d{1,2})\s*[.\-/월]\s*(\d{1,2})/.exec(t || '');
+  if (!m) return null; const p2 = n => String(n).padStart(2, '0');
+  const mm = /\((\d+)\s*개월\)/.exec(t);
+  return { from: `${m[1]}-${p2(m[2])}-${p2(m[3])}`, to: `${m[4]}-${p2(m[5])}-${p2(m[6])}`, months: mm ? +mm[1] : null };
+}
+function cleanClient(s) { return xS(s).replace(/(貴中|귀중|御中|귀하)\s*$/, '').replace(/\s*원가\s*분석\S*\s*(\d{4})?.*$/, '').replace(/\s*(견적서|見積書)\s*$/, '').trim(); }
+
+/* ---------- 견적 내역표 (직종·인원·단가) ---------- */
+function findQuoteTable(sheets) {
+  for (const sh of sheets) for (let ri = 0; ri < sh.rows.length; ri++) {
+    const hdr = sh.rows[ri], ks = hdr.map(c => xK(c.v));
+    if (!(ks.some(k => /^직종|직종$|^직무$/.test(k)) && ks.some(k => /^인원/.test(k)))) continue;
+    const col = re => hdr.filter((c, i) => re.test(ks[i]));
+    const H = { job: col(/^직종|^직무$/)[0], title: col(/^직책|^직급|^구분$/)[0], place: col(/근무지|업무내용|담당업무/)[0], shift: col(/운영형태|근무형태|근무제|교대/)[0], count: col(/^인원/)[0],
+      unit: col(/단가|1인|인당/), amount: col(/월합계|^금액|월금액|합계금액|^합계$/), note: col(/^비고/)[0] };
+    const heads = hdr; const out = [], meta = {};
+    for (let j = ri + 1; j < Math.min(sh.rows.length, ri + 60); j++) {
+      const r = sh.rows[j], t = xK(rowText(r)); if (!r.length) { if (out.length) break; continue; }
+      const at = h => { if (!h) return null; const hit = r.filter(c => nearest(heads, c) === h); return hit.length ? hit.map(c => c.v) : null; };
+      const one = h => { const a = at(h); return a ? a.map(xS).join(' ') : ''; };
+      const numAt = h => { const a = at(h); if (!a) return null; for (const v of a) { const n = xN(v); if (n != null) return n; } return null; };
+      if (/^(월)?합계|^소계|^계$|^총계/.test(t) || /월합계/.test(t)) { meta.sum = numAt(H.amount[H.amount.length - 1]) ?? Math.max(...r.map(c => xN(c.v) || 0)); meta.sumPrev = H.unit.length > 1 ? numAt(H.unit[0]) : null; continue; }
+      if (/부가가치세|부가세/.test(t)) { meta.vat = Math.max(...r.map(c => xN(c.v) || 0)) || null; continue; }
+      if (/VAT포함|총계/.test(t)) { meta.withVat = Math.max(...r.map(c => xN(c.v) || 0)) || null; continue; }
+      if (/계약기간총액|연간|총액/.test(t)) { meta.yearly = Math.max(...r.map(c => xN(c.v) || 0)) || null; continue; }
+      const cnt = numAt(H.count), job = one(H.job), title = one(H.title);
+      if (cnt == null || cnt <= 0 || cnt > 500 || !(job || title) || /^\d+$/.test(job + title)) { if (out.length && !/^[■□○※]/.test(t)) continue; if (out.length) break; continue; }
+      const uLast = H.unit.length ? numAt(H.unit[H.unit.length - 1]) : null, uPrev = H.unit.length > 1 ? numAt(H.unit[0]) : null;
+      const amt = H.amount.length ? numAt(H.amount[H.amount.length - 1]) : null;
+      out.push({ job, title: [title, one(H.place)].filter(Boolean).join(' · ').replace(/^(.+) · \1/, '$1'), count: cnt, shift: one(H.shift), unit: uLast ?? (amt != null ? Math.round(amt / cnt) : null), amount: amt ?? (uLast != null ? uLast * cnt : null), prev: uPrev, note: one(H.note) });
+    }
+    if (out.length) { const yrs = H.unit.map(h => (/(20\d\d)/.exec(xS(h.v)) || [])[1]).filter(Boolean); return { rows: out, meta, years: yrs, sheet: sh.name }; }
+  }
+  return null;
+}
+
+/* ---------- 원가분석표 (직책별 열 · 12. 계) ---------- */
+function findCostSheets(sheets) {
+  const res = [];
+  for (const sh of sheets) {
+    const R = sh.rows, find = re => R.findIndex(r => r.length && re.test(xK(r[0].v) + '|' + xK(rowText(r.slice(0, 2)))));
+    const iN = R.findIndex(r => r.length && /^인원/.test(xK(r[0].v)) && r.some(c => /\d+\s*명/.test(xS(c.v))));
+    const iT = R.findIndex(r => r.length && /^12\.?.*계|^(합계|총계)\(?VAT/.test(xK(rowText(r.slice(0, 2)))));
+    if (iN < 0 || iT < 0) continue;
+    const nCells = R[iN].filter(c => /\d+\s*명/.test(xS(c.v)));
+    const iH = R.slice(0, iN).map((r, i) => [r, i]).filter(([r]) => r.some(c => /^구분/.test(xK(c.v)))).map(x => x[1]).pop() ?? Math.max(0, iN - 2);
+    const valAt = (ri, ref) => { if (ri < 0) return null; const r = R[ri]; let best = null, d = 1e9; r.forEach(c => { const n = xN(c.v); if (n == null) return; const dd = Math.abs(cx(c) - cx(ref)); if (dd < d) { d = dd; best = n; } }); return d <= (sh.name.startsWith('p') ? 40 : 0.6) ? best : null; };
+    const cols = nCells.map(c => ({ c, count: +(/(\d+)\s*명/.exec(xS(c.v))[1]), title: R.slice(iH, iN).map(r => r.filter(h => Math.abs(cx(h) - cx(c)) <= (sh.name.startsWith('p') ? 30 : 0.6) && !/^구분|^항목/.test(xK(h.v))).map(h => xS(h.v)).join(' ')).filter(Boolean).join(' ').trim() }));
+    const units = cols.map(o => valAt(iT, o.c));
+    if (units.some(u => u == null)) continue;
+    const pdfMode = sh.name.startsWith('p'), xs = nCells.map(cx).sort((a, b) => a - b), posMax = xs[xs.length - 1], gap = xs.length > 1 ? (posMax - xs[0]) / (xs.length - 1) : (pdfMode ? 70 : 1);
+    const rightOf = ri => { if (ri < 0) return null; const c = R[ri].filter(c => xN(c.v) != null && cx(c) > posMax + (pdfMode ? gap * 0.55 : 0.4)).sort((a, b) => a.x - b.x)[0]; return c ? xN(c.v) : null; };
+    let total = rightOf(iT);
+    if (total == null) total = Math.max(...R[iT].map(c => xN(c.v)).filter(n => n != null));
+    const perHead = Math.abs(cols.reduce((a, o, i) => a + o.count * units[i], 0) - total) < Math.max(1000, total * 0.002);
+    const tval = re => { const i = find(re); if (i < 0) return null; const v = rightOf(i); if (v != null) return v; const nums = R[i].map(c => xN(c.v)).filter(n => n != null); return nums[nums.length - 1]; };
+    const mix = { labor: (tval(/^4\.?.*인건비|인건비계/) || 0) + (tval(/^5\.?.*복리후생|복리후생비계/) || 0), expense: tval(/^7\.?.*제비용|제비용계|^경비계/) || 0, addon: 0, marg: (tval(/^9\.?.*일반관리비|일반관리비/) || 0) + (tval(/^11\.?.*이익|이윤|기업이윤/) || 0) };
+    const title = R.slice(0, iH).map(rowText).find(t => /원가|분석|산출/.test(t)) || sh.name;
+    res.push({ sheet: sh.name, title: xS(title), total, rows: cols.map((o, i) => ({ job: '', title: o.title, count: o.count, shift: (/\d조\d교대|주간|야간|격일|상주/.exec(o.title) || [''])[0], unit: perHead ? units[i] : Math.round(units[i] / o.count), amount: perHead ? units[i] * o.count : units[i] })), mix: (mix.labor + mix.expense + mix.marg) > 0 ? mix : null });
+  }
+  return res;
+}
+
+/* ---------- 엑셀 견적서 → 연동 견적 ---------- */
+function estimateFromSheets(sheets, fileName) {
+  const txt = allText(sheets);
+  const csTitle = (/^(.+?)\s*원가\s*분석/m.exec(txt) || [])[1] || '';
+  const client = cleanClient(labelVal(sheets, /^수신|^고객사$|^발주처$|^업체명$/)) || cleanClient((/^(.+?)\s*(貴中|귀중)/m.exec(txt) || [])[1] || '') || cleanClient(csTitle) || xS(fileName).replace(/\.[^.]+$/, '').replace(/^[\d_\-\s]+/, '').replace(/_/g, ' ');
+  const svc = labelVal(sheets, /^용역명$|^사업명$|^용역내용$|^건명$/);
+  const per = parsePeriod(labelVal(sheets, /^용역기간$|^계약기간$/)) || parsePeriod(txt);
+  const addr = labelVal(sheets, /^사업장$|^현장주소$|^근무장소$|^주소$/).replace(/\s*(허가|등록).*$/, '');
+  const amtLine = labelVal(sheets, /^견적금액/);
+  const moM = /월\s*([\d,]{5,})\s*원/.exec(amtLine) || /견적금액[^\n]*?월\s*([\d,]{5,})\s*원/.exec(txt) || /₩\s*([\d,]{5,})/.exec(txt);
+  const q = findQuoteTable(sheets), cs = findCostSheets(sheets);
+  let monthly = moM ? +moM[1].replace(/,/g, '') : null;
+  if (q && q.meta.sum) monthly = monthly || q.meta.sum;
+  /* 원가분석표: 견적 금액과 같은 표를 본안으로, 나머지는 대안으로 */
+  let main = null;
+  if (cs.length) main = cs.find(c => monthly && Math.abs(c.total - monthly) < 1000) || cs.filter(c => !/증원|대안|변경|감원|추가/.test(c.title + c.sheet)).sort((a, b) => ((/(20\d\d)/.exec(b.title + b.sheet) || [0, 0])[1]) - ((/(20\d\d)/.exec(a.title + a.sheet) || [0, 0])[1]))[0] || cs[0];
+  let rows = q ? q.rows : main ? main.rows : [];
+  if (!rows.length) throw new Error('견적서에서 「직종·인원·단가」 표나 원가분석표(인원 · 12. 계)를 찾지 못했습니다.');
+  if (!q && main) monthly = monthly || main.total;
+  if (q && main) { /* 견적표 직책명이 비어 있으면 원가분석표 이름으로 보충 */ rows.forEach((r, i) => { if (!r.shift && main.rows[i]) r.shift = main.rows[i].shift; }); }
+  monthly = monthly || rows.reduce((a, r) => a + (r.amount || 0), 0) || null;
+  const heads = rows.reduce((a, r) => a + (r.count || 0), 0);
+  const months = per && per.months ? per.months : 12;
+  const year = (per && per.from ? per.from.slice(0, 4) : '') || ((/(20\d\d)\s*년\s*(용역|견적|도급)/.exec(txt) || [])[1]) || (q && q.years.length ? q.years[q.years.length - 1] : '');
+  const notes = [];
+  const prevLine = labelVal(sheets, /^전년대비/); if (prevLine) notes.push('전년 대비: ' + prevLine);
+  else if (q && q.meta.sumPrev && monthly) notes.push(`전년 대비: 월 ${won(q.meta.sumPrev)}원 → 월 ${won(monthly)}원 (${monthly >= q.meta.sumPrev ? '▲' : '▼'} ${(Math.abs(monthly / q.meta.sumPrev - 1) * 100).toFixed(1)}%)`);
+  const yOf = c => +((/(20\d\d)/.exec(c.title + ' ' + c.sheet) || [])[1] || 0), my = main ? yOf(main) : 0;
+  cs.filter(c => c !== main).forEach(c => notes.push(`${my && yOf(c) && yOf(c) < my ? '전년 산출' : '대안 산출'} — ${c.title.replace(/\s+/g, ' ')}: 월 ${won(c.total)}원 · ${c.rows.reduce((a, r) => a + r.count, 0)}명`));
+  txt.split('\n').map(l => l.trim()).filter(l => /^[○◦•]\s*/.test(l) && /:|：/.test(l)).slice(0, 8).forEach(l => notes.push('견적 조건 ' + l.replace(/^[○◦•]\s*/, '')));
+  notes.push(`엑셀 견적서 「${fileName}」에서 읽음${q ? ` (견적표: ${q.sheet})` : ''}${main ? ` · 원가분석: ${main.sheet}` : ''}`);
+  const vat = (q && q.meta.vat) || (monthly ? Math.round(monthly * 0.1) : null);
+  return normPkg({ id: 'x-' + hashId(fileName + '|' + client + '|' + monthly + '|' + heads), src: 'stqs', origin: 'excel', at: new Date().toISOString(),
+    title: `${client || '고객사'}${svc ? ' · ' + svc : ''}${year ? ` (${year})` : ''}`, client, addr, svc, year,
+    period: per || { from: '', to: '', months: null }, heads, monthly, vat, yearly: (q && q.meta.yearly) || (monthly ? monthly * months : null),
+    rows: rows.map(r => ({ job: r.job || (/(보안|경비|미화|청소|시설|주차|안내|조리|방역|소독|경호)/.exec(r.title) || [''])[0], title: r.title, count: r.count, shift: r.shift, unit: r.unit, amount: r.amount, note: [r.note, r.prev ? `전년 ${won(r.prev)}원` : ''].filter(Boolean).join(' · ') })),
+    mix: main ? main.mix : null, notes, by: 'excel' }, 'excel');
+}
+async function importEstimateFile(file) {
+  const sheets = await sheetsFromFile(file);
+  const p = estimateFromSheets(sheets, file.name); p.origin = 'excel';
+  const cur = (lsJ('stec_pp_files') || []).filter(x => x.id !== p.id); cur.unshift(p); saveFiles(cur);
+  return p;
+}
+
+/* =====================================================================
  * S-Tec Proposal Production System — 상단 기능 · 사업장 선정 · 회사 정보
  * (통합관리 시스템 8개 프로그램과 같은 상단 기능: 담당 카드 · 다운로드 QR · 친구추천 · 내 계정 · 주간/야간/시스템)
  * Designed & Developed by Rat Rae Choi
@@ -4153,6 +4325,7 @@ function saveUI() { try { localStorage.setItem(UI_KEY, JSON.stringify(UI)); } ca
 const CO_KEY = 'stec_pp_company';
 let CO = Object.assign({}, COMPANY_DEFAULT);
 try { CO = Object.assign(CO, JSON.parse(localStorage.getItem(CO_KEY) || '{}')); } catch (e) { }
+if (/NICE평가정보|국민연금 가입/.test(CO.metrics || '')) { CO.metrics = COMPANY_DEFAULT.metrics; CO.metricsNote = COMPANY_DEFAULT.metricsNote; }   // v2.1 — 실적은 연결재무제표 기준으로 교체
 function saveCompany(c) { try { localStorage.setItem(CO_KEY, JSON.stringify(c)); } catch (e) { } }   // 로그인 시 동기화
 
 /* ---------- 테마: 주간 / 야간 / 시스템 ---------- */
@@ -4300,13 +4473,14 @@ function openCompany() {
     <div class="field"><label>인증·면허 (줄마다 한 건 · 예: 경비업 허가(시설경비·신변보호))</label><textarea id="coCert" rows="3">${esc(c.certs)}</textarea></div>
     <div class="field"><label>연혁 (줄마다 한 건 · 앞에 연도를 쓰면 연표에 표시 · 예: 1999.01 ㈜에스텍시스템 설립)</label><textarea id="coHist" rows="4">${esc(c.history || '')}</textarea></div>
     <div class="field"><label>핵심 지표 (줄마다 「값|단위|설명」 · 예: 9,672|명|임직원 (국민연금 가입, 2026.09)) — 출처·기준일을 함께 적으세요</label><textarea id="coMet" rows="4">${esc(c.metrics || '')}</textarea></div>
+    <div class="field"><label>지표 출처 (슬라이드 하단 표기)</label><input id="coMetN" value="${esc(c.metricsNote || '')}"></div>
     <div class="mrow"><button class="btn" id="coReset">기본값으로</button><button class="btn" id="mClose">취소</button><button class="btn pri" id="coOk">저장</button></div>`, md => {
     md.querySelector('#mClose').onclick = closeModal;
     md.querySelector('#coReset').onclick = () => { CO = Object.assign({}, COMPANY_DEFAULT); saveCompany(CO); closeModal(); toast('기본값으로 되돌렸습니다'); };
     md.querySelector('#coOk').onclick = () => {
       const v = id => md.querySelector('#' + id).value.trim();
       CO = Object.assign({}, CO, { group: v('coGroup'), name: v('coName'), branch: v('coBranch'), parent: v('coParent'), ceo: v('coCeo'), tel: v('coTel'), addr: v('coAddr'), web: v('coWeb'), slogan: v('coSlogan'),
-        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), history: v('coHist'), metrics: v('coMet'), updated: fmtD(kstNow()) });
+        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), history: v('coHist'), metrics: v('coMet'), metricsNote: v('coMetN'), updated: fmtD(kstNow()) });
       saveCompany(CO); closeModal(); toast('회사 정보를 저장했습니다');
     };
   }, true);
@@ -4388,7 +4562,7 @@ function uiInit() {
 }
 
 /* =====================================================================
- * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.0.0 — 앱 로직
+ * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.1.0 — 앱 로직
  * 흐름: RFP 분석 → 기획 → 집필 → 검토·승인 → 제작·제본(Word·PPT·PDF) → 제출
  * 견적 연동: S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate
  * Program & Design by Rat Rae Choi (제작자 서명 — 하드코딩)
@@ -4396,7 +4570,7 @@ function uiInit() {
 const APP = {
   name: 'S-Tec Proposal Production System',
   ko: '에스텍 제안서 제작시스템',
-  version: 'v2.0.0',
+  version: 'v2.1.0',
   build: '2026-11-19',
   shareUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
   apkUrl: 'https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk',
@@ -4493,13 +4667,13 @@ function pkgAmt(p) {
   return p.monthly != null ? `월 ${won(p.monthly)}원 <small>(VAT 별도)</small>` : '<em class="need">금액 연동 필요</em>';
 }
 function renderLinks() {
-  const tabs = [['all', '전체'], ['stqs', SRC.stqs.ic + ' 용역인력'], ['wbe', SRC.wbe.ic + ' 업무량'], ['stse', SRC.stse.ic + ' 단기'], ['manual', '✍ 직접·파일']];
-  const cnt = k => k === 'all' ? LINK.items.length : LINK.items.filter(p => k === 'manual' ? (p.src === 'manual' || p.origin === 'file') : p.src === k).length;
+  const tabs = [['all', '전체'], ['stqs', SRC.stqs.ic + ' 용역인력'], ['wbe', SRC.wbe.ic + ' 업무량'], ['stse', SRC.stse.ic + ' 단기'], ['manual', '✍ 직접·엑셀·파일']];
+  const cnt = k => k === 'all' ? LINK.items.length : LINK.items.filter(p => k === 'manual' ? (p.src === 'manual' || p.origin === 'file' || p.origin === 'excel') : p.src === k).length;
   $('#linkTabs').innerHTML = tabs.map(([k, n]) => `<button type="button" data-tab="${k}" aria-pressed="${state.tab === k}">${n}<i>${cnt(k)}</i></button>`).join('');
-  const list = LINK.items.filter(p => state.tab === 'all' || (state.tab === 'manual' ? (p.src === 'manual' || p.origin === 'file') : p.src === state.tab));
+  const list = LINK.items.filter(p => state.tab === 'all' || (state.tab === 'manual' ? (p.src === 'manual' || p.origin === 'file' || p.origin === 'excel') : p.src === state.tab));
   $('#linkList').innerHTML = list.length ? list.map(p => `<li class="lk ${LINK.picked.has(p.id) ? 'on' : ''}" data-id="${esc(p.id)}">
       <input type="checkbox" ${LINK.picked.has(p.id) ? 'checked' : ''} aria-label="제안서에 넣기">
-      <div class="lb">${srcBadge(p)}${p.origin === 'raw' ? '<span class="sb raw">보관함</span>' : p.origin === 'file' ? '<span class="sb raw">파일</span>' : p.origin === 'manual' ? '' : '<span class="sb ok">연동</span>'}
+      <div class="lb">${srcBadge(p)}${p.origin === 'raw' ? '<span class="sb raw">보관함</span>' : p.origin === 'file' ? '<span class="sb raw">파일</span>' : p.origin === 'excel' ? '<span class="sb xl">엑셀</span>' : p.origin === 'manual' ? '' : '<span class="sb ok">연동</span>'}
         <b>${esc(p.title)}</b><small>${esc(p.client || '')}${p.heads ? ` · ${p.heads}명` : ''}${p.rows.length ? ` · ${p.rows.length}개 직책` : ''}${p.at ? ` · ${esc(String(p.at).slice(0, 10))}` : ''}</small><span class="amt">${pkgAmt(p)}</span></div>
       <button type="button" class="lx" data-x="${esc(p.id)}" title="목록에서 빼기">✕</button></li>`).join('')
     : `<li class="empty">${state.tab === 'all' ? '연동된 견적이 없습니다.<br>아래 견적 프로그램에서 견적을 만든 뒤 <b>「📑 제안서로 보내기」</b>를 누르거나, 직접 입력하세요.' : '이 프로그램에서 보낸 견적이 없습니다.'}</li>`;
@@ -4814,8 +4988,8 @@ function H2(t) { return P([R('▶ ', { size: 21, bold: true, color: C.green }), 
 function bullets(groups, o = {}) {
   const out = [];
   groups.forEach(g => {
-    if (g.title) out.push(P([R('■ ', { size: 20, color: C.navy, bold: true }), R(g.title, { size: 20, bold: true, color: C.navy })], { before: 80, after: 40, keepNext: true }));
-    g.lines.forEach(l => out.push(P([R(o.mark || '○ ', { size: 20, color: C.green }), R(l, { size: 20 })], { indent: { left: 400, hanging: 260 }, after: 40 })));
+    if (g.title) out.push(P([R('■ ', { size: 22, color: C.navy, bold: true }), R(g.title, { size: 22, bold: true, color: C.navy })], { before: 80, after: 40, keepNext: true }));
+    g.lines.forEach(l => out.push(P([R(o.mark || '○ ', { size: 22, color: C.green }), R(o.keep ? l : briefEnd(l), { size: 22 })], { indent: { left: 400, hanging: 260 }, after: 50, line: 300 })));
   });
   return out;
 }
@@ -4922,10 +5096,28 @@ function fit(paras, w, h, maxPt, minPt = 9, lh = 1.22, gapPt = 3) {
   }
   return { pt: minPt, ok: false };
 }
+/* 간결체(개조식) — 「~합니다/됩니다/입니다」 끝맺음을 걷어내고, 넘칠 때는 괄호 설명·「—」 뒤 부연을 줄임 */
+const BRIEF_END = [[/\s*하겠습니다\.?$/, ''], [/\s*드리겠습니다\.?$/, ''], [/\s*(합니다|됩니다|입니다)\.?$/, ''], [/있습니다\.?$/, '있음'], [/없습니다\.?$/, '없음'], [/드립니다\.?$/, ''], [/집니다\.?$/, '짐'], [/킵니다\.?$/, '킴'], [/줍니다\.?$/, '줌'], [/칩니다\.?$/, '침'], [/냅니다\.?$/, '냄'], [/눕니다\.?$/, '눔'], [/웁니다\.?$/, '움'], [/립니다\.?$/, '림'], [/듭니다\.?$/, '듦'], [/봅니다\.?$/, '봄'], [/옵니다\.?$/, '옴']];
+function brief(t, hard) {
+  let s = String(t ?? '');
+  if (/^\s*[•·○■□▶◦\-–]|^\s*\d+[.)]\s/.test(s) || hard) BRIEF_END.some(([re, to]) => re.test(s) && ((s = s.replace(re, to)), true));
+  if (hard) { s = s.replace(/\s*\((?=[^)]{8,}\))[^)]*\)/g, ''); const k = s.indexOf(' — '); if (k > 6 && s.length > 26) s = s.slice(0, k); }
+  return s;
+}
+function briefEnd(s) { s = String(s ?? ''); BRIEF_END.some(([re, to]) => re.test(s) && ((s = s.replace(re, to)), true)); return s; }
+const T_MIN = 10, T_FLOOR = 9;   // 시인성: 본문 최소 10pt (예외적으로 9pt)
 function T(x, y, w, h, paras, o = {}) {
   if (typeof paras === 'string') paras = [{ text: paras }];
-  const r = o.pt ? { pt: o.pt, ok: true } : fit(paras, w, h, o.max || 16, o.min || 9, o.lh || 1.22, o.gap ?? 3);
-  return { t: 'text', x, y, w, h, paras, pt: r.pt, ok: r.ok, color: o.color || C.ink, bold: o.bold, align: o.align || 'left', valign: o.valign || 'top', lh: o.lh || 1.22, gap: o.gap ?? 3, font: o.font };
+  paras = paras.map(p => Object.assign({}, p, { text: brief(p.text) }));
+  const lh = o.lh || 1.22, gap = o.gap ?? 3, mx = o.max ? (o.max < 14 ? Math.min(o.max * 1.18, 14) : o.max) : 16, mn = Math.max(o.min || 9, T_MIN);
+  let r = o.pt ? { pt: Math.max(o.pt, T_FLOOR), ok: true } : fit(paras, w, h, Math.max(mx, mn), mn, lh, gap);
+  if (!r.ok && !o.pt) {   /* 넘치면 줄이기: ① 부연 걷기 ② 뒤 항목 덜기 ③ 글자 줄임 — 글씨를 작게 하지 않음 */
+    paras = paras.map(p => Object.assign({}, p, { text: brief(p.text, true) })); r = fit(paras, w, h, mn + 0.5, mn, lh, gap);
+    while (!r.ok && paras.length > 2) { paras = paras.slice(0, -1); r = fit(paras, w, h, mn, mn, lh, gap); }
+    if (!r.ok) r = fit(paras, w, h, mn, Math.max(T_FLOOR, Math.min(o.min || 9, mn) - 1), lh, gap);
+    let guard = 0; while (!r.ok && guard++ < 12) { const L = paras[paras.length - 1]; if (!L || L.text.length < 8) break; L.text = L.text.slice(0, Math.floor(L.text.length * 0.85)).replace(/[\s,·.—-]+$/, '') + '…'; r = fit(paras, w, h, r.pt, r.pt, lh, gap); }
+  }
+  return { t: 'text', x, y, w, h, paras, pt: r.pt, ok: r.ok, color: o.color === '667089' ? '4A5372' : (o.color || C.ink), bold: o.bold, align: o.align || 'left', valign: o.valign || 'top', lh, gap, font: o.font };
 }
 const Rc = (x, y, w, h, fill, o = {}) => ({ t: 'shape', k: o.k || 'rect', x, y, w, h, fill, line: o.line, lw: o.lw, alpha: o.alpha });
 const Im = (x, y, w, h, src) => ({ t: 'img', x, y, w, h, src });
@@ -4993,9 +5185,12 @@ function closingSlide(o) {
 function sigEl(x, y, h) { return Im(x, y, h * state.sigPx / 210, h, state.sigDataUrl); }
 function listParas(groups, o = {}) {
   const out = [];
-  groups.forEach((g, gi) => {
-    if (g.title) out.push({ text: g.title, bold: true, color: o.hcolor || C.navy, gap: 2 });
-    g.lines.forEach((l, i) => out.push({ text: `•  ${l}`, indent: 0, color: C.ink, gap: (i === g.lines.length - 1 && gi < groups.length - 1) ? 7 : 3 }));
+  /* 발표자료는 간결하게 — 묶음당 핵심 4줄, 최대 4묶음 · 부연 설명은 Word 제안서에 */
+  const per = o.per ?? 4, gs = groups.slice(0, o.groups ?? 4);
+  gs.forEach((g, gi) => {
+    if (g.title) out.push({ text: g.title, bold: true, color: o.hcolor || C.navy, gap: 3 });
+    const ls = g.lines.slice(0, per).map(l => brief(briefEnd(l), true));
+    ls.forEach((l, i) => out.push({ text: `•  ${l}`, indent: 0, color: C.ink, gap: (i === ls.length - 1 && gi < gs.length - 1) ? 9 : 4 }));
   });
   return out;
 }
@@ -5071,6 +5266,7 @@ async function makePdf(p, onProgress, slidesIn, titleIn) {
     const cv = await html2canvas(d, { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
     if (i) pdf.addPage([SW, SH], 'landscape');
     pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, SW, SH);
+    slides[i].filter(x => x.t === 'video' && x.key).forEach(x => { try { pdf.link(x.x, x.y, x.w, x.h, { url: videoUrl(x.key) }); } catch (er) { } });   // 영상: 누르면 웹에서 재생
   }
   host.innerHTML = '';
   pdf.setProperties({ title: titleIn || docTitle(p), author: APP.maker, creator: `${APP.name} ${APP.version}` });
@@ -5094,7 +5290,7 @@ async function loadMedia(id) {
   const rel = id[0] === 'v' ? `media/scene/${id}.jpg` : `media/photo/${id}.jpg`;
   const b = await fetchFirst(rel); if (!b) return (MEDIA.img[id] = null);
   const src = await blobToDataUrl(b); const im = await loadImg(src);
-  return (MEDIA.img[id] = { src, w: im.naturalWidth, h: im.naturalHeight });
+  return (MEDIA.img[id] = { src, w: im.naturalWidth, h: im.naturalHeight, id });
 }
 async function loadVideo(id) {
   if (MEDIA.vid[id] !== undefined) return MEDIA.vid[id];
@@ -5136,7 +5332,20 @@ async function decodeAll() {
   await Promise.all(all.map(async s => { if (!MEDIA._el[s]) { try { MEDIA._el[s] = await loadImg(s); } catch (e) { } } }));
 }
 /* 사진을 상자에 꽉 채워 넣기 */
-function Photo(x, y, w, h, id, fb, pos) { const m = typeof id === 'object' ? id : M(id, fb); return Im(x, y, w, h, coverSrc(m, w, h, pos)); }
+function Photo(x, y, w, h, id, fb, pos) { const m = typeof id === 'object' ? id : M(id, fb); const e = Im(x, y, w, h, coverSrc(m, w, h, pos)); if (m.id && m.id[0] === 'v') e.vid = m.id; return e; }
+/* 영상 장면 사진 → 실제 영상(PPT에서 재생 · 웹 발표본에서 자동 재생 · PDF/Word는 누르면 웹에서 재생) */
+const videoUrl = k => APP.shareUrl + 'media/video/' + k + '.mp4';
+function videoize(S) {
+  S.forEach(E => { for (let i = 0; i < E.length; i++) { const e = E[i];
+    if (e.t !== 'img' || !e.vid || e.w < 3 || e.h < 1.6) continue;
+    const mi = MEDIA.img[e.vid], va = mi ? mi.w / mi.h : 16 / 9, ba = e.w / e.h;
+    if (Math.abs(ba / va - 1) <= 0.14) { Object.assign(e, { t: 'video', key: e.vid, poster: e.src }); continue; }
+    /* 비율이 다르면 영상 비율 그대로 상자 안에 넣고(찌그러짐 없음) 남는 곳은 어두운 바탕 */
+    const r = Math.min(e.w / va, e.h), w = r * va, h = r; E.splice(i, 0, Rc(e.x, e.y, e.w, e.h, '0F1530')); i++;
+    Object.assign(e, { t: 'video', key: e.vid, poster: e.src, x: e.x + (e.w - w) / 2, y: e.y + (e.h - h) / 2, w, h, src: (mi || { src: e.src }).src });
+  } });
+  return S;
+}
 /* 사진을 상자 안에 비율 유지해 넣기 */
 function PhotoFit(x, y, w, h, id, fb) { const m = typeof id === 'object' ? id : M(id, fb); const r = Math.min(w / m.w, h / m.h), ww = m.w * r, hh = m.h * r; return Im(x + (w - ww) / 2, y + (h - hh) / 2, ww, hh, m.src); }
 
@@ -5208,7 +5417,7 @@ const PARTS = [
   { n: 4, t: '가격 제안', en: 'Price', scene: 'v17', items: ['제안 금액', '견적 산출 근거', '업무별 비용', '가격 조건'] },
   { n: 5, t: '에스텍의 약속', en: 'Promise', scene: 'v16', items: ['기대효과', '고객 약속(SLA)', '맺음말'] }
 ];
-const NV = '0B1F8A', NVD = '071463', GR = '1B7A34', GR2 = '22A04A', OR = 'E8750A', INK = '0F1530', MU = '667089', LN = 'E4E8F1', SOFT = 'F4F6FB';
+const NV = '0B1F8A', NVD = '071463', GR = '1B7A34', GR2 = '22A04A', OR = 'E8750A', INK = '0F1530', MU = '4A5372', LN = 'E4E8F1', SOFT = 'F4F6FB';
 
 /* ---------- 공통 프레임 ---------- */
 function frameX(p, part, title, sub, no) {
@@ -5324,6 +5533,7 @@ function buildSlides(p) {
       all.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 2.75, Y = 1.6 + r * 1.75;
         E.push(Rc(X, Y, 2.6, 1.6, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.15, Y + 0.15, 2.3, 0.75, [{ text: x[0], bold: true }], { max: 30, min: 16, color: r ? GR : NV })); E.push(T(X + 0.15, Y + 0.85, 2.3, 0.3, x[1], { pt: 11.5, bold: true, color: INK })); E.push(T(X + 0.15, Y + 1.15, 2.35, 0.4, x[2] || '', { max: 9.5, min: 7, color: MU })); });
       E.push(T(0.6, 5.2, 8.0, 1.4, CO.intro.map(t => ({ text: '•  ' + t })), { max: 12, min: 8.5, color: '2C3554' }));
+      if (CO.metricsNote) E.push(T(0.6, 6.62, 8.2, 0.28, '※ ' + CO.metricsNote, { pt: 9, color: MU }));
       E.push(Photo(9.0, 1.6, 3.7, 3.35, M(MEDIA_EXTRA.hq, 'hq'))); E.push(Photo(9.0, 5.05, 3.7, 1.55, M(MEDIA_EXTRA.cube, 'hq')));
       push(E, 's02'); }
     /* 연혁 */
@@ -5606,7 +5816,7 @@ function buildSlides(p) {
     E.push(T(0.8, 5.85, SW - 1.6, 0.4, `${CO.group} · ${CO.branch || CO.name}${mg.name ? `  |  ${mg.name}${mg.title ? ' ' + mg.title : ''}${mg.phone ? ' · ' + mg.phone : ''}${mg.email ? ' · ' + mg.email : ''}` : ''}`, { pt: 11, color: MU, align: 'center' }));
     E.push(Im(0.7, SH - 0.75, 1.3, 1.3 * 340 / 900, ASSET.logo)); E.push(sigEl(SW - 4.3, SH - 0.62, 0.38));
     push(E); }
-  return S;
+  return videoize(S);
 }
 
 /* =====================================================================
@@ -5651,12 +5861,30 @@ function figPara(src, caption, wIn = 6.65) {
   if (caption) out.push(P([R(caption, { size: 16, color: C.gray, it: true })], { align: AL().CENTER, after: 140 }));
   return out;
 }
+/* 영상 썸네일(재생 단추 그림) — 누르면 웹에서 영상 재생 */
+function playThumb(m, wIn, hIn) {
+  const W = Math.round(wIn * 150), H = Math.round(hIn * 150), cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  const im = MEDIA._el && MEDIA._el[m.src]; g.fillStyle = '#0F1530'; g.fillRect(0, 0, W, H);
+  if (im) { const iw = im.naturalWidth, ih = im.naturalHeight, s = Math.max(W / iw, H / ih); g.drawImage(im, (W - iw * s) / 2, (H - ih * s) / 2, iw * s, ih * s); }
+  const R = Math.min(W, H) * 0.16; g.fillStyle = 'rgba(15,21,48,.72)'; g.beginPath(); g.arc(W / 2, H / 2, R, 0, 7); g.fill(); g.lineWidth = R * 0.12; g.strokeStyle = 'rgba(255,255,255,.9)'; g.stroke();
+  g.fillStyle = '#fff'; g.beginPath(); g.moveTo(W / 2 - R * 0.32, H / 2 - R * 0.48); g.lineTo(W / 2 + R * 0.52, H / 2); g.lineTo(W / 2 - R * 0.32, H / 2 + R * 0.48); g.closePath(); g.fill();
+  g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(0, H - H * 0.14, W, H * 0.14); g.fillStyle = '#fff'; g.font = `700 ${Math.round(H * 0.07)}px ${SFONT}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('▶ 누르면 영상 재생', W / 2, H - H * 0.07);
+  return cv.toDataURL('image/jpeg', 0.88);
+}
+function videoPara(key, wIn, hIn, caption) {
+  const m = M(key), img = imgRun(playThumb(m, wIn, hIn), wIn * 96, hIn * 96);
+  let link; try { link = new docx.ExternalHyperlink({ link: videoUrl(key), children: [img] }); } catch (e) { link = img; }
+  const out = [new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 60, after: 20 }, keepNext: true, children: [link] })];
+  out.push(P([R(`▶ ${caption || VIDEO_TITLE[key] || '현장 영상'}  `, { size: 16, bold: true, color: C.navy }), HLINK('영상 보기 ↗', videoUrl(key))], { align: AL().CENTER, after: 100 }));
+  return out;
+}
 function photoPara(m, wIn, hIn) { return new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 60, after: 60 }, children: [imgRun(coverSrc(m, wIn, hIn), wIn * 96, hIn * 96)] }); }
 async function makeDocx(p, onProg) {
   const f = p.f, isClient = f.mode === 'client', ch = [], on = id => p.secOn[id], mg = UI.manager || {};
   const slides = buildSlides(p), figs = {};
   const pick = slides.filter(e => e.fig && !['s00', 's01'].includes(e.fig));
-  for (let i = 0; i < pick.length; i++) { onProg && onProg(i + 1, pick.length); const e = pick[i]; (figs[e.fig] = figs[e.fig] || []).push(await slideJpeg(e)); }
+  const figV = {};
+  for (let i = 0; i < pick.length; i++) { onProg && onProg(i + 1, pick.length); const e = pick[i]; (figs[e.fig] = figs[e.fig] || []).push(await slideJpeg(e)); (figV[e.fig] = figV[e.fig] || []).push([...new Set(e.filter(x => x.t === 'video').map(x => x.key))]); }
   const tt = e => (e.find(x => x.t === 'text' && x.pt >= 17 && x.paras && x.paras[0] && x.paras[0].bold) || { paras: [{ text: '' }] }).paras[0].text;
   const figTitle = {}; pick.forEach(e => (figTitle[e.fig] = figTitle[e.fig] || []).push(tt(e)));
   let n = 1, figNo = 1; const S = t => H1(`${ROMAN[n++]}. ${t}`);
@@ -5720,7 +5948,7 @@ async function makeDocx(p, onProg) {
     if (s.id === 's06') {
       p.jobs.forEach(j => { const mm = MEDIA_MAP[j.k] || MEDIA_MAP.sec, gg = g.filter(x => x.title.includes(j.n));
         ch.push(H2(`${j.ic} ${j.n}`));
-        ch.push(table([[cell([photoPara(M(mm.fig[0]), 1.7, 2.3)], { w: 2200, borders: noB() }), cell([photoPara(M(mm.scene[0]), 3.5, 2.0), P([R(`▶ ${VIDEO_TITLE[mm.video] || '현장 근무 영상'} — PPT 발표자료에서 재생`, { size: 15, color: C.gray, it: true })], { align: AL().CENTER, after: 0 })], { w: 7438, borders: noB() })]], [2200, 7438]));
+        ch.push(table([[cell([photoPara(M(mm.fig[0]), 1.7, 2.3)], { w: 2200, borders: noB() }), cell(videoPara(mm.video || mm.scene[0], 3.9, 2.19, `${VIDEO_TITLE[mm.video] || '현장 근무 영상'}`), { w: 7438, borders: noB() })]], [2200, 7438]));
         ch.push(...bullets(gg));
         const rt = ROUTINE[j.k] || ROUTINE.spc;
         ch.push(gridTable(['순서', '일과', '세부 내용'], rt.map((r, i) => [String(i + 1), r[0], r[1]]), [800, 2600, 6238], { center: [0], bold: [1], size: 17 }));
@@ -5754,14 +5982,15 @@ async function makeDocx(p, onProg) {
       if (wb) { ch.push(H2(`업무별 비용 배분 — ${wb.title}`)); ch.push(gridTable(['업무(대분류)', '월 업무시간', '비중', '월 비용(원)'], wb.tasks.map(t => [t.name, t.hours != null ? t.hours.toFixed(1) + 'h' : '-', t.share != null ? (t.share * 100).toFixed(1) + '%' : '-', won(t.cost)]), [4038, 1800, 1500, 2300], { center: [1, 2], right: [3] })); }
     }
     /* 도해(슬라이드 이미지) */
-    (figs[s.id] || []).slice(0, 4).forEach((src, i) => ch.push(...figPara(src, `[그림 ${figNo++}] ${(figTitle[s.id] || [])[i] || s.n}`)));
+    (figs[s.id] || []).slice(0, 4).forEach((src, i) => { ch.push(...figPara(src, `[그림 ${figNo++}] ${(figTitle[s.id] || [])[i] || s.n}`));
+      const vk = ((figV[s.id] || [])[i] || []); if (vk.length) ch.push(P([R('▶ 그림 속 영상: ', { size: 16, bold: true, color: C.navy })].concat(vk.flatMap((k, j) => [HLINK(`${VIDEO_TITLE[k] || k} ↗`, videoUrl(k)), R(j < vk.length - 1 ? '  ·  ' : '', { size: 16 })])), { align: AL().CENTER, after: 120 })); });
   }
   /* 붙임: 연동 견적 상세 */
   if (p.est.length) {
     ch.push(BR()); ch.push(H1('붙임. 연동 견적 상세'));
     p.est.forEach((e, i) => {
       ch.push(H2(`${i + 1}. ${SRC[e.src].n} — ${e.title}`));
-      ch.push(P([R(`${e.client || f.client}${e.period && e.period.from ? ` · ${e.period.from} ~ ${e.period.to || ''}` : ''}${e.at ? ` · 연동 ${String(e.at).slice(0, 10)}` : ''} · ${e.origin === 'raw' ? '견적 보관함' : e.origin === 'manual' ? '직접 입력' : e.origin === 'file' ? '연동 파일' : '「제안서로 보내기」 연동'}`, { size: 17, color: C.gray })], { after: 60 }));
+      ch.push(P([R(`${e.client || f.client}${e.period && e.period.from ? ` · ${e.period.from} ~ ${e.period.to || ''}` : ''}${e.at ? ` · 연동 ${String(e.at).slice(0, 10)}` : ''} · ${e.origin === 'raw' ? '견적 보관함' : e.origin === 'manual' ? '직접 입력' : e.origin === 'file' ? '연동 파일' : e.origin === 'excel' ? '엑셀 견적서' : '「제안서로 보내기」 연동'}`, { size: 17, color: C.gray })], { after: 60 }));
       if (e.rows.length) ch.push(gridTable(['직종', '직책', '인원', '근무형태', '1인 단가', '금액'], e.rows.map(r => [r.job, r.title || '-', r.count + '명', r.shift || (r.date ? r.date : '-'), won(r.unit), won(r.amount)]), [1300, 2400, 900, 2338, 1300, 1400], { center: [2], right: [4, 5], size: 17 }));
       if (e.staff) ch.push(P([R(`편성: ${e.staff}${e.plan ? ` (${e.plan})` : ''}`, { size: 18 })], { before: 60, after: 30 }));
       if (e.addons.length) ch.push(P([R('부대비용: ' + e.addons.map(a => `${a.n}${a.q > 1 ? ' ×' + a.q : ''}`).join(', '), { size: 18 })], { before: 60, after: 30 }));
@@ -5782,6 +6011,48 @@ async function makeDocx(p, onProg) {
   return await packDocx(ch, p.title);
 }
 
+/* ===== 웹 발표본(HTML) — 영상이 실제로 재생되는 발표 파일 (브라우저로 열기 · 인터넷 없이도 재생) ===== */
+async function makeHtmlDeck(p, onProg) {
+  const slides = buildSlides(p), pool = [], idx = new Map(), keyOf = s => { if (!idx.has(s)) { idx.set(s, pool.length); pool.push(s); } return idx.get(s); };
+  const keys = [...new Set(slides.flat().filter(e => e.t === 'video').map(e => e.key))], vids = {};
+  for (let i = 0; i < keys.length; i++) { onProg && onProg(`영상 담는 중… ${i + 1}/${keys.length}`); const b = await loadVideo(keys[i]); if (b) vids[keys[i]] = b; }
+  const html = slides.map((els, i) => {
+    const d = slideDom(els);
+    [...d.children].forEach((n, j) => { const e = els[j]; if (!e) return;
+      if (e.t === 'video' && vids[e.key]) { n.innerHTML = `<video data-v="${e.key}" data-p="${keyOf(e.src)}" playsinline preload="none" controls></video>`; }
+      else n.querySelectorAll('img').forEach(im => { im.setAttribute('data-i', keyOf(im.getAttribute('src'))); im.removeAttribute('src'); }); });
+    return `<section class="sl" data-n="${i + 1}">${d.innerHTML}</section>`;
+  }).join('\n');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const doc = `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(p.title)} — 발표</title><meta name="generator" content="${esc(APP.name)} ${APP.version} · Designed &amp; Developed by Rat Rae Choi">
+<style>html,body{margin:0;height:100%;background:#0b0f1e;overflow:hidden;font-family:${SFONT.replace(/"/g, "'")}}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:0 0}
+.sl{position:absolute;inset:0;width:1280px;height:720px;overflow:hidden;background:#fff;display:none}.sl.on{display:block}
+.sl video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+#bar{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:center;padding:8px;color:#cfd6ee;font-size:13px;background:linear-gradient(transparent,rgba(0,0,0,.65));opacity:0;transition:.3s}
+body:hover #bar{opacity:1}#bar button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
+#grid{position:fixed;inset:0;background:#0b0f1e;overflow:auto;display:none;padding:20px;box-sizing:border-box}#grid.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+#grid div{cursor:pointer;color:#cfd6ee;font-size:12px}#grid canvas,#grid img{width:100%;border-radius:6px;display:block;background:#fff}
+#cr{position:fixed;right:10px;top:8px;color:rgba(255,255,255,.35);font-size:11px}</style></head><body>
+<div id="stage">${html}</div>
+<div id="bar"><button id="pv">◀ 이전</button><span id="pg"></span><button id="nx">다음 ▶</button><button id="gd">▦ 전체 보기</button><button id="fs">⛶ 전체 화면</button><span>← → · Space · F · G</span></div>
+<div id="grid"></div><div id="cr">${esc(CO.group)} · Designed &amp; Developed by Rat Rae Choi</div>
+<script>const IMG=${JSON.stringify(pool)};const VID=${JSON.stringify(vids)};
+const S=[...document.querySelectorAll('.sl')],st=document.getElementById('stage');let cur=0;const vurl={};
+function vsrc(k){if(!vurl[k]){const b=atob(VID[k]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);vurl[k]=URL.createObjectURL(new Blob([u],{type:'video/mp4'}));}return vurl[k];}
+function load(s){if(!s||s.dataset.l)return;s.dataset.l=1;s.querySelectorAll('img[data-i]').forEach(im=>im.src=IMG[+im.dataset.i]);s.querySelectorAll('video').forEach(v=>{v.poster=IMG[+v.dataset.p];v.src=vsrc(v.dataset.v);});}
+function fit(){const k=Math.min(innerWidth/1280,innerHeight/720);st.style.transform='scale('+k+') translate(-50%,-50%)';st.style.transformOrigin='0 0';st.style.left='50%';st.style.top='50%';st.style.transform='translate(-50%,-50%) scale('+k+')';st.style.transformOrigin='center';}
+function go(i){i=Math.max(0,Math.min(S.length-1,i));S[cur].classList.remove('on');S[cur].querySelectorAll('video').forEach(v=>v.pause());cur=i;const s=S[cur];load(s);load(S[cur+1]);s.classList.add('on');document.getElementById('pg').textContent=(cur+1)+' / '+S.length;
+s.querySelectorAll('video').forEach(v=>{v.muted=false;const pr=v.play();if(pr)pr.catch(()=>{v.muted=true;v.play().catch(()=>{});});});history.replaceState(null,'','#'+(cur+1));}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1);}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1);}else if(e.key==='Home')go(0);else if(e.key==='End')go(S.length-1);else if(/^[fF]$/.test(e.key))fsT();else if(/^[gG]$/.test(e.key))grid();else if(e.key==='Escape')document.getElementById('grid').classList.remove('on');});
+st.addEventListener('click',e=>{if(e.target.tagName==='VIDEO')return;go(cur+(e.clientX>innerWidth/3?1:-1));});
+function fsT(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});}
+function grid(){const g=document.getElementById('grid');if(g.classList.toggle('on')&&!g.dataset.b){g.dataset.b=1;S.forEach((s,i)=>{const d=document.createElement('div');const firstImg=s.querySelector('img[data-i]');d.innerHTML='<b>'+(i+1)+'</b> '+((s.querySelector('div div div')||{}).textContent||'').slice(0,30);d.onclick=()=>{g.classList.remove('on');go(i);};g.appendChild(d);});}}
+document.getElementById('pv').onclick=()=>go(cur-1);document.getElementById('nx').onclick=()=>go(cur+1);document.getElementById('gd').onclick=grid;document.getElementById('fs').onclick=fsT;
+addEventListener('resize',fit);fit();go(Math.max(0,(+location.hash.slice(1)||1)-1));<\/script></body></html>`;
+  return new Blob([doc], { type: 'text/html' });
+}
 function listSlides(S, p, title, sub, groups, opt = {}) {
   const w = opt.fig ? 8.9 : 12.1, pages = paginate(listParas(groups), w, 4.75, 12.5);
   pages.forEach((pg, i) => {
@@ -5821,8 +6092,9 @@ async function run(kind) {
     busy(true, '사진·영상 준비 중…'); await prepMedia(p, (i, n) => busy(true, `사진·영상 준비 중… ${i}/${n}`)); await decodeAll();
     if (kind === 'docx' || kind === 'all') { busy(true, 'Word 제안서 만드는 중…'); await download(await makeDocx(p, (i, n) => busy(true, `Word 도해 만드는 중… ${i}/${n}`)), base + '.docx'); }
     if (kind === 'pptx' || kind === 'all') { busy(true, 'PPT 발표자료 만드는 중…'); await download(await makePptx(p, null, p.title), base + '_발표.pptx'); }
+    if (kind === 'html' || kind === 'all') { busy(true, '웹 발표본 만드는 중…'); await download(await makeHtmlDeck(p, m => busy(true, m)), base + '_발표(영상재생).html'); }
     if (kind === 'pdf' || kind === 'all') { await download(await makePdf(p, (i, n) => busy(true, `PDF 변환 중… ${i}/${n}`), null, p.title), base + '_발표.pdf'); }
-    p.printed = true; p.approval.log.push(`${fmtD(kstNow())} 출력(${{ docx: 'Word', pptx: 'PPT', pdf: 'PDF', all: 'Word·PPT·PDF' }[kind]})`); saveProject(true); renderApproval(); updStepper();
+    p.printed = true; p.approval.log.push(`${fmtD(kstNow())} 출력(${{ docx: 'Word', pptx: 'PPT', pdf: 'PDF', html: '웹 발표본', all: 'Word·PPT·PDF·웹 발표본' }[kind]})`); saveProject(true); renderApproval(); updStepper();
     toast('출력 완료 — 다운로드 폴더를 확인하세요.');
   } catch (e) { console.error(e); toast('생성 오류: ' + e.message, 5000); }
   finally { busy(false); }
@@ -5898,6 +6170,15 @@ async function init() {
   $('#btnLinkManual').onclick = () => openManualEst();
   $('#btnLinkFile').onclick = () => $('#linkFile').click();
   $('#linkFile').onchange = async e => { const fl = e.target.files[0]; e.target.value = ''; if (!fl) return; try { const arr = await importLinkFile(fl); arr.forEach(p => LINK.picked.add(p.id)); await refreshLinks(false); applyPkgToForm(arr[0]); toast(`연동 파일에서 견적 ${arr.length}건을 불러왔습니다.`); } catch (er) { toast(er.message, 5000); } };
+  $('#btnLinkXl').onclick = () => $('#xlFile').click();
+  const takeXl = async files => { let ok = 0, last = null; busy(true, '견적서 읽는 중…');
+    try { for (const fl of files) { try { const p = await importEstimateFile(fl); LINK.picked.add(p.id); last = p; ok++; } catch (er) { toast(`「${fl.name}」 — ${er.message}`, 6000); } }
+      if (ok) { state.tab = 'manual'; await refreshLinks(false); applyPkgToForm(last); toast(`견적서 ${ok}건을 불러왔습니다 — 월 ${won(last.monthly)}원 · ${last.heads}명${last.mix ? ' · 원가 구성 포함' : ''}`, 4500); } } finally { busy(false); } };
+  $('#xlFile').onchange = e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) takeXl(fs); };
+  const lc = $('#linkCard'); ['dragover', 'dragenter'].forEach(ev => lc.addEventListener(ev, e => { if ([...(e.dataTransfer.items || [])].some(i => i.kind === 'file')) { e.preventDefault(); lc.classList.add('drag'); } }));
+  ['dragleave', 'drop'].forEach(ev => lc.addEventListener(ev, () => lc.classList.remove('drag')));
+  lc.addEventListener('drop', e => { const fs = [...(e.dataTransfer.files || [])]; if (!fs.length) return; e.preventDefault(); const js = fs.filter(f => /\.json$/i.test(f.name)), xs = fs.filter(f => !/\.json$/i.test(f.name));
+    if (js.length) { const dt = new DataTransfer(); dt.items.add(js[0]); $('#linkFile').files = dt.files; $('#linkFile').onchange({ target: $('#linkFile') }); } if (xs.length) takeXl(xs); });
   $('#btnLinkExport').onclick = () => { const ps = pickedPkgs(); if (!ps.length) return toast('내보낼 견적을 체크하세요.'); download(exportLinkFile(ps), `견적연동_${safeName($('#f_client').value || 'export')}.json`); };
   $('#btnRfp').onclick = () => runRfp(false);
   $('#btnRfpClear').onclick = () => { $('#f_rfp').value = ''; RFP.att = []; renderRfpFiles(); renderRfp(null); updStepper(); };
@@ -5905,7 +6186,7 @@ async function init() {
   $('#btnSave').onclick = () => { syncEditor(); saveProject(false); };
   $('#btnNew').onclick = $('#heroNew').onclick = newProposal;
   $('#heroLink').onclick = () => $('#linkCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  $('#btnDocx').onclick = () => run('docx'); $('#btnPptx').onclick = () => run('pptx'); $('#btnPdf').onclick = () => run('pdf'); $('#btnAll').onclick = () => run('all');
+  $('#btnDocx').onclick = () => run('docx'); $('#btnPptx').onclick = () => run('pptx'); $('#btnPdf').onclick = () => run('pdf'); $('#btnHtml').onclick = () => run('html'); $('#btnAll').onclick = () => run('all');
   $('#projList').onclick = e => { const d = e.target.closest('[data-del]'); if (d) { const i = +d.dataset.del, h = readProjects(); confirmDel(`「${h[i] ? h[i].title : ''}」을(를) 삭제할까요?`, () => { const hh = readProjects(); hh.splice(i, 1); storeProjects(hh); renderProjects(); }); return; } const li = e.target.closest('li[data-i]'); if (li) loadProject(+li.dataset.i); };
   document.querySelectorAll('#stepper .stp').forEach(b => b.onclick = () => { const t2 = $(b.dataset.go); if (t2) t2.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   ['f_client', 'f_rfp'].forEach(id => $('#' + id).addEventListener('input', updStepper));

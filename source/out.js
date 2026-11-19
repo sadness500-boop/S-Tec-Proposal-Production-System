@@ -40,12 +40,30 @@ function figPara(src, caption, wIn = 6.65) {
   if (caption) out.push(P([R(caption, { size: 16, color: C.gray, it: true })], { align: AL().CENTER, after: 140 }));
   return out;
 }
+/* 영상 썸네일(재생 단추 그림) — 누르면 웹에서 영상 재생 */
+function playThumb(m, wIn, hIn) {
+  const W = Math.round(wIn * 150), H = Math.round(hIn * 150), cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  const im = MEDIA._el && MEDIA._el[m.src]; g.fillStyle = '#0F1530'; g.fillRect(0, 0, W, H);
+  if (im) { const iw = im.naturalWidth, ih = im.naturalHeight, s = Math.max(W / iw, H / ih); g.drawImage(im, (W - iw * s) / 2, (H - ih * s) / 2, iw * s, ih * s); }
+  const R = Math.min(W, H) * 0.16; g.fillStyle = 'rgba(15,21,48,.72)'; g.beginPath(); g.arc(W / 2, H / 2, R, 0, 7); g.fill(); g.lineWidth = R * 0.12; g.strokeStyle = 'rgba(255,255,255,.9)'; g.stroke();
+  g.fillStyle = '#fff'; g.beginPath(); g.moveTo(W / 2 - R * 0.32, H / 2 - R * 0.48); g.lineTo(W / 2 + R * 0.52, H / 2); g.lineTo(W / 2 - R * 0.32, H / 2 + R * 0.48); g.closePath(); g.fill();
+  g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(0, H - H * 0.14, W, H * 0.14); g.fillStyle = '#fff'; g.font = `700 ${Math.round(H * 0.07)}px ${SFONT}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('▶ 누르면 영상 재생', W / 2, H - H * 0.07);
+  return cv.toDataURL('image/jpeg', 0.88);
+}
+function videoPara(key, wIn, hIn, caption) {
+  const m = M(key), img = imgRun(playThumb(m, wIn, hIn), wIn * 96, hIn * 96);
+  let link; try { link = new docx.ExternalHyperlink({ link: videoUrl(key), children: [img] }); } catch (e) { link = img; }
+  const out = [new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 60, after: 20 }, keepNext: true, children: [link] })];
+  out.push(P([R(`▶ ${caption || VIDEO_TITLE[key] || '현장 영상'}  `, { size: 16, bold: true, color: C.navy }), HLINK('영상 보기 ↗', videoUrl(key))], { align: AL().CENTER, after: 100 }));
+  return out;
+}
 function photoPara(m, wIn, hIn) { return new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 60, after: 60 }, children: [imgRun(coverSrc(m, wIn, hIn), wIn * 96, hIn * 96)] }); }
 async function makeDocx(p, onProg) {
   const f = p.f, isClient = f.mode === 'client', ch = [], on = id => p.secOn[id], mg = UI.manager || {};
   const slides = buildSlides(p), figs = {};
   const pick = slides.filter(e => e.fig && !['s00', 's01'].includes(e.fig));
-  for (let i = 0; i < pick.length; i++) { onProg && onProg(i + 1, pick.length); const e = pick[i]; (figs[e.fig] = figs[e.fig] || []).push(await slideJpeg(e)); }
+  const figV = {};
+  for (let i = 0; i < pick.length; i++) { onProg && onProg(i + 1, pick.length); const e = pick[i]; (figs[e.fig] = figs[e.fig] || []).push(await slideJpeg(e)); (figV[e.fig] = figV[e.fig] || []).push([...new Set(e.filter(x => x.t === 'video').map(x => x.key))]); }
   const tt = e => (e.find(x => x.t === 'text' && x.pt >= 17 && x.paras && x.paras[0] && x.paras[0].bold) || { paras: [{ text: '' }] }).paras[0].text;
   const figTitle = {}; pick.forEach(e => (figTitle[e.fig] = figTitle[e.fig] || []).push(tt(e)));
   let n = 1, figNo = 1; const S = t => H1(`${ROMAN[n++]}. ${t}`);
@@ -109,7 +127,7 @@ async function makeDocx(p, onProg) {
     if (s.id === 's06') {
       p.jobs.forEach(j => { const mm = MEDIA_MAP[j.k] || MEDIA_MAP.sec, gg = g.filter(x => x.title.includes(j.n));
         ch.push(H2(`${j.ic} ${j.n}`));
-        ch.push(table([[cell([photoPara(M(mm.fig[0]), 1.7, 2.3)], { w: 2200, borders: noB() }), cell([photoPara(M(mm.scene[0]), 3.5, 2.0), P([R(`▶ ${VIDEO_TITLE[mm.video] || '현장 근무 영상'} — PPT 발표자료에서 재생`, { size: 15, color: C.gray, it: true })], { align: AL().CENTER, after: 0 })], { w: 7438, borders: noB() })]], [2200, 7438]));
+        ch.push(table([[cell([photoPara(M(mm.fig[0]), 1.7, 2.3)], { w: 2200, borders: noB() }), cell(videoPara(mm.video || mm.scene[0], 3.9, 2.19, `${VIDEO_TITLE[mm.video] || '현장 근무 영상'}`), { w: 7438, borders: noB() })]], [2200, 7438]));
         ch.push(...bullets(gg));
         const rt = ROUTINE[j.k] || ROUTINE.spc;
         ch.push(gridTable(['순서', '일과', '세부 내용'], rt.map((r, i) => [String(i + 1), r[0], r[1]]), [800, 2600, 6238], { center: [0], bold: [1], size: 17 }));
@@ -143,14 +161,15 @@ async function makeDocx(p, onProg) {
       if (wb) { ch.push(H2(`업무별 비용 배분 — ${wb.title}`)); ch.push(gridTable(['업무(대분류)', '월 업무시간', '비중', '월 비용(원)'], wb.tasks.map(t => [t.name, t.hours != null ? t.hours.toFixed(1) + 'h' : '-', t.share != null ? (t.share * 100).toFixed(1) + '%' : '-', won(t.cost)]), [4038, 1800, 1500, 2300], { center: [1, 2], right: [3] })); }
     }
     /* 도해(슬라이드 이미지) */
-    (figs[s.id] || []).slice(0, 4).forEach((src, i) => ch.push(...figPara(src, `[그림 ${figNo++}] ${(figTitle[s.id] || [])[i] || s.n}`)));
+    (figs[s.id] || []).slice(0, 4).forEach((src, i) => { ch.push(...figPara(src, `[그림 ${figNo++}] ${(figTitle[s.id] || [])[i] || s.n}`));
+      const vk = ((figV[s.id] || [])[i] || []); if (vk.length) ch.push(P([R('▶ 그림 속 영상: ', { size: 16, bold: true, color: C.navy })].concat(vk.flatMap((k, j) => [HLINK(`${VIDEO_TITLE[k] || k} ↗`, videoUrl(k)), R(j < vk.length - 1 ? '  ·  ' : '', { size: 16 })])), { align: AL().CENTER, after: 120 })); });
   }
   /* 붙임: 연동 견적 상세 */
   if (p.est.length) {
     ch.push(BR()); ch.push(H1('붙임. 연동 견적 상세'));
     p.est.forEach((e, i) => {
       ch.push(H2(`${i + 1}. ${SRC[e.src].n} — ${e.title}`));
-      ch.push(P([R(`${e.client || f.client}${e.period && e.period.from ? ` · ${e.period.from} ~ ${e.period.to || ''}` : ''}${e.at ? ` · 연동 ${String(e.at).slice(0, 10)}` : ''} · ${e.origin === 'raw' ? '견적 보관함' : e.origin === 'manual' ? '직접 입력' : e.origin === 'file' ? '연동 파일' : '「제안서로 보내기」 연동'}`, { size: 17, color: C.gray })], { after: 60 }));
+      ch.push(P([R(`${e.client || f.client}${e.period && e.period.from ? ` · ${e.period.from} ~ ${e.period.to || ''}` : ''}${e.at ? ` · 연동 ${String(e.at).slice(0, 10)}` : ''} · ${e.origin === 'raw' ? '견적 보관함' : e.origin === 'manual' ? '직접 입력' : e.origin === 'file' ? '연동 파일' : e.origin === 'excel' ? '엑셀 견적서' : '「제안서로 보내기」 연동'}`, { size: 17, color: C.gray })], { after: 60 }));
       if (e.rows.length) ch.push(gridTable(['직종', '직책', '인원', '근무형태', '1인 단가', '금액'], e.rows.map(r => [r.job, r.title || '-', r.count + '명', r.shift || (r.date ? r.date : '-'), won(r.unit), won(r.amount)]), [1300, 2400, 900, 2338, 1300, 1400], { center: [2], right: [4, 5], size: 17 }));
       if (e.staff) ch.push(P([R(`편성: ${e.staff}${e.plan ? ` (${e.plan})` : ''}`, { size: 18 })], { before: 60, after: 30 }));
       if (e.addons.length) ch.push(P([R('부대비용: ' + e.addons.map(a => `${a.n}${a.q > 1 ? ' ×' + a.q : ''}`).join(', '), { size: 18 })], { before: 60, after: 30 }));
@@ -171,6 +190,48 @@ async function makeDocx(p, onProg) {
   return await packDocx(ch, p.title);
 }
 
+/* ===== 웹 발표본(HTML) — 영상이 실제로 재생되는 발표 파일 (브라우저로 열기 · 인터넷 없이도 재생) ===== */
+async function makeHtmlDeck(p, onProg) {
+  const slides = buildSlides(p), pool = [], idx = new Map(), keyOf = s => { if (!idx.has(s)) { idx.set(s, pool.length); pool.push(s); } return idx.get(s); };
+  const keys = [...new Set(slides.flat().filter(e => e.t === 'video').map(e => e.key))], vids = {};
+  for (let i = 0; i < keys.length; i++) { onProg && onProg(`영상 담는 중… ${i + 1}/${keys.length}`); const b = await loadVideo(keys[i]); if (b) vids[keys[i]] = b; }
+  const html = slides.map((els, i) => {
+    const d = slideDom(els);
+    [...d.children].forEach((n, j) => { const e = els[j]; if (!e) return;
+      if (e.t === 'video' && vids[e.key]) { n.innerHTML = `<video data-v="${e.key}" data-p="${keyOf(e.src)}" playsinline preload="none" controls></video>`; }
+      else n.querySelectorAll('img').forEach(im => { im.setAttribute('data-i', keyOf(im.getAttribute('src'))); im.removeAttribute('src'); }); });
+    return `<section class="sl" data-n="${i + 1}">${d.innerHTML}</section>`;
+  }).join('\n');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const doc = `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(p.title)} — 발표</title><meta name="generator" content="${esc(APP.name)} ${APP.version} · Designed &amp; Developed by Rat Rae Choi">
+<style>html,body{margin:0;height:100%;background:#0b0f1e;overflow:hidden;font-family:${SFONT.replace(/"/g, "'")}}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:0 0}
+.sl{position:absolute;inset:0;width:1280px;height:720px;overflow:hidden;background:#fff;display:none}.sl.on{display:block}
+.sl video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+#bar{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:center;padding:8px;color:#cfd6ee;font-size:13px;background:linear-gradient(transparent,rgba(0,0,0,.65));opacity:0;transition:.3s}
+body:hover #bar{opacity:1}#bar button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
+#grid{position:fixed;inset:0;background:#0b0f1e;overflow:auto;display:none;padding:20px;box-sizing:border-box}#grid.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+#grid div{cursor:pointer;color:#cfd6ee;font-size:12px}#grid canvas,#grid img{width:100%;border-radius:6px;display:block;background:#fff}
+#cr{position:fixed;right:10px;top:8px;color:rgba(255,255,255,.35);font-size:11px}</style></head><body>
+<div id="stage">${html}</div>
+<div id="bar"><button id="pv">◀ 이전</button><span id="pg"></span><button id="nx">다음 ▶</button><button id="gd">▦ 전체 보기</button><button id="fs">⛶ 전체 화면</button><span>← → · Space · F · G</span></div>
+<div id="grid"></div><div id="cr">${esc(CO.group)} · Designed &amp; Developed by Rat Rae Choi</div>
+<script>const IMG=${JSON.stringify(pool)};const VID=${JSON.stringify(vids)};
+const S=[...document.querySelectorAll('.sl')],st=document.getElementById('stage');let cur=0;const vurl={};
+function vsrc(k){if(!vurl[k]){const b=atob(VID[k]),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);vurl[k]=URL.createObjectURL(new Blob([u],{type:'video/mp4'}));}return vurl[k];}
+function load(s){if(!s||s.dataset.l)return;s.dataset.l=1;s.querySelectorAll('img[data-i]').forEach(im=>im.src=IMG[+im.dataset.i]);s.querySelectorAll('video').forEach(v=>{v.poster=IMG[+v.dataset.p];v.src=vsrc(v.dataset.v);});}
+function fit(){const k=Math.min(innerWidth/1280,innerHeight/720);st.style.transform='scale('+k+') translate(-50%,-50%)';st.style.transformOrigin='0 0';st.style.left='50%';st.style.top='50%';st.style.transform='translate(-50%,-50%) scale('+k+')';st.style.transformOrigin='center';}
+function go(i){i=Math.max(0,Math.min(S.length-1,i));S[cur].classList.remove('on');S[cur].querySelectorAll('video').forEach(v=>v.pause());cur=i;const s=S[cur];load(s);load(S[cur+1]);s.classList.add('on');document.getElementById('pg').textContent=(cur+1)+' / '+S.length;
+s.querySelectorAll('video').forEach(v=>{v.muted=false;const pr=v.play();if(pr)pr.catch(()=>{v.muted=true;v.play().catch(()=>{});});});history.replaceState(null,'','#'+(cur+1));}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1);}else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1);}else if(e.key==='Home')go(0);else if(e.key==='End')go(S.length-1);else if(/^[fF]$/.test(e.key))fsT();else if(/^[gG]$/.test(e.key))grid();else if(e.key==='Escape')document.getElementById('grid').classList.remove('on');});
+st.addEventListener('click',e=>{if(e.target.tagName==='VIDEO')return;go(cur+(e.clientX>innerWidth/3?1:-1));});
+function fsT(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{});}
+function grid(){const g=document.getElementById('grid');if(g.classList.toggle('on')&&!g.dataset.b){g.dataset.b=1;S.forEach((s,i)=>{const d=document.createElement('div');const firstImg=s.querySelector('img[data-i]');d.innerHTML='<b>'+(i+1)+'</b> '+((s.querySelector('div div div')||{}).textContent||'').slice(0,30);d.onclick=()=>{g.classList.remove('on');go(i);};g.appendChild(d);});}}
+document.getElementById('pv').onclick=()=>go(cur-1);document.getElementById('nx').onclick=()=>go(cur+1);document.getElementById('gd').onclick=grid;document.getElementById('fs').onclick=fsT;
+addEventListener('resize',fit);fit();go(Math.max(0,(+location.hash.slice(1)||1)-1));</script></body></html>`;
+  return new Blob([doc], { type: 'text/html' });
+}
 function listSlides(S, p, title, sub, groups, opt = {}) {
   const w = opt.fig ? 8.9 : 12.1, pages = paginate(listParas(groups), w, 4.75, 12.5);
   pages.forEach((pg, i) => {
@@ -210,8 +271,9 @@ async function run(kind) {
     busy(true, '사진·영상 준비 중…'); await prepMedia(p, (i, n) => busy(true, `사진·영상 준비 중… ${i}/${n}`)); await decodeAll();
     if (kind === 'docx' || kind === 'all') { busy(true, 'Word 제안서 만드는 중…'); await download(await makeDocx(p, (i, n) => busy(true, `Word 도해 만드는 중… ${i}/${n}`)), base + '.docx'); }
     if (kind === 'pptx' || kind === 'all') { busy(true, 'PPT 발표자료 만드는 중…'); await download(await makePptx(p, null, p.title), base + '_발표.pptx'); }
+    if (kind === 'html' || kind === 'all') { busy(true, '웹 발표본 만드는 중…'); await download(await makeHtmlDeck(p, m => busy(true, m)), base + '_발표(영상재생).html'); }
     if (kind === 'pdf' || kind === 'all') { await download(await makePdf(p, (i, n) => busy(true, `PDF 변환 중… ${i}/${n}`), null, p.title), base + '_발표.pdf'); }
-    p.printed = true; p.approval.log.push(`${fmtD(kstNow())} 출력(${{ docx: 'Word', pptx: 'PPT', pdf: 'PDF', all: 'Word·PPT·PDF' }[kind]})`); saveProject(true); renderApproval(); updStepper();
+    p.printed = true; p.approval.log.push(`${fmtD(kstNow())} 출력(${{ docx: 'Word', pptx: 'PPT', pdf: 'PDF', html: '웹 발표본', all: 'Word·PPT·PDF·웹 발표본' }[kind]})`); saveProject(true); renderApproval(); updStepper();
     toast('출력 완료 — 다운로드 폴더를 확인하세요.');
   } catch (e) { console.error(e); toast('생성 오류: ' + e.message, 5000); }
   finally { busy(false); }
@@ -287,6 +349,15 @@ async function init() {
   $('#btnLinkManual').onclick = () => openManualEst();
   $('#btnLinkFile').onclick = () => $('#linkFile').click();
   $('#linkFile').onchange = async e => { const fl = e.target.files[0]; e.target.value = ''; if (!fl) return; try { const arr = await importLinkFile(fl); arr.forEach(p => LINK.picked.add(p.id)); await refreshLinks(false); applyPkgToForm(arr[0]); toast(`연동 파일에서 견적 ${arr.length}건을 불러왔습니다.`); } catch (er) { toast(er.message, 5000); } };
+  $('#btnLinkXl').onclick = () => $('#xlFile').click();
+  const takeXl = async files => { let ok = 0, last = null; busy(true, '견적서 읽는 중…');
+    try { for (const fl of files) { try { const p = await importEstimateFile(fl); LINK.picked.add(p.id); last = p; ok++; } catch (er) { toast(`「${fl.name}」 — ${er.message}`, 6000); } }
+      if (ok) { state.tab = 'manual'; await refreshLinks(false); applyPkgToForm(last); toast(`견적서 ${ok}건을 불러왔습니다 — 월 ${won(last.monthly)}원 · ${last.heads}명${last.mix ? ' · 원가 구성 포함' : ''}`, 4500); } } finally { busy(false); } };
+  $('#xlFile').onchange = e => { const fs = [...e.target.files]; e.target.value = ''; if (fs.length) takeXl(fs); };
+  const lc = $('#linkCard'); ['dragover', 'dragenter'].forEach(ev => lc.addEventListener(ev, e => { if ([...(e.dataTransfer.items || [])].some(i => i.kind === 'file')) { e.preventDefault(); lc.classList.add('drag'); } }));
+  ['dragleave', 'drop'].forEach(ev => lc.addEventListener(ev, () => lc.classList.remove('drag')));
+  lc.addEventListener('drop', e => { const fs = [...(e.dataTransfer.files || [])]; if (!fs.length) return; e.preventDefault(); const js = fs.filter(f => /\.json$/i.test(f.name)), xs = fs.filter(f => !/\.json$/i.test(f.name));
+    if (js.length) { const dt = new DataTransfer(); dt.items.add(js[0]); $('#linkFile').files = dt.files; $('#linkFile').onchange({ target: $('#linkFile') }); } if (xs.length) takeXl(xs); });
   $('#btnLinkExport').onclick = () => { const ps = pickedPkgs(); if (!ps.length) return toast('내보낼 견적을 체크하세요.'); download(exportLinkFile(ps), `견적연동_${safeName($('#f_client').value || 'export')}.json`); };
   $('#btnRfp').onclick = () => runRfp(false);
   $('#btnRfpClear').onclick = () => { $('#f_rfp').value = ''; RFP.att = []; renderRfpFiles(); renderRfp(null); updStepper(); };
@@ -294,7 +365,7 @@ async function init() {
   $('#btnSave').onclick = () => { syncEditor(); saveProject(false); };
   $('#btnNew').onclick = $('#heroNew').onclick = newProposal;
   $('#heroLink').onclick = () => $('#linkCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  $('#btnDocx').onclick = () => run('docx'); $('#btnPptx').onclick = () => run('pptx'); $('#btnPdf').onclick = () => run('pdf'); $('#btnAll').onclick = () => run('all');
+  $('#btnDocx').onclick = () => run('docx'); $('#btnPptx').onclick = () => run('pptx'); $('#btnPdf').onclick = () => run('pdf'); $('#btnHtml').onclick = () => run('html'); $('#btnAll').onclick = () => run('all');
   $('#projList').onclick = e => { const d = e.target.closest('[data-del]'); if (d) { const i = +d.dataset.del, h = readProjects(); confirmDel(`「${h[i] ? h[i].title : ''}」을(를) 삭제할까요?`, () => { const hh = readProjects(); hh.splice(i, 1); storeProjects(hh); renderProjects(); }); return; } const li = e.target.closest('li[data-i]'); if (li) loadProject(+li.dataset.i); };
   document.querySelectorAll('#stepper .stp').forEach(b => b.onclick = () => { const t2 = $(b.dataset.go); if (t2) t2.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   ['f_client', 'f_rfp'].forEach(id => $('#' + id).addEventListener('input', updStepper));

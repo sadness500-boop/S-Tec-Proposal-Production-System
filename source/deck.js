@@ -10,7 +10,7 @@ const PARTS = [
   { n: 4, t: '가격 제안', en: 'Price', scene: 'v17', items: ['제안 금액', '견적 산출 근거', '업무별 비용', '가격 조건'] },
   { n: 5, t: '에스텍의 약속', en: 'Promise', scene: 'v16', items: ['기대효과', '고객 약속(SLA)', '맺음말'] }
 ];
-const NV = '0B1F8A', NVD = '071463', GR = '1B7A34', GR2 = '22A04A', OR = 'E8750A', INK = '0F1530', MU = '667089', LN = 'E4E8F1', SOFT = 'F4F6FB';
+const NV = '0B1F8A', NVD = '071463', GR = '1B7A34', GR2 = '22A04A', OR = 'E8750A', INK = '0F1530', MU = '4A5372', LN = 'E4E8F1', SOFT = 'F4F6FB';
 
 /* ---------- 공통 프레임 ---------- */
 function frameX(p, part, title, sub, no) {
@@ -126,6 +126,7 @@ function buildSlides(p) {
       all.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 2.75, Y = 1.6 + r * 1.75;
         E.push(Rc(X, Y, 2.6, 1.6, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.15, Y + 0.15, 2.3, 0.75, [{ text: x[0], bold: true }], { max: 30, min: 16, color: r ? GR : NV })); E.push(T(X + 0.15, Y + 0.85, 2.3, 0.3, x[1], { pt: 11.5, bold: true, color: INK })); E.push(T(X + 0.15, Y + 1.15, 2.35, 0.4, x[2] || '', { max: 9.5, min: 7, color: MU })); });
       E.push(T(0.6, 5.2, 8.0, 1.4, CO.intro.map(t => ({ text: '•  ' + t })), { max: 12, min: 8.5, color: '2C3554' }));
+      if (CO.metricsNote) E.push(T(0.6, 6.62, 8.2, 0.28, '※ ' + CO.metricsNote, { pt: 9, color: MU }));
       E.push(Photo(9.0, 1.6, 3.7, 3.35, M(MEDIA_EXTRA.hq, 'hq'))); E.push(Photo(9.0, 5.05, 3.7, 1.55, M(MEDIA_EXTRA.cube, 'hq')));
       push(E, 's02'); }
     /* 연혁 */
@@ -408,5 +409,5 @@ function buildSlides(p) {
     E.push(T(0.8, 5.85, SW - 1.6, 0.4, `${CO.group} · ${CO.branch || CO.name}${mg.name ? `  |  ${mg.name}${mg.title ? ' ' + mg.title : ''}${mg.phone ? ' · ' + mg.phone : ''}${mg.email ? ' · ' + mg.email : ''}` : ''}`, { pt: 11, color: MU, align: 'center' }));
     E.push(Im(0.7, SH - 0.75, 1.3, 1.3 * 340 / 900, ASSET.logo)); E.push(sigEl(SW - 4.3, SH - 0.62, 0.38));
     push(E); }
-  return S;
+  return videoize(S);
 }

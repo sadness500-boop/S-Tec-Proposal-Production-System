@@ -13,7 +13,7 @@
 | 구분 | 주소 |
 |---|---|
 | 웹 버전 | https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/ |
-| 파일 하나로 여는 배포본 | `releases/S-Tec-Proposal-Production-System_v2.0.0.html` |
+| 파일 하나로 여는 배포본 | `releases/S-Tec-Proposal-Production-System_v2.1.0.html` |
 | 안드로이드 앱 (최신) | https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk |
 
 - **APK는 GitHub Actions가 만듭니다.** `index.html`·`version.json`을 올리면 Actions 「Android APK」가 약 5분 뒤 `releases/`와 릴리스에 APK를 올립니다.
@@ -74,6 +74,11 @@ icons/ · assets/ · manifest.webmanifest · sw.js   앱 아이콘 · 디오라�
 
 ## 변경 이력
 
+- **v2.1.0** (2026-11-19): 엑셀 견적서 · 실제 영상 · 시인성
+  - 「📊 엑셀 견적서 불러오기」: .xlsx·.xls·.csv·PDF 견적서에서 고객사·용역기간·월 견적금액·직종·인원·단가를 읽고, 원가분석표(인원·12. 계)가 있으면 원가 구성(인건비·제비용·일반관리비·이윤)과 전년·대안 산출까지 함께 연동 — 견적 연동 칸에 끌어다 놓아도 됨
+  - 영상: PPT에는 영상 17편 내장(누르면 재생), 새 출력 「🎬 웹 발표본(HTML)」은 장마다 영상 자동 재생, PDF·Word의 영상 장면은 누르면 웹에서 재생
+  - 발표자료 간결체(개조식) · 본문 최소 10pt · 묶음당 핵심 4줄 — 넘치면 글씨를 줄이지 않고 부연을 덜어냄
+  - 회사 실적: 에스텍시스템㈜과 종속기업 2025 연결재무제표(감사보고서) 기준 — 연결 매출 9,752억 원 · 영업이익 225억 원 · 종속기업 8개사
 - **v2.0.0** (2026-11-19): 제안서 전면 재구성
   - 발표자료(PPT·PDF): 5 PART 구성 50~60장 — 표지·오프닝 메시지·인사말·목차·요약 → 에스텍 소개(핵심 지표·연혁·사업 영역·운영 네트워크 지도·경쟁력 비교·통합관리 시스템) → 현황 분석(2026 트렌드·현장 이해·포지셔닝·진단·RFP 대응표) → 운영 제안(비전·특화서비스·조직·인력·POST 배치도·근무 편성표·시간대별 운영·직종별 업무·하루 일과·현장 영상·교육·연간 교육 계획·안전보건 PDCA·비상 대응·법령·KPI·Complaint·스마트 운영·일정) → 가격 제안(금액·원가 구성·업무별 비용) → 에스텍의 약속(기대효과·SLA·클로징)
   - 사진 42장·현장 영상 프레임 30장·영상 30편(`media/`) 활용 — PPT에는 영상이 직접 들어가 재생, PDF·Word에는 장면 사진으로 표시

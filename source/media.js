@@ -15,7 +15,7 @@ async function loadMedia(id) {
   const rel = id[0] === 'v' ? `media/scene/${id}.jpg` : `media/photo/${id}.jpg`;
   const b = await fetchFirst(rel); if (!b) return (MEDIA.img[id] = null);
   const src = await blobToDataUrl(b); const im = await loadImg(src);
-  return (MEDIA.img[id] = { src, w: im.naturalWidth, h: im.naturalHeight });
+  return (MEDIA.img[id] = { src, w: im.naturalWidth, h: im.naturalHeight, id });
 }
 async function loadVideo(id) {
   if (MEDIA.vid[id] !== undefined) return MEDIA.vid[id];
@@ -57,7 +57,20 @@ async function decodeAll() {
   await Promise.all(all.map(async s => { if (!MEDIA._el[s]) { try { MEDIA._el[s] = await loadImg(s); } catch (e) { } } }));
 }
 /* 사진을 상자에 꽉 채워 넣기 */
-function Photo(x, y, w, h, id, fb, pos) { const m = typeof id === 'object' ? id : M(id, fb); return Im(x, y, w, h, coverSrc(m, w, h, pos)); }
+function Photo(x, y, w, h, id, fb, pos) { const m = typeof id === 'object' ? id : M(id, fb); const e = Im(x, y, w, h, coverSrc(m, w, h, pos)); if (m.id && m.id[0] === 'v') e.vid = m.id; return e; }
+/* 영상 장면 사진 → 실제 영상(PPT에서 재생 · 웹 발표본에서 자동 재생 · PDF/Word는 누르면 웹에서 재생) */
+const videoUrl = k => APP.shareUrl + 'media/video/' + k + '.mp4';
+function videoize(S) {
+  S.forEach(E => { for (let i = 0; i < E.length; i++) { const e = E[i];
+    if (e.t !== 'img' || !e.vid || e.w < 3 || e.h < 1.6) continue;
+    const mi = MEDIA.img[e.vid], va = mi ? mi.w / mi.h : 16 / 9, ba = e.w / e.h;
+    if (Math.abs(ba / va - 1) <= 0.14) { Object.assign(e, { t: 'video', key: e.vid, poster: e.src }); continue; }
+    /* 비율이 다르면 영상 비율 그대로 상자 안에 넣고(찌그러짐 없음) 남는 곳은 어두운 바탕 */
+    const r = Math.min(e.w / va, e.h), w = r * va, h = r; E.splice(i, 0, Rc(e.x, e.y, e.w, e.h, '0F1530')); i++;
+    Object.assign(e, { t: 'video', key: e.vid, poster: e.src, x: e.x + (e.w - w) / 2, y: e.y + (e.h - h) / 2, w, h, src: (mi || { src: e.src }).src });
+  } });
+  return S;
+}
 /* 사진을 상자 안에 비율 유지해 넣기 */
 function PhotoFit(x, y, w, h, id, fb) { const m = typeof id === 'object' ? id : M(id, fb); const r = Math.min(w / m.w, h / m.h), ww = m.w * r, hh = m.h * r; return Im(x + (w - ww) / 2, y + (h - hh) / 2, ww, hh, m.src); }
 

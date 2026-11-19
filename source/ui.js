@@ -12,6 +12,7 @@ function saveUI() { try { localStorage.setItem(UI_KEY, JSON.stringify(UI)); } ca
 const CO_KEY = 'stec_pp_company';
 let CO = Object.assign({}, COMPANY_DEFAULT);
 try { CO = Object.assign(CO, JSON.parse(localStorage.getItem(CO_KEY) || '{}')); } catch (e) { }
+if (/NICE평가정보|국민연금 가입/.test(CO.metrics || '')) { CO.metrics = COMPANY_DEFAULT.metrics; CO.metricsNote = COMPANY_DEFAULT.metricsNote; }   // v2.1 — 실적은 연결재무제표 기준으로 교체
 function saveCompany(c) { try { localStorage.setItem(CO_KEY, JSON.stringify(c)); } catch (e) { } }   // 로그인 시 동기화
 
 /* ---------- 테마: 주간 / 야간 / 시스템 ---------- */
@@ -159,13 +160,14 @@ function openCompany() {
     <div class="field"><label>인증·면허 (줄마다 한 건 · 예: 경비업 허가(시설경비·신변보호))</label><textarea id="coCert" rows="3">${esc(c.certs)}</textarea></div>
     <div class="field"><label>연혁 (줄마다 한 건 · 앞에 연도를 쓰면 연표에 표시 · 예: 1999.01 ㈜에스텍시스템 설립)</label><textarea id="coHist" rows="4">${esc(c.history || '')}</textarea></div>
     <div class="field"><label>핵심 지표 (줄마다 「값|단위|설명」 · 예: 9,672|명|임직원 (국민연금 가입, 2026.09)) — 출처·기준일을 함께 적으세요</label><textarea id="coMet" rows="4">${esc(c.metrics || '')}</textarea></div>
+    <div class="field"><label>지표 출처 (슬라이드 하단 표기)</label><input id="coMetN" value="${esc(c.metricsNote || '')}"></div>
     <div class="mrow"><button class="btn" id="coReset">기본값으로</button><button class="btn" id="mClose">취소</button><button class="btn pri" id="coOk">저장</button></div>`, md => {
     md.querySelector('#mClose').onclick = closeModal;
     md.querySelector('#coReset').onclick = () => { CO = Object.assign({}, COMPANY_DEFAULT); saveCompany(CO); closeModal(); toast('기본값으로 되돌렸습니다'); };
     md.querySelector('#coOk').onclick = () => {
       const v = id => md.querySelector('#' + id).value.trim();
       CO = Object.assign({}, CO, { group: v('coGroup'), name: v('coName'), branch: v('coBranch'), parent: v('coParent'), ceo: v('coCeo'), tel: v('coTel'), addr: v('coAddr'), web: v('coWeb'), slogan: v('coSlogan'),
-        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), history: v('coHist'), metrics: v('coMet'), updated: fmtD(kstNow()) });
+        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), history: v('coHist'), metrics: v('coMet'), metricsNote: v('coMetN'), updated: fmtD(kstNow()) });
       saveCompany(CO); closeModal(); toast('회사 정보를 저장했습니다');
     };
   }, true);

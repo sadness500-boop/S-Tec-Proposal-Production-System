@@ -1,7 +1,7 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "date": "2026-11-19",
-  "note": "제안서 전면 재구성 — 5 PART 57장 내외 발표자료(사진·영상·도표), 인사말·연혁·핵심지표·운영 네트워크 지도·경쟁력 비교·2026 트렌드·특화서비스·POST 배치도·근무 편성표·하루 일과·연간 교육 계획·비상 대응·KPI·SLA, PPT 영상 삽입, Word 제안서 사진·도해 수록",
-  "html": "releases/S-Tec-Proposal-Production-System_v2.0.0.html",
-  "apk": "releases/S-Tec-Proposal-Production-System_v2.0.0.apk"
+  "note": "엑셀·PDF 견적서 불러오기(견적표·원가분석표 자동 인식), 영상 실제 재생(PPT 내장·웹 발표본 자동 재생·PDF/Word 누르면 재생), 간결체·큰 글씨로 시인성 개선, 회사 실적을 연결재무제표(감사보고서) 기준으로 변경",
+  "html": "releases/S-Tec-Proposal-Production-System_v2.1.0.html",
+  "apk": "releases/S-Tec-Proposal-Production-System_v2.1.0.apk"
 }

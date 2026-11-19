@@ -29,8 +29,8 @@ function H2(t) { return P([R('▶ ', { size: 21, bold: true, color: C.green }), 
 function bullets(groups, o = {}) {
   const out = [];
   groups.forEach(g => {
-    if (g.title) out.push(P([R('■ ', { size: 20, color: C.navy, bold: true }), R(g.title, { size: 20, bold: true, color: C.navy })], { before: 80, after: 40, keepNext: true }));
-    g.lines.forEach(l => out.push(P([R(o.mark || '○ ', { size: 20, color: C.green }), R(l, { size: 20 })], { indent: { left: 400, hanging: 260 }, after: 40 })));
+    if (g.title) out.push(P([R('■ ', { size: 22, color: C.navy, bold: true }), R(g.title, { size: 22, bold: true, color: C.navy })], { before: 80, after: 40, keepNext: true }));
+    g.lines.forEach(l => out.push(P([R(o.mark || '○ ', { size: 22, color: C.green }), R(o.keep ? l : briefEnd(l), { size: 22 })], { indent: { left: 400, hanging: 260 }, after: 50, line: 300 })));
   });
   return out;
 }
@@ -137,10 +137,28 @@ function fit(paras, w, h, maxPt, minPt = 9, lh = 1.22, gapPt = 3) {
   }
   return { pt: minPt, ok: false };
 }
+/* 간결체(개조식) — 「~합니다/됩니다/입니다」 끝맺음을 걷어내고, 넘칠 때는 괄호 설명·「—」 뒤 부연을 줄임 */
+const BRIEF_END = [[/\s*하겠습니다\.?$/, ''], [/\s*드리겠습니다\.?$/, ''], [/\s*(합니다|됩니다|입니다)\.?$/, ''], [/있습니다\.?$/, '있음'], [/없습니다\.?$/, '없음'], [/드립니다\.?$/, ''], [/집니다\.?$/, '짐'], [/킵니다\.?$/, '킴'], [/줍니다\.?$/, '줌'], [/칩니다\.?$/, '침'], [/냅니다\.?$/, '냄'], [/눕니다\.?$/, '눔'], [/웁니다\.?$/, '움'], [/립니다\.?$/, '림'], [/듭니다\.?$/, '듦'], [/봅니다\.?$/, '봄'], [/옵니다\.?$/, '옴']];
+function brief(t, hard) {
+  let s = String(t ?? '');
+  if (/^\s*[•·○■□▶◦\-–]|^\s*\d+[.)]\s/.test(s) || hard) BRIEF_END.some(([re, to]) => re.test(s) && ((s = s.replace(re, to)), true));
+  if (hard) { s = s.replace(/\s*\((?=[^)]{8,}\))[^)]*\)/g, ''); const k = s.indexOf(' — '); if (k > 6 && s.length > 26) s = s.slice(0, k); }
+  return s;
+}
+function briefEnd(s) { s = String(s ?? ''); BRIEF_END.some(([re, to]) => re.test(s) && ((s = s.replace(re, to)), true)); return s; }
+const T_MIN = 10, T_FLOOR = 9;   // 시인성: 본문 최소 10pt (예외적으로 9pt)
 function T(x, y, w, h, paras, o = {}) {
   if (typeof paras === 'string') paras = [{ text: paras }];
-  const r = o.pt ? { pt: o.pt, ok: true } : fit(paras, w, h, o.max || 16, o.min || 9, o.lh || 1.22, o.gap ?? 3);
-  return { t: 'text', x, y, w, h, paras, pt: r.pt, ok: r.ok, color: o.color || C.ink, bold: o.bold, align: o.align || 'left', valign: o.valign || 'top', lh: o.lh || 1.22, gap: o.gap ?? 3, font: o.font };
+  paras = paras.map(p => Object.assign({}, p, { text: brief(p.text) }));
+  const lh = o.lh || 1.22, gap = o.gap ?? 3, mx = o.max ? (o.max < 14 ? Math.min(o.max * 1.18, 14) : o.max) : 16, mn = Math.max(o.min || 9, T_MIN);
+  let r = o.pt ? { pt: Math.max(o.pt, T_FLOOR), ok: true } : fit(paras, w, h, Math.max(mx, mn), mn, lh, gap);
+  if (!r.ok && !o.pt) {   /* 넘치면 줄이기: ① 부연 걷기 ② 뒤 항목 덜기 ③ 글자 줄임 — 글씨를 작게 하지 않음 */
+    paras = paras.map(p => Object.assign({}, p, { text: brief(p.text, true) })); r = fit(paras, w, h, mn + 0.5, mn, lh, gap);
+    while (!r.ok && paras.length > 2) { paras = paras.slice(0, -1); r = fit(paras, w, h, mn, mn, lh, gap); }
+    if (!r.ok) r = fit(paras, w, h, mn, Math.max(T_FLOOR, Math.min(o.min || 9, mn) - 1), lh, gap);
+    let guard = 0; while (!r.ok && guard++ < 12) { const L = paras[paras.length - 1]; if (!L || L.text.length < 8) break; L.text = L.text.slice(0, Math.floor(L.text.length * 0.85)).replace(/[\s,·.—-]+$/, '') + '…'; r = fit(paras, w, h, r.pt, r.pt, lh, gap); }
+  }
+  return { t: 'text', x, y, w, h, paras, pt: r.pt, ok: r.ok, color: o.color === '667089' ? '4A5372' : (o.color || C.ink), bold: o.bold, align: o.align || 'left', valign: o.valign || 'top', lh, gap, font: o.font };
 }
 const Rc = (x, y, w, h, fill, o = {}) => ({ t: 'shape', k: o.k || 'rect', x, y, w, h, fill, line: o.line, lw: o.lw, alpha: o.alpha });
 const Im = (x, y, w, h, src) => ({ t: 'img', x, y, w, h, src });
@@ -208,9 +226,12 @@ function closingSlide(o) {
 function sigEl(x, y, h) { return Im(x, y, h * state.sigPx / 210, h, state.sigDataUrl); }
 function listParas(groups, o = {}) {
   const out = [];
-  groups.forEach((g, gi) => {
-    if (g.title) out.push({ text: g.title, bold: true, color: o.hcolor || C.navy, gap: 2 });
-    g.lines.forEach((l, i) => out.push({ text: `•  ${l}`, indent: 0, color: C.ink, gap: (i === g.lines.length - 1 && gi < groups.length - 1) ? 7 : 3 }));
+  /* 발표자료는 간결하게 — 묶음당 핵심 4줄, 최대 4묶음 · 부연 설명은 Word 제안서에 */
+  const per = o.per ?? 4, gs = groups.slice(0, o.groups ?? 4);
+  gs.forEach((g, gi) => {
+    if (g.title) out.push({ text: g.title, bold: true, color: o.hcolor || C.navy, gap: 3 });
+    const ls = g.lines.slice(0, per).map(l => brief(briefEnd(l), true));
+    ls.forEach((l, i) => out.push({ text: `•  ${l}`, indent: 0, color: C.ink, gap: (i === ls.length - 1 && gi < gs.length - 1) ? 9 : 4 }));
   });
   return out;
 }
@@ -286,6 +307,7 @@ async function makePdf(p, onProgress, slidesIn, titleIn) {
     const cv = await html2canvas(d, { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
     if (i) pdf.addPage([SW, SH], 'landscape');
     pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, SW, SH);
+    slides[i].filter(x => x.t === 'video' && x.key).forEach(x => { try { pdf.link(x.x, x.y, x.w, x.h, { url: videoUrl(x.key) }); } catch (er) { } });   // 영상: 누르면 웹에서 재생
   }
   host.innerHTML = '';
   pdf.setProperties({ title: titleIn || docTitle(p), author: APP.maker, creator: `${APP.name} ${APP.version}` });
