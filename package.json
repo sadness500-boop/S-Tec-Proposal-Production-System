@@ -1,10 +1,10 @@
 {
   "name": "s-tec-proposal-production-system",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "S-Tec Proposal Production System(에스텍 제안서 제작시스템) — 안드로이드 앱 포장(Capacitor). Designed & Developed by Rat Rae Choi",
   "scripts": {
-    "www": "rm -rf www && mkdir -p www && cp index.html manifest.webmanifest auth-config.json www/ && cp -r icons lib www/"
+    "www": "rm -rf www && mkdir -p www && cp index.html manifest.webmanifest auth-config.json www/ && cp -r icons lib media www/"
   },
   "dependencies": {
     "@capacitor/android": "6.2.0",

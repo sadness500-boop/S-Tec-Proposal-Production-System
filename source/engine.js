@@ -150,10 +150,10 @@ function gradient(w, h, stops, dir = 'h') {
   const gr = dir === 'h' ? g.createLinearGradient(0, 0, w, 0) : dir === 'd' ? g.createLinearGradient(0, 0, w, h) : g.createLinearGradient(0, 0, 0, h);
   stops.forEach(([o, c]) => gr.addColorStop(o, c)); g.fillStyle = gr; g.fillRect(0, 0, w, h); return cv.toDataURL('image/png');
 }
-let GR = null;
+let GRADS = null;
 function grads() {
-  if (GR) return GR;
-  GR = {
+  if (GRADS) return GRADS;
+  GRADS = {
     navy: gradient(640, 360, [[0, '#0E2AA8'], [0.55, '#0B1F8F'], [1, '#050C3E']], 'd'),
     silver: gradient(400, 40, [[0, '#F7F8FA'], [0.5, '#E3E7EC'], [1, '#C9CED6']], 'h'),
     silverV: gradient(40, 400, [[0, '#FFFFFF'], [0.6, '#F1F3F6'], [1, '#DDE2E8']], 'v'),
@@ -161,7 +161,7 @@ function grads() {
     fade: gradient(600, 20, [[0, 'rgba(30,139,58,1)'], [1, 'rgba(30,139,58,0)']], 'h'),
     fadeN: gradient(600, 20, [[0, 'rgba(11,31,143,1)'], [1, 'rgba(11,31,143,0)']], 'h')
   };
-  return GR;
+  return GRADS;
 }
 
 /* 공통 프레임: 상단 제목바 + 하단 바 */

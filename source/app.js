@@ -1,5 +1,5 @@
 /* =====================================================================
- * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v1.0.0 — 앱 로직
+ * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.0.0 — 앱 로직
  * 흐름: RFP 분석 → 기획 → 집필 → 검토·승인 → 제작·제본(Word·PPT·PDF) → 제출
  * 견적 연동: S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate
  * Program & Design by Rat Rae Choi (제작자 서명 — 하드코딩)
@@ -7,7 +7,7 @@
 const APP = {
   name: 'S-Tec Proposal Production System',
   ko: '에스텍 제안서 제작시스템',
-  version: 'v1.0.0',
+  version: 'v2.0.0',
   build: '2026-11-19',
   shareUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
   apkUrl: 'https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk',
@@ -228,6 +228,16 @@ function buildPlan() {
   const sumLaw = uniq(jobs.flatMap(j => j.laws).concat(['minw', 'dispatch'], f.ind === 'apt' ? ['apt'] : [], f.ind === 'public' ? ['pubsvc'] : []));
   p.laws = sumLaw;
 
+  /* s00 인사말 */
+  const mg = UI.manager || {}, h0 = lines(CO.history)[0] || '';
+  S.s00 = [{ title: '', lines: [
+    `존경하는 ${f.client} ${f.to_ ? f.to_.replace(/\s*귀하$/, '') + '님' : '관계자 여러분'}께`,
+    `귀사의 소중한 현장을 함께 지킬 파트너를 찾는 자리에 ${CO.group}을 불러 주셔서 진심으로 감사드립니다.`,
+    h0 ? `${CO.group}은 ${h0.replace(/^\d{4}(\.\d{1,2})?\s*/, '')} 이래, 공동주택·공장·빌딩·병원·공공기관 등 산업 전 분야의 현장을 운영하며 「사람이 하는 서비스」의 품질을 지켜 왔습니다.` : `${CO.group}은 산업 전 분야의 현장을 운영하며 「사람이 하는 서비스」의 품질을 지켜 왔습니다.`,
+    `이번 제안서는 ${f.client}${ind ? `의 ${ind.n} 현장 특성` : ''}과 ${jobs.map(j => j.n).join('·')} 운영 요구를 분석해, 인력·안전·품질·비용 모든 면에서 바로 실행할 수 있는 계획으로 담았습니다.`,
+    '제안서의 모든 약속은 KPI와 SLA로 정리해 숫자로 확인하실 수 있도록 했습니다.',
+    '현장의 작은 변화까지 먼저 살피고, 문제가 생기면 가장 먼저 책임지는 회사가 되겠습니다. 감사합니다.',
+    `${CO.branch || CO.name}${mg.title ? ' ' + mg.title : ''}${mg.name ? ' ' + mg.name : ''} 드림`] }];
   /* s01 제안 개요 */
   S.s01 = [
     { title: '제안 배경', lines: [`${f.client}${sub}${ind ? `는 ${ind.n} 현장으로` : '의'} ${jobN} 용역 운영에 대한 안정성과 품질, 법규 준수가 동시에 요구됩니다.`, pt.lead]
@@ -245,44 +255,58 @@ function buildPlan() {
     { title: '운영 현황 (사업장 현황 지도 기준)', lines: [`운영 사업장 ${SITES.length}곳 · 현장 인력 ${totStaff.toLocaleString('ko-KR')}명`, `지사별 운영: ${brCnt}`, `${INDUSTRIES.mfg.n}·${INDUSTRIES.apt.n}·${INDUSTRIES.univ.n}·${INDUSTRIES.special.n} 등 다양한 산업 운영 경험`] }
   ].concat(lines(CO.achievements).length ? [{ title: '주요 실적', lines: lines(CO.achievements) }] : [])
     .concat(lines(CO.certs).length ? [{ title: '인증·면허', lines: lines(CO.certs) }] : [])
-    .concat([{ title: '핵심 역량', lines: ['지사 중심 현장 밀착 관리와 그룹 차원의 교육·법무·품질 지원', '직종×산업 표준 매뉴얼과 통합관리 플랫폼 기반의 표준 운영', '법정 원가를 지키는 투명한 원가 산정과 근로조건 준수'] }]);
+    .concat([{ title: '핵심 역량', lines: ['지사 중심 현장 밀착 관리와 그룹 차원의 교육·법무·품질 지원', '직종×산업 표준 매뉴얼과 통합관리 플랫폼 기반의 표준 운영', '법정 원가를 지키는 투명한 원가 산정과 근로조건 준수', '인근 사업장·지사 예비 인력을 활용한 신속한 결원 대체·비상 증원'] }])
+    .concat(lines(CO.history).length ? [{ title: '연혁', lines: lines(CO.history) }] : [])
+    .concat(lines(CO.metrics).length ? [{ title: '핵심 지표', lines: lines(CO.metrics).map(l => l.split('|')).map(x => `${x[0]}${x[1] || ''} — ${x[2] || ''}`) }] : [])
+    .concat([{ title: '경쟁력 비교 (에스텍 vs 일반 용역사)', lines: COMPARE.map(c => `${c[0]}: ${c[1]}`) }]);
   /* s03 현황 분석 */
   S.s03 = [{ title: `${f.client} 현장 이해`, lines: (ind ? ind.view : ['고객사 현장 특성과 운영 요구사항을 사전 실사로 확인해 반영합니다.']).slice() }]
     .concat(site ? [{ title: '현재 운영 현황', lines: [`계약 업종 ${site.work || '-'} · 근무형태 ${site.shift || '-'} · 운영 인원 ${site.total}명(보안 ${site.sec} · 미화 ${site.cln} · 기타 ${site.etc})`, `관할: ${site.br}지사 — 정기 방문·불시 점검으로 직접 관리`] }] : [])
     .concat([{ title: '주요 리스크와 대응 방향', lines: (ind ? ind.risk : ['근무 공백', '안전사고', '고객 민원']).map(x => `${x} → 예방·즉시 대응 체계로 관리`) }])
+    .concat([{ title: '2026 운영 환경 변화', lines: TRENDS.map(t => `${t.t} — ${t.d}`) }])
+    .concat([{ title: '시간대별 집중 운영 포인트', lines: (TIMEFOCUS[f.ind] || TIMEFOCUS.default).map(r => `${r[0]} ${r[1]}: ${r[2]}`) }])
     .concat(rfp && rfp.rows.length ? [{ title: `제안요청 핵심 요구사항 (${rfp.rows.length}건 중 주요)`, lines: rfp.rows.slice(0, 8).map(x => `[${x.cat}] ${x.req}`) }] : []);
   /* s04 운영 전략 */
   S.s04 = [
     { title: '운영 기본 방향', lines: ['도급 원칙: 현장대리인(소장·반장)을 통한 업무 지시 — 고객사 직접 지휘·명령 배제', '법규 준수: 경비업법·근로기준법·산업안전보건법 등 관계 법령 준수', '품질 수치화: 점검표·KPI·월간 보고로 서비스 수준을 관리', '현장 밀착: 관할 지사의 정기 방문·불시 점검·결원 대체'] },
     { title: '평가 강조점 대응', lines: p.emph.map(k => `${EMPH[k].n}: ${EMPH[k].line}`) },
-    { title: '차별화 포인트', lines: p.diff.flatMap(k => [`${DIFF[k].n} — ${DIFF[k].lines[0]}`]) }
+    { title: '차별화 포인트', lines: p.diff.flatMap(k => [`${DIFF[k].n} — ${DIFF[k].lines[0]}`]) },
+    { title: '에스텍 특화서비스', lines: SPECIALS.common.concat(SPECIALS[f.ind] || []).map((x, i) => `특화 1.${i + 1} ${x[0]} — ${x[1]}`) }
   ];
   /* s05 인력 운영 계획 */
   S.s05 = [
     { title: '편성 원칙', lines: [est.length ? '연동 견적(직종·직책·근무형태)을 기준으로 인원을 편성합니다' : '현장 실사와 요구사항을 기준으로 인원을 편성합니다', '근무형태별 법정 근로시간·휴게시간을 준수하는 교대 편성', '결원 발생 시 지사 예비 인력으로 24시간 이내 대체 투입'] },
     { title: '직종별 편성', lines: staff.length ? staff.map(r => `${r.job}${r.title && r.title !== r.job ? ' ' + r.title : ''} ${r.count}명${r.shift ? ' · ' + r.shift : ''}${r.days ? ` · ${r.days}일` : ''}`) : jobs.map(j => `${j.n}: 현장 실사 후 인원 확정`) },
-    { title: '현장 조직·보고 체계', lines: ['현장 책임자(소장·반장) → 지사 담당 → 지사장 보고 체계', '고객사 요청사항은 현장 책임자가 접수해 근무자에게 지시(불법파견 방지)', '근무 교대 시 인수인계 일지 작성, 주요 사항은 당일 보고'] }
+    { title: '현장 조직·보고 체계', lines: ['현장 책임자(소장·반장) → 지사 담당 → 지사장 보고 체계', '고객사 요청사항은 현장 책임자가 접수해 근무자에게 지시(불법파견 방지)', '근무 교대 시 인수인계 일지 작성, 주요 사항은 당일 보고'] },
+    { title: 'POST(근무 거점) 운영', lines: (POSTS[f.ind] || POSTS.office).map((t, i) => `P${i + 1} ${t}`).concat(['피크 시간대 POST 증원, 한산 시간대 순찰 전환으로 탄력 운영']) },
+    { title: '근무 편성 기준', lines: ['근무형태(3조2교대·4조2교대·격일제·주간 고정 등)는 연동 견적 기준으로 편성', '4시간당 30분 이상 휴게시간 부여, 휴게 장소·시간을 근무지침에 명시', '감시·단속적 근로 승인 대상은 승인 절차 이행 후 운영', '대체근무·연차는 근태관리 시스템으로 자동 집계해 월간 보고'] },
+    { title: '결원·비상 대체 운영', lines: ['지사 예비 인력 풀 운영 — 결원 시 24시간 이내 대체 투입', '장기 결원은 7일 이내 정규 충원, 충원 전까지 인근 사업장 지원', '행사·비상 상황 시 단기 증원(단기인력 견적 연동)'] }
   ];
   /* s06 업무 수행 */
-  S.s06 = jobs.map(j => ({ title: `${j.n} 업무 수행`, lines: j.scope.concat(ind && ind.focus && ind.focus[j.k] ? ind.focus[j.k].map(x => `[${ind.n}] ${x}`) : []).concat(j.run.slice(0, 2)) }));
+  S.s06 = jobs.flatMap(j => [{ title: `${j.n} 업무 수행`, lines: j.scope.concat(ind && ind.focus && ind.focus[j.k] ? ind.focus[j.k].map(x => `[${ind.n}] ${x}`) : []).concat(j.run) },
+    { title: `${j.n} 하루 일과`, lines: (ROUTINE[j.k] || ROUTINE.spc).map(r => `${r[0]} — ${r[1]}`) },
+    { title: `${j.n} 장비·용품`, lines: [j.equip.join(', ')] }]);
   /* s07 교육·훈련 */
   S.s07 = [
     { title: '법정 교육', lines: uniq(jobs.flatMap(j => j.edu)) },
     { title: '자체 교육', lines: ['신규 배치 전 현장 OJT(근무지침·비상연락망·시설 숙지)', '월 1회 현장 특별 직무교육 및 작업 전 TBM', '연 1회 이상 비상 대응 훈련(화재·대피·침입) — 고객사 합동'] },
-    { title: '교육 관리', lines: ['교육 이수 기록·서명부 보관, 고객사 요청 시 즉시 제출', '교육 결과를 월간 운영 보고서에 포함'] }
+    { title: '연간 교육 계획', lines: EDU_CAL.map(r => `${r[0]} (${r[1].length === 12 ? '매월' : r[1].join('·') + '월'}) — ${r[2]}`) },
+    { title: '교육 관리', lines: ['교육 이수 기록·서명부 보관, 고객사 요청 시 즉시 제출', '교육 결과를 월간 운영 보고서에 포함', '실제 Complaint 사례 영상을 활용한 재발 방지 교육'] }
   ];
   /* s08 안전·법규 */
   S.s08 = [
     { title: '안전보건 관리', lines: ['작업 전 TBM·정기 위험성평가로 위험요인 사전 제거', '보호구 지급·착용 점검 및 안전 수칙 게시', '사고 발생 시 즉시 보고(최초 보고 5분 이내) → 원인 분석 → 재발방지 대책'] },
     { title: '적용 법령 (국가법령정보센터 기준)', lines: sumLaw.map(id => `${LAWS[id].law} ${LAWS[id].art}(${LAWS[id].t}) — ${LAWS[id].s}`) },
-    { title: '근로조건 준수', lines: ['최저임금(감시·단속직 포함 100%)·4대보험·퇴직급여를 원가에 정확히 반영', '근로계약서 서면 교부, 법정 근로시간·휴게시간 준수', '고객사 갑질·폭언으로부터 근무자 보호 — 고충 처리 채널 운영'] }
+    { title: '근로조건 준수', lines: ['최저임금(감시·단속직 포함 100%)·4대보험·퇴직급여를 원가에 정확히 반영', '근로계약서 서면 교부, 법정 근로시간·휴게시간 준수', '고객사 갑질·폭언으로부터 근무자 보호 — 고충 처리 채널 운영'] },
+    { title: '비상 상황별 대응', lines: EMERGENCY.map(e => `${e[0]}: ${e[1]} → ${e[2]} → ${e[3]}`) }
   ];
   /* s09 품질·Complaint */
   const kpi = uniq(jobs.flatMap(j => j.kpi).concat(ind ? ind.kpi : [])).slice(0, 8);
   S.s09 = [
     { title: '품질관리', lines: ['월간 운영 보고서 제출(근태·교육·점검·민원 처리 현황)', '분기 품질평가와 개선 과제 관리', '지사 정기 방문·불시 점검 결과 공유'] },
     { title: '핵심 성과지표(KPI)', lines: kpi },
-    { title: 'Complaint 대응 절차', lines: ['D+0 접수 즉시 1차 조치·경위 보고', 'D+1~3 원인 분석·관련자 면담·조치', 'D+7 이내 재발방지 대책 서면 회신', '중대 사안은 지사장 직접 방문·대책 보고'] }
+    { title: 'Complaint 대응 절차', lines: ['D+0 접수 즉시 1차 조치·경위 보고', 'D+1~3 원인 분석·관련자 면담·조치', 'D+7 이내 재발방지 대책 서면 회신', '중대 사안은 지사장 직접 방문·대책 보고'] },
+    { title: '보고 체계', lines: ['일일: 근무일지·특이사항', '주간: 운영 현황 대면 보고', '월간: 운영 보고서(근태·교육·점검·민원)', '분기: 품질평가·개선 과제 회의'] }
   ];
   /* s10 스마트 운영관리 */
   S.s10 = [
@@ -320,6 +344,7 @@ function buildPlan() {
   const eff = { price: '법정 원가 기반 투명한 가격으로 예산 예측 가능성 향상', quality: '수치로 관리되는 서비스 품질과 지속적인 개선', stable: '고용승계·근로조건 준수로 이직률 감소와 업무 연속성 확보', safety: '안전보건관리체계로 사고 예방과 중대재해 리스크 감소', legal: '불법파견·근로기준 위반 등 법적 리스크 최소화', tech: '통합관리 플랫폼으로 현장 현황의 실시간 파악', esg: '지역 고용·근로자 보호로 ESG 경영에 기여', response: 'Complaint 신속 처리로 고객사 만족도 향상' };
   S.s13 = [
     { title: '기대효과', lines: p.emph.map(k => eff[k]).concat(['당사 운영 노하우를 통한 관리 부담 경감']) },
+    { title: '고객 약속(SLA)', lines: PROMISES.map(x => `${x[0]} ${x[1]} — ${x[2]}`) },
     { title: '맺음말', lines: [`${CO.group}은 ${f.client}의 신뢰받는 파트너로서 약속한 운영 수준을 반드시 지키겠습니다.`, '현장의 작은 변화까지 먼저 살피고, 문제가 생기면 가장 먼저 책임지는 회사가 되겠습니다.', CO.slogan || 'The Best Choice, S-Tec'] }
   ];
   p.text = {}; SECTIONS.forEach(s => p.text[s.id] = grpText(S[s.id]));

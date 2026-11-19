@@ -7,9 +7,9 @@
 <title>S-Tec Proposal Production System · 에스텍 제안서 제작시스템</title>
 <meta name="description" content="에스텍 그룹 제안서 제작시스템 — 용역인력 견적·업무량 기반 산정·단기인력 견적과 연동해 업종·산업별 제안서(Word)·발표자료(PPT·PDF) 제작">
 <meta name="theme-color" content="#0B1F8A">
-<link rel="manifest" href="manifest.webmanifest?v=1.0.0">
-<link rel="icon" href="icons/favicon-48.png?v=1.0.0">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.0.0">
+<link rel="manifest" href="manifest.webmanifest?v=2.0.0">
+<link rel="icon" href="icons/favicon-48.png?v=2.0.0">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2.0.0">
 <style>
 /* =====================================================================
    S-Tec Proposal Production System — 화면 디자인
@@ -3342,7 +3342,9 @@ const COMPANY_DEFAULT = {
     '동부·서부·남부·중부 4개 지사가 관할 현장을 직접 관리하며, 본사 그룹의 교육·법무·품질 체계를 함께 적용합니다.'
   ],
   achievements: '',   // 주요 실적 (줄마다 한 건) — 비워두면 사업장 목록 기준 운영 현황만 기재
-  certs: '',          // 인증·면허 (줄마다 한 건) — 예: 경비업 허가(시설경비·신변보호), ISO 등
+  certs: '경비업 허가(시설경비·신변보호 등) — 허가번호 확인 후 기재\n품질·환경경영시스템(ISO) 인증 — 인증번호·유효기간 확인 후 기재\n우수노사문화기업 인증 — 인증 연도 확인 후 기재',
+  history: '1999.01 ㈜에스원 인력보안 조직 분사, ㈜에스텍시스템 설립 — 인력보안 산업의 새로운 문화 창조\n전국 본부·지사 네트워크 구축 — 공동주택·빌딩·공장·병원·공공기관 등 전 산업 인력 운영\n에스텍베스트(주) 설립 — 에스텍시스템 100% 출자, 경상남북도 인력운영 전담\n2026 에스텍시스템 유가증권시장(코스피) 상장 추진',
+  metrics: '1999|년 설립|㈜에스원 인력보안 분사\n7,316|억원|2025 매출 (NICE평가정보)\n9,672|명|임직원 (국민연금 가입, 2026.09)\n2|시간|비상시 대체·증원 인력 투입 목표',
   updated: ''
 };
 
@@ -3552,6 +3554,7 @@ const PLATFORM = [
 
 /* ---------- 제안서 목차(섹션) ---------- */
 const SECTIONS = [
+  { id: 's00', n: '인사말', ic: '✉' },
   { id: 's01', n: '제안 개요', ic: '①' },
   { id: 's02', n: '회사 소개', ic: '②' },
   { id: 's03', n: '현황 분석 및 요구사항', ic: '③' },
@@ -3601,6 +3604,137 @@ const STATUS = {
   review:   { n: '검토 요청', c: 'E8750A' },
   approved: { n: '승인', c: '1B7A34' },
   submitted:{ n: '제출 완료', c: '0B1F8A' }
+};
+
+
+/* =====================================================================
+ * v2.0 — 레퍼런스 제안서(해운대 두산위브더제니스·분당 파크뷰·두산위브지웰시티) 수준의 세부 항목
+ * ===================================================================== */
+
+/* ---------- 2026 시장·환경 트렌드 (출처: 법령·고시) ---------- */
+const TRENDS = [
+  { ic: '⚖', t: '중대재해처벌법 전면 적용', d: '2024.1.27부터 5인 이상 전 사업장 적용 — 도급인(고객사)도 용역 종사자 안전보건 확보의무를 집니다. 안전보건관리체계를 갖춘 용역사 선정이 곧 고객사 리스크 관리입니다.' },
+  { ic: '🛡', t: '경비업법 개정 — 업무 범위 명확화', d: '경비원의 경비업무 외 업무 종사 제한(2026.1.8 시행 개정 반영). 업무 범위를 계약서·근무지침에 명확히 정의해야 행정처분 리스크를 피할 수 있습니다.' },
+  { ic: '💵', t: '최저임금 상승 지속', d: '2026년 시간급 10,320원, 2027년 10,700원. 인원 단가 경쟁이 아닌 업무량 기반 편성·생산성 향상이 비용 관리의 핵심이 되었습니다.' },
+  { ic: '🤝', t: '원청 사용자성 확대(노동조합법 개정)', d: '개정 노동조합법 제2·3조(2026.3.10 시행)로 원청의 사용자성 판단 범위가 넓어졌습니다. 도급 원칙(현장대리인 경유 지시)을 지키는 전문 운영이 중요합니다.' },
+  { ic: '👥', t: '고령화·구인난', d: '현장 인력의 고령화와 구인난으로 결원·이직 관리가 품질을 좌우합니다. 고용승계·근로조건 준수·예비 인력 풀 운영이 필수입니다.' },
+  { ic: '📱', t: 'AI·스마트 관제와의 결합', d: 'AI CCTV·출입통제·모바일 순찰 시스템이 보편화되며 「사람 + 시스템」 하이브리드 운영과 데이터 보고가 표준이 되고 있습니다.' },
+  { ic: '🌱', t: 'ESG·공급망 실사', d: '고객사 ESG 평가에서 협력사의 인권·안전·근로조건 관리가 평가 항목이 되었습니다. 용역사의 근로조건 이행 증빙이 요구됩니다.' }
+];
+
+/* ---------- 업종별 POST(근무 거점) 기본 구성 ---------- */
+const POSTS = {
+  mfg: ['정문 초소(출입통제·계근)', '후문·물류 출입구', '방재실(CCTV·화재수신기)', '생산동 순찰', '외곽 순찰', '협력사 출입 관리'],
+  logi: ['차량 게이트(입출고)', '도크·하역장', '반출입 검색대', 'CCTV 관제실', '야간 외곽 순찰'],
+  hosp: ['본관 로비 안내·보안', '응급실 안전요원', '주차 게이트', '방재실', '병동 순찰', '면회 통제'],
+  office: ['로비 리셉션', '스피드게이트', '지하 주차장', '방재실', '층별 순찰', '하역장'],
+  public: ['청사 정문', '민원실 안내', '방재실', '청사 순찰', '주차장'],
+  univ: ['정문 초소', '후문 초소', '기숙사 출입', '중앙 상황실', '캠퍼스 순찰', '행사 지원'],
+  apt: ['정문 게이트(차량)', '후문·보행 출입구', '동별 로비(컨시어지)', '지하 주차장', '택배실', '종합상황실', '단지 순찰'],
+  retail: ['고객 출입구', '매장 순찰', '주차장 진출입', '방재실', '하역장', '고객센터 지원'],
+  hotel: ['로비·프런트 지원', '연회장', '주차장', '방재실', '객실층 순찰'],
+  build: ['현장 출입 게이트', '자재 야적장', '장비 반출입', '현장 사무실', '야간 순찰'],
+  energy: ['정문(보안 등급 통제)', '내곽 초소', '상황실', '외곽 경계 순찰', '중요시설 고정 경계'],
+  special: ['정문 출입 검색', '민원 대기실', '상황실', '외곽 순찰', '집회 대응 거점']
+};
+
+/* ---------- 업종별 시간대 집중업무 (데이터 기반 운영) ---------- */
+const TIMEFOCUS = {
+  default: [['07:00 ~ 09:00', '출근·등원', '출입 집중 — 게이트 증원, 교통 유도'], ['11:30 ~ 13:30', '점심', '식당·로비 혼잡 관리, 순찰 공백 방지'], ['17:30 ~ 19:30', '퇴근', '차량 정체 관리, 외곽 안전'], ['22:00 ~ 02:00', '심야', '취약지역 집중 순찰, 화재·침입 예방'], ['02:00 ~ 06:00', '새벽', '방재 모니터링, 졸음·근무 이탈 방지 점검']],
+  apt: [['07:00 ~ 09:00', '어린이 등교', '안전 — 등교·교통지도'], ['15:00 ~ 18:00', '청소년 하교', '범죄 예방 — 우범지역 순회'], ['05:00 ~ 07:00', '60대 이상 운동', '건강 — 운동로 안전 확보'], ['18:00 ~ 21:00', '맞벌이 귀가', '귀가 — 게이트 차량·방문객 확인'], ['22:00 ~ 02:00', '심야', '지하주차장·취약지역 집중 순찰']],
+  hosp: [['08:00 ~ 10:00', '외래 집중', '로비 안내·주차 혼잡 관리'], ['12:00 ~ 14:00', '면회 시간', '면회 통제·감염관리 안내'], ['20:00 ~ 02:00', '응급실 피크', '주취자·폭력 대응 대기 강화'], ['02:00 ~ 06:00', '새벽', '병동 순찰·방재 모니터링']],
+  mfg: [['07:30 ~ 08:30', '출근·교대', '출입 확인·차량 계근 대기열 관리'], ['09:00 ~ 17:00', '협력사 작업', '화기작업허가 확인 순찰'], ['18:00 ~ 20:00', '교대·퇴근', '반출 물품 검색·차량 통제'], ['22:00 ~ 06:00', '야간 가동', '방재실 상시 모니터링·외곽 순찰']]
+};
+
+/* ---------- 직종별 하루 일과 (근무 루틴) ---------- */
+const ROUTINE = {
+  sec: [['근무 교대', '인수인계 일지·지시사항 확인, 장비 점검'], ['출입 집중 시간', '게이트 증원·방문객 확인·차량 유도'], ['정기 순찰', '2시간 단위 전자순찰, 이상 즉보'], ['방재 모니터링', 'CCTV·화재수신기 상시 감시'], ['야간 취약지 순찰', '도난·화재·침입 예방 집중 순찰'], ['일일 보고', '근무일지·특이사항 보고, 다음 근무조 인계']],
+  cln: [['오픈 전 청소', '로비·화장실·출입구 집중 청소'], ['오전 정기 청소', '구역별 책임 청소, 점검표 기록'], ['수시 순회', '화장실·공용부 1~2시간 순회'], ['분리수거', '폐기물 수거·지정장소 보관'], ['특별 청소', '바닥 왁스·유리창 등 주간·월간 계획'], ['마감 점검', '반장 품질 점검·사진 기록']],
+  prk: [['오픈 준비', '차단기·정산기 점검, 유도 위치 배치'], ['피크 시간 유도', '진출입 혼잡 관리·대기열 해소'], ['방문 차량 등록', '방문 차량 확인·정산·정기권 관리'], ['주차장 순찰', '불법·장기 주차 계도, 안전 확인'], ['사고 대응', '사고 발생 시 사진·CCTV 확보 후 보고'], ['마감', '정산 마감·일일 보고']],
+  fac: [['아침 설비 점검', '전기·공조·급배수 운전 상태 확인'], ['일상 순회', '설비 점검표 기록, 이상 소음·누수 확인'], ['민원 처리', '고장 접수 → 초기 조치 → 결과 보고'], ['법정 점검', '외부 점검 입회·결과 관리'], ['에너지 관리', '사용량 기록·절감 포인트 보고'], ['마감 점검', '야간 운전 전환·인수인계']],
+  info: [['오픈 준비', '용모·데스크 정리, 당일 방문 예정 확인'], ['방문객 응대', '등록·안내·출입증 발급'], ['회의실·우편', '예약 안내·택배 접수'], ['VIP 의전', '의전 동선 안내·보안 연계'], ['전화 응대', '안내·연결·메모 전달'], ['마감', '방문 기록 정리·개인정보 관리']],
+  cook: [['식자재 검수', '입고 검수·온도 기록·선입선출'], ['조리 준비', '위생 점검·보건증 확인'], ['조리·배식', 'HACCP 원칙 조리·배식'], ['보존식 관리', '보존식 보관·온도 기록'], ['세척·소독', '조리기구 세척·소독'], ['잔반·마감', '잔반 처리·식당 정리']],
+  san: [['방역 계획 확인', '일정표·대상 구역 확인'], ['약제 준비', 'MSDS 확인·보호구 착용'], ['정기 소독·방제', '구역별 소독·방제 실시'], ['긴급 방역', '감염병 발생 시 즉시 투입'], ['결과 기록', '소독 실시 증명·사진 기록'], ['장비 정비', '분무기·연무기 세척·점검']],
+  grd: [['사전 답사', '현장 위험요소·동선 점검'], ['인력 배치', '구역별 배치도·무전망 구성'], ['입장 관리', '검색·대기열·인파 밀집 관리'], ['VIP 경호', '동선 경호·돌발 대응'], ['비상 대응', '대피 유도·관계기관 협조'], ['철수·보고', '사후 점검·결과 보고']],
+  spc: [['업무 지시 확인', '직무기술서 기반 업무 확인'], ['정기 업무', '사무·운전·수거 등 정기 업무'], ['수시 업무', '현장 요청 업무 처리(도급 범위 내)'], ['안전 확인', '작업 전 안전 점검'], ['기록', '업무 일지 작성'], ['보고', '일일 보고·인수인계']]
+};
+
+/* ---------- 비상 상황별 대응 체계 ---------- */
+const EMERGENCY = [
+  ['🔥 화재', '화재 감지 즉시 현장 확인·초기 소화(소화기·옥내소화전)', '119 신고 → 고객사·지사 동시 보고(5분 이내)', '대피 유도·자위소방대 운영, 사후 원인 조사·재발방지'],
+  ['🚑 응급환자', 'AED·CPR 응급처치, 119 신고', '고객사 담당·지사 보고', '119 안내·동선 확보, 경위서 작성'],
+  ['🚨 침입·도난', '현장 확인(2인 1조), 증거 보존', '112 신고·고객사 보고', 'CCTV 확보·경찰 협조, 취약지 보강'],
+  ['⚡ 정전·설비 고장', '비상발전기·비상조명 확인, 승강기 갇힘 확인', '시설 담당·한전·유지보수 업체 연락', '복구 확인·원인 보고'],
+  ['🌧 자연재해(태풍·폭우)', '사전 점검(배수·간판·외곽), 출입 통제', '고객사·지사 상황 보고', '피해 사진 기록·복구 지원'],
+  ['🗣 민원·폭언·소란', '침착 응대·분리, 녹취·기록', '현장 책임자·고객사 보고', '사실관계 정리, 필요 시 법률 대응 시스템 검토'],
+  ['🦠 감염병', '출입자 발열·소독 강화, 방역 실시', '보건당국 지침·고객사 협의', '소독 기록·근무자 건강 관리']
+];
+
+/* ---------- 연간 교육 계획 (월별) ---------- */
+const EDU_CAL = [
+  ['법정 직무교육', [1,2,3,4,5,6,7,8,9,10,11,12], '경비원 직무교육 매월 2시간 이상'],
+  ['안전보건 정기교육', [3,6,9,12], '산업안전보건법 — 반기 12시간 이상(분기 분할)'],
+  ['TBM·현장 특별교육', [1,2,3,4,5,6,7,8,9,10,11,12], '매월 현장 특별 직무교육, 매일 작업 전 TBM'],
+  ['소방·대피 훈련', [4,10], '자위소방대 합동 훈련(고객사 협조)'],
+  ['응급처치(CPR·AED)', [5,11], '심정지 대응 실습'],
+  ['CS·친절 서비스', [2,8], '응대 화법·용모·민원 대응'],
+  ['개인정보·보안 교육', [7], '방문객 정보·CCTV 열람 통제'],
+  ['동절기·하절기 안전', [6,12], '폭염·한파·미끄럼 사고 예방']
+];
+
+/* ---------- 경쟁력 비교 (에스텍 vs 일반 용역사) ---------- */
+const COMPARE = [
+  ['관리 체계', '본사·지사·현장 3단계 관리, 지사 정기·불시 점검', '개별 사업장 단위 운영, 관리자 방문 불규칙'],
+  ['비상 대응', '인근 사업장·지사 예비 인력으로 신속 대체·증원', '결원 시 대체 인력 확보 지연'],
+  ['교육', '법정 교육 + 현장 특별교육·TBM, 이수 기록 관리', '법정 교육 위주, 기록 관리 미흡'],
+  ['운영 시스템', '통합관리 플랫폼 9종(근태·Complaint·매뉴얼·법률 대응 등)', '수기·엑셀 위주 관리'],
+  ['원가 투명성', '법정 원가 기반 산출내역 공개, 업무량 기반 산정', '인당 단가 위주 견적, 산출 근거 불명확'],
+  ['법률 리스크', '경비업법·근로기준법·파견법 준수 체계, 법률 대응 시스템', '사안 발생 후 사후 대응'],
+  ['인사 제도', '평생직장 개념의 인사 운영, 고용승계 원칙', '사업장 계약 종료 시 고용 불안']
+];
+
+/* ---------- 고객 약속 (SLA) ---------- */
+const PROMISES = [
+  ['5분', '비상 상황 최초 보고', '화재·응급·침입 등 비상 시 현장 확인 후 5분 이내 고객사·지사 동시 보고'],
+  ['24시간', '결원 대체 투입', '결원 발생 시 지사 예비 인력으로 24시간 이내 대체 투입'],
+  ['D+0', 'Complaint 1차 조치', '접수 당일 1차 조치·경위 보고, D+7 이내 재발방지 대책 회신'],
+  ['월 1회', '운영 보고서', '근태·교육·점검·민원 처리 현황을 담은 월간 운영 보고서 제출'],
+  ['분기 1회', '품질 평가', '고객사와 함께하는 분기 품질평가와 개선 과제 관리'],
+  ['100%', '법정 교육 이수', '배치 전 신임교육·매월 직무교육 이수율 100% 관리']
+];
+
+/* ---------- 멀티미디어: 직종별 사진·영상 (S-Tec Media Wall) ---------- */
+const MEDIA_MAP = {
+  sec:  { fig: ['p35', 'p10', 'p36'], scene: ['v05', 'v07', 'v06'], video: 'v05' },
+  cln:  { fig: ['p40', 'p08', 'p33'], scene: ['v04'], video: 'v04' },
+  prk:  { fig: ['p42', 'p21', 'p20'], scene: ['v14'], video: 'v14' },
+  fac:  { fig: ['p37', 'p16', 'p15'], scene: ['v11'], video: 'v11' },
+  info: { fig: ['p38', 'p17', 'p19'], scene: ['v09'], video: 'v09' },
+  cook: { fig: ['p14', 'p24'], scene: ['v10'], video: 'v10' },
+  san:  { fig: ['p14', 'p25'], scene: ['v10'], video: 'v10' },
+  grd:  { fig: ['p01', 'p02', 'p03'], scene: ['v16'], video: 'v16' },
+  spc:  { fig: ['p24', 'p26', 'p27'], scene: ['v17', 'v03', 'v15'], video: 'v17' }
+};
+const MEDIA_EXTRA = { team: 'p39', cube: 'p31', hq: 'p29', diorama: 'p30', mgr: 'p23', mgr2: 'p22', office: 'p41', office2: 'p34', pt: 'v13', control: 'v17', highway: 'v01', rally: 'v02', logi: 'v03', signal: 'v12' };
+const VIDEO_TITLE = { v01: '고속도로 순찰대 근무', v02: '노조 집회 대응', v03: '물류 업무', v04: '미화 근무', v05: '보안 근무', v06: '보안 근무 2', v07: '보안 근무 3', v08: '사무관리', v09: '사무·안내 근무', v10: '세니텍(방역·특수) 근무', v11: '시설 근무', v12: '신호수 근무', v13: '에스텍 영업 PT', v14: '주차 근무', v15: '지게차 운전', v16: '콘서트장 경호', v17: '특수직군(관제·설비)' };
+
+/* ---------- 업종별 「에스텍 특화서비스」 (레퍼런스 1.1~1.6 형식) ---------- */
+const SPECIALS = {
+  common: [
+    ['데이터 기반 출입관리', '방문 목적 확인 → 정보 확인 → 입차·입장의 3단계 출입 Flow와 출입 데이터 관리로 수기 기록을 없앱니다.'],
+    ['전자순찰 시스템', '순찰 거점 태그·시간 기록으로 「했다는 순찰」이 아닌 「증명되는 순찰」을 합니다.'],
+    ['생명을 살리는 4분', 'AED·CPR 실습과 119 안전센터까지의 거리 분석으로 심정지 초기 대응 체계를 갖춥니다.'],
+    ['Clean for Security', '사건사고 예방의 첫걸음은 정리정돈 — 취약지 환경 개선과 보안을 함께 관리합니다.'],
+    ['불시 점검 · 품질 Audit', '지사장·관리자의 심야 취약시간 불시 점검과 분기 품질 Audit을 실시합니다.'],
+    ['에스텍 한마음 봉사단', '지역 사회 봉사·재난 지원으로 고객사의 사회공헌 활동을 함께합니다.']
+  ],
+  apt: [['세대 홈오토 비상 출동', '세대 비상·이상 발생 시 훈련된 요원이 현장에 직접 출동해 확인합니다.'], ['어린이 등하교 안전지도', '등하교 시간대 교통·안전지도로 입주민 신뢰를 높입니다.']],
+  hosp: [['응급실 안전요원 운영', '주취자·폭력 상황에 대비한 응급실 전담 안전요원과 대응 매뉴얼.'], ['감염관리 연계 보안', '면회 통제·출입 발열 확인 등 감염관리와 보안을 연계합니다.']],
+  mfg: [['화기작업 확인 순찰', '화기작업허가서 확인 순찰로 화재 사고를 예방합니다.'], ['계근·세륜 표준 절차', '차량 계근·세륜 확인 절차를 표준화해 분쟁을 예방합니다.']],
+  office: [['로비 컨시어지 서비스', '첫인상을 책임지는 로비 리셉션과 방문객 사전 등록 연계.'], ['테넌트 민원 24시간 창구', '입주사 민원 접수·처리 현황을 투명하게 공유합니다.']],
+  public: [['과업 이행 증빙 패키지', '과업지시서 항목별 이행 증빙을 월간 보고서로 제출합니다.']],
+  univ: [['캠퍼스 안심귀가', '야간 귀가 동행·순찰 노선 공지로 학생 안전을 지킵니다.']],
+  special: [['근무자 보호 프로그램', '고객 측 부적절 언행에 대한 기록·보고·분리 조치로 근무자와 계약을 함께 지킵니다.']]
 };
 </script>
 <script>/* =====================================================================
@@ -4164,13 +4298,15 @@ function openCompany() {
     <div class="field"><label>회사 소개 (줄마다 한 문장)</label><textarea id="coIntro" rows="4">${esc(c.intro.join('\n'))}</textarea></div>
     <div class="field"><label>주요 실적 (줄마다 한 건 · 예: 2025 ○○공장 보안·미화 통합 수주)</label><textarea id="coAch" rows="3">${esc(c.achievements)}</textarea></div>
     <div class="field"><label>인증·면허 (줄마다 한 건 · 예: 경비업 허가(시설경비·신변보호))</label><textarea id="coCert" rows="3">${esc(c.certs)}</textarea></div>
+    <div class="field"><label>연혁 (줄마다 한 건 · 앞에 연도를 쓰면 연표에 표시 · 예: 1999.01 ㈜에스텍시스템 설립)</label><textarea id="coHist" rows="4">${esc(c.history || '')}</textarea></div>
+    <div class="field"><label>핵심 지표 (줄마다 「값|단위|설명」 · 예: 9,672|명|임직원 (국민연금 가입, 2026.09)) — 출처·기준일을 함께 적으세요</label><textarea id="coMet" rows="4">${esc(c.metrics || '')}</textarea></div>
     <div class="mrow"><button class="btn" id="coReset">기본값으로</button><button class="btn" id="mClose">취소</button><button class="btn pri" id="coOk">저장</button></div>`, md => {
     md.querySelector('#mClose').onclick = closeModal;
     md.querySelector('#coReset').onclick = () => { CO = Object.assign({}, COMPANY_DEFAULT); saveCompany(CO); closeModal(); toast('기본값으로 되돌렸습니다'); };
     md.querySelector('#coOk').onclick = () => {
       const v = id => md.querySelector('#' + id).value.trim();
       CO = Object.assign({}, CO, { group: v('coGroup'), name: v('coName'), branch: v('coBranch'), parent: v('coParent'), ceo: v('coCeo'), tel: v('coTel'), addr: v('coAddr'), web: v('coWeb'), slogan: v('coSlogan'),
-        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), updated: fmtD(kstNow()) });
+        intro: v('coIntro').split('\n').map(x => x.trim()).filter(Boolean), achievements: v('coAch'), certs: v('coCert'), history: v('coHist'), metrics: v('coMet'), updated: fmtD(kstNow()) });
       saveCompany(CO); closeModal(); toast('회사 정보를 저장했습니다');
     };
   }, true);
@@ -4252,7 +4388,7 @@ function uiInit() {
 }
 
 /* =====================================================================
- * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v1.0.0 — 앱 로직
+ * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.0.0 — 앱 로직
  * 흐름: RFP 분석 → 기획 → 집필 → 검토·승인 → 제작·제본(Word·PPT·PDF) → 제출
  * 견적 연동: S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate
  * Program & Design by Rat Rae Choi (제작자 서명 — 하드코딩)
@@ -4260,7 +4396,7 @@ function uiInit() {
 const APP = {
   name: 'S-Tec Proposal Production System',
   ko: '에스텍 제안서 제작시스템',
-  version: 'v1.0.0',
+  version: 'v2.0.0',
   build: '2026-11-19',
   shareUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
   apkUrl: 'https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk',
@@ -4481,6 +4617,16 @@ function buildPlan() {
   const sumLaw = uniq(jobs.flatMap(j => j.laws).concat(['minw', 'dispatch'], f.ind === 'apt' ? ['apt'] : [], f.ind === 'public' ? ['pubsvc'] : []));
   p.laws = sumLaw;
 
+  /* s00 인사말 */
+  const mg = UI.manager || {}, h0 = lines(CO.history)[0] || '';
+  S.s00 = [{ title: '', lines: [
+    `존경하는 ${f.client} ${f.to_ ? f.to_.replace(/\s*귀하$/, '') + '님' : '관계자 여러분'}께`,
+    `귀사의 소중한 현장을 함께 지킬 파트너를 찾는 자리에 ${CO.group}을 불러 주셔서 진심으로 감사드립니다.`,
+    h0 ? `${CO.group}은 ${h0.replace(/^\d{4}(\.\d{1,2})?\s*/, '')} 이래, 공동주택·공장·빌딩·병원·공공기관 등 산업 전 분야의 현장을 운영하며 「사람이 하는 서비스」의 품질을 지켜 왔습니다.` : `${CO.group}은 산업 전 분야의 현장을 운영하며 「사람이 하는 서비스」의 품질을 지켜 왔습니다.`,
+    `이번 제안서는 ${f.client}${ind ? `의 ${ind.n} 현장 특성` : ''}과 ${jobs.map(j => j.n).join('·')} 운영 요구를 분석해, 인력·안전·품질·비용 모든 면에서 바로 실행할 수 있는 계획으로 담았습니다.`,
+    '제안서의 모든 약속은 KPI와 SLA로 정리해 숫자로 확인하실 수 있도록 했습니다.',
+    '현장의 작은 변화까지 먼저 살피고, 문제가 생기면 가장 먼저 책임지는 회사가 되겠습니다. 감사합니다.',
+    `${CO.branch || CO.name}${mg.title ? ' ' + mg.title : ''}${mg.name ? ' ' + mg.name : ''} 드림`] }];
   /* s01 제안 개요 */
   S.s01 = [
     { title: '제안 배경', lines: [`${f.client}${sub}${ind ? `는 ${ind.n} 현장으로` : '의'} ${jobN} 용역 운영에 대한 안정성과 품질, 법규 준수가 동시에 요구됩니다.`, pt.lead]
@@ -4498,44 +4644,58 @@ function buildPlan() {
     { title: '운영 현황 (사업장 현황 지도 기준)', lines: [`운영 사업장 ${SITES.length}곳 · 현장 인력 ${totStaff.toLocaleString('ko-KR')}명`, `지사별 운영: ${brCnt}`, `${INDUSTRIES.mfg.n}·${INDUSTRIES.apt.n}·${INDUSTRIES.univ.n}·${INDUSTRIES.special.n} 등 다양한 산업 운영 경험`] }
   ].concat(lines(CO.achievements).length ? [{ title: '주요 실적', lines: lines(CO.achievements) }] : [])
     .concat(lines(CO.certs).length ? [{ title: '인증·면허', lines: lines(CO.certs) }] : [])
-    .concat([{ title: '핵심 역량', lines: ['지사 중심 현장 밀착 관리와 그룹 차원의 교육·법무·품질 지원', '직종×산업 표준 매뉴얼과 통합관리 플랫폼 기반의 표준 운영', '법정 원가를 지키는 투명한 원가 산정과 근로조건 준수'] }]);
+    .concat([{ title: '핵심 역량', lines: ['지사 중심 현장 밀착 관리와 그룹 차원의 교육·법무·품질 지원', '직종×산업 표준 매뉴얼과 통합관리 플랫폼 기반의 표준 운영', '법정 원가를 지키는 투명한 원가 산정과 근로조건 준수', '인근 사업장·지사 예비 인력을 활용한 신속한 결원 대체·비상 증원'] }])
+    .concat(lines(CO.history).length ? [{ title: '연혁', lines: lines(CO.history) }] : [])
+    .concat(lines(CO.metrics).length ? [{ title: '핵심 지표', lines: lines(CO.metrics).map(l => l.split('|')).map(x => `${x[0]}${x[1] || ''} — ${x[2] || ''}`) }] : [])
+    .concat([{ title: '경쟁력 비교 (에스텍 vs 일반 용역사)', lines: COMPARE.map(c => `${c[0]}: ${c[1]}`) }]);
   /* s03 현황 분석 */
   S.s03 = [{ title: `${f.client} 현장 이해`, lines: (ind ? ind.view : ['고객사 현장 특성과 운영 요구사항을 사전 실사로 확인해 반영합니다.']).slice() }]
     .concat(site ? [{ title: '현재 운영 현황', lines: [`계약 업종 ${site.work || '-'} · 근무형태 ${site.shift || '-'} · 운영 인원 ${site.total}명(보안 ${site.sec} · 미화 ${site.cln} · 기타 ${site.etc})`, `관할: ${site.br}지사 — 정기 방문·불시 점검으로 직접 관리`] }] : [])
     .concat([{ title: '주요 리스크와 대응 방향', lines: (ind ? ind.risk : ['근무 공백', '안전사고', '고객 민원']).map(x => `${x} → 예방·즉시 대응 체계로 관리`) }])
+    .concat([{ title: '2026 운영 환경 변화', lines: TRENDS.map(t => `${t.t} — ${t.d}`) }])
+    .concat([{ title: '시간대별 집중 운영 포인트', lines: (TIMEFOCUS[f.ind] || TIMEFOCUS.default).map(r => `${r[0]} ${r[1]}: ${r[2]}`) }])
     .concat(rfp && rfp.rows.length ? [{ title: `제안요청 핵심 요구사항 (${rfp.rows.length}건 중 주요)`, lines: rfp.rows.slice(0, 8).map(x => `[${x.cat}] ${x.req}`) }] : []);
   /* s04 운영 전략 */
   S.s04 = [
     { title: '운영 기본 방향', lines: ['도급 원칙: 현장대리인(소장·반장)을 통한 업무 지시 — 고객사 직접 지휘·명령 배제', '법규 준수: 경비업법·근로기준법·산업안전보건법 등 관계 법령 준수', '품질 수치화: 점검표·KPI·월간 보고로 서비스 수준을 관리', '현장 밀착: 관할 지사의 정기 방문·불시 점검·결원 대체'] },
     { title: '평가 강조점 대응', lines: p.emph.map(k => `${EMPH[k].n}: ${EMPH[k].line}`) },
-    { title: '차별화 포인트', lines: p.diff.flatMap(k => [`${DIFF[k].n} — ${DIFF[k].lines[0]}`]) }
+    { title: '차별화 포인트', lines: p.diff.flatMap(k => [`${DIFF[k].n} — ${DIFF[k].lines[0]}`]) },
+    { title: '에스텍 특화서비스', lines: SPECIALS.common.concat(SPECIALS[f.ind] || []).map((x, i) => `특화 1.${i + 1} ${x[0]} — ${x[1]}`) }
   ];
   /* s05 인력 운영 계획 */
   S.s05 = [
     { title: '편성 원칙', lines: [est.length ? '연동 견적(직종·직책·근무형태)을 기준으로 인원을 편성합니다' : '현장 실사와 요구사항을 기준으로 인원을 편성합니다', '근무형태별 법정 근로시간·휴게시간을 준수하는 교대 편성', '결원 발생 시 지사 예비 인력으로 24시간 이내 대체 투입'] },
     { title: '직종별 편성', lines: staff.length ? staff.map(r => `${r.job}${r.title && r.title !== r.job ? ' ' + r.title : ''} ${r.count}명${r.shift ? ' · ' + r.shift : ''}${r.days ? ` · ${r.days}일` : ''}`) : jobs.map(j => `${j.n}: 현장 실사 후 인원 확정`) },
-    { title: '현장 조직·보고 체계', lines: ['현장 책임자(소장·반장) → 지사 담당 → 지사장 보고 체계', '고객사 요청사항은 현장 책임자가 접수해 근무자에게 지시(불법파견 방지)', '근무 교대 시 인수인계 일지 작성, 주요 사항은 당일 보고'] }
+    { title: '현장 조직·보고 체계', lines: ['현장 책임자(소장·반장) → 지사 담당 → 지사장 보고 체계', '고객사 요청사항은 현장 책임자가 접수해 근무자에게 지시(불법파견 방지)', '근무 교대 시 인수인계 일지 작성, 주요 사항은 당일 보고'] },
+    { title: 'POST(근무 거점) 운영', lines: (POSTS[f.ind] || POSTS.office).map((t, i) => `P${i + 1} ${t}`).concat(['피크 시간대 POST 증원, 한산 시간대 순찰 전환으로 탄력 운영']) },
+    { title: '근무 편성 기준', lines: ['근무형태(3조2교대·4조2교대·격일제·주간 고정 등)는 연동 견적 기준으로 편성', '4시간당 30분 이상 휴게시간 부여, 휴게 장소·시간을 근무지침에 명시', '감시·단속적 근로 승인 대상은 승인 절차 이행 후 운영', '대체근무·연차는 근태관리 시스템으로 자동 집계해 월간 보고'] },
+    { title: '결원·비상 대체 운영', lines: ['지사 예비 인력 풀 운영 — 결원 시 24시간 이내 대체 투입', '장기 결원은 7일 이내 정규 충원, 충원 전까지 인근 사업장 지원', '행사·비상 상황 시 단기 증원(단기인력 견적 연동)'] }
   ];
   /* s06 업무 수행 */
-  S.s06 = jobs.map(j => ({ title: `${j.n} 업무 수행`, lines: j.scope.concat(ind && ind.focus && ind.focus[j.k] ? ind.focus[j.k].map(x => `[${ind.n}] ${x}`) : []).concat(j.run.slice(0, 2)) }));
+  S.s06 = jobs.flatMap(j => [{ title: `${j.n} 업무 수행`, lines: j.scope.concat(ind && ind.focus && ind.focus[j.k] ? ind.focus[j.k].map(x => `[${ind.n}] ${x}`) : []).concat(j.run) },
+    { title: `${j.n} 하루 일과`, lines: (ROUTINE[j.k] || ROUTINE.spc).map(r => `${r[0]} — ${r[1]}`) },
+    { title: `${j.n} 장비·용품`, lines: [j.equip.join(', ')] }]);
   /* s07 교육·훈련 */
   S.s07 = [
     { title: '법정 교육', lines: uniq(jobs.flatMap(j => j.edu)) },
     { title: '자체 교육', lines: ['신규 배치 전 현장 OJT(근무지침·비상연락망·시설 숙지)', '월 1회 현장 특별 직무교육 및 작업 전 TBM', '연 1회 이상 비상 대응 훈련(화재·대피·침입) — 고객사 합동'] },
-    { title: '교육 관리', lines: ['교육 이수 기록·서명부 보관, 고객사 요청 시 즉시 제출', '교육 결과를 월간 운영 보고서에 포함'] }
+    { title: '연간 교육 계획', lines: EDU_CAL.map(r => `${r[0]} (${r[1].length === 12 ? '매월' : r[1].join('·') + '월'}) — ${r[2]}`) },
+    { title: '교육 관리', lines: ['교육 이수 기록·서명부 보관, 고객사 요청 시 즉시 제출', '교육 결과를 월간 운영 보고서에 포함', '실제 Complaint 사례 영상을 활용한 재발 방지 교육'] }
   ];
   /* s08 안전·법규 */
   S.s08 = [
     { title: '안전보건 관리', lines: ['작업 전 TBM·정기 위험성평가로 위험요인 사전 제거', '보호구 지급·착용 점검 및 안전 수칙 게시', '사고 발생 시 즉시 보고(최초 보고 5분 이내) → 원인 분석 → 재발방지 대책'] },
     { title: '적용 법령 (국가법령정보센터 기준)', lines: sumLaw.map(id => `${LAWS[id].law} ${LAWS[id].art}(${LAWS[id].t}) — ${LAWS[id].s}`) },
-    { title: '근로조건 준수', lines: ['최저임금(감시·단속직 포함 100%)·4대보험·퇴직급여를 원가에 정확히 반영', '근로계약서 서면 교부, 법정 근로시간·휴게시간 준수', '고객사 갑질·폭언으로부터 근무자 보호 — 고충 처리 채널 운영'] }
+    { title: '근로조건 준수', lines: ['최저임금(감시·단속직 포함 100%)·4대보험·퇴직급여를 원가에 정확히 반영', '근로계약서 서면 교부, 법정 근로시간·휴게시간 준수', '고객사 갑질·폭언으로부터 근무자 보호 — 고충 처리 채널 운영'] },
+    { title: '비상 상황별 대응', lines: EMERGENCY.map(e => `${e[0]}: ${e[1]} → ${e[2]} → ${e[3]}`) }
   ];
   /* s09 품질·Complaint */
   const kpi = uniq(jobs.flatMap(j => j.kpi).concat(ind ? ind.kpi : [])).slice(0, 8);
   S.s09 = [
     { title: '품질관리', lines: ['월간 운영 보고서 제출(근태·교육·점검·민원 처리 현황)', '분기 품질평가와 개선 과제 관리', '지사 정기 방문·불시 점검 결과 공유'] },
     { title: '핵심 성과지표(KPI)', lines: kpi },
-    { title: 'Complaint 대응 절차', lines: ['D+0 접수 즉시 1차 조치·경위 보고', 'D+1~3 원인 분석·관련자 면담·조치', 'D+7 이내 재발방지 대책 서면 회신', '중대 사안은 지사장 직접 방문·대책 보고'] }
+    { title: 'Complaint 대응 절차', lines: ['D+0 접수 즉시 1차 조치·경위 보고', 'D+1~3 원인 분석·관련자 면담·조치', 'D+7 이내 재발방지 대책 서면 회신', '중대 사안은 지사장 직접 방문·대책 보고'] },
+    { title: '보고 체계', lines: ['일일: 근무일지·특이사항', '주간: 운영 현황 대면 보고', '월간: 운영 보고서(근태·교육·점검·민원)', '분기: 품질평가·개선 과제 회의'] }
   ];
   /* s10 스마트 운영관리 */
   S.s10 = [
@@ -4573,6 +4733,7 @@ function buildPlan() {
   const eff = { price: '법정 원가 기반 투명한 가격으로 예산 예측 가능성 향상', quality: '수치로 관리되는 서비스 품질과 지속적인 개선', stable: '고용승계·근로조건 준수로 이직률 감소와 업무 연속성 확보', safety: '안전보건관리체계로 사고 예방과 중대재해 리스크 감소', legal: '불법파견·근로기준 위반 등 법적 리스크 최소화', tech: '통합관리 플랫폼으로 현장 현황의 실시간 파악', esg: '지역 고용·근로자 보호로 ESG 경영에 기여', response: 'Complaint 신속 처리로 고객사 만족도 향상' };
   S.s13 = [
     { title: '기대효과', lines: p.emph.map(k => eff[k]).concat(['당사 운영 노하우를 통한 관리 부담 경감']) },
+    { title: '고객 약속(SLA)', lines: PROMISES.map(x => `${x[0]} ${x[1]} — ${x[2]}`) },
     { title: '맺음말', lines: [`${CO.group}은 ${f.client}의 신뢰받는 파트너로서 약속한 운영 수준을 반드시 지키겠습니다.`, '현장의 작은 변화까지 먼저 살피고, 문제가 생기면 가장 먼저 책임지는 회사가 되겠습니다.', CO.slogan || 'The Best Choice, S-Tec'] }
   ];
   p.text = {}; SECTIONS.forEach(s => p.text[s.id] = grpText(S[s.id]));
@@ -4774,10 +4935,10 @@ function gradient(w, h, stops, dir = 'h') {
   const gr = dir === 'h' ? g.createLinearGradient(0, 0, w, 0) : dir === 'd' ? g.createLinearGradient(0, 0, w, h) : g.createLinearGradient(0, 0, 0, h);
   stops.forEach(([o, c]) => gr.addColorStop(o, c)); g.fillStyle = gr; g.fillRect(0, 0, w, h); return cv.toDataURL('image/png');
 }
-let GR = null;
+let GRADS = null;
 function grads() {
-  if (GR) return GR;
-  GR = {
+  if (GRADS) return GRADS;
+  GRADS = {
     navy: gradient(640, 360, [[0, '#0E2AA8'], [0.55, '#0B1F8F'], [1, '#050C3E']], 'd'),
     silver: gradient(400, 40, [[0, '#F7F8FA'], [0.5, '#E3E7EC'], [1, '#C9CED6']], 'h'),
     silverV: gradient(40, 400, [[0, '#FFFFFF'], [0.6, '#F1F3F6'], [1, '#DDE2E8']], 'v'),
@@ -4785,7 +4946,7 @@ function grads() {
     fade: gradient(600, 20, [[0, 'rgba(30,139,58,1)'], [1, 'rgba(30,139,58,0)']], 'h'),
     fadeN: gradient(600, 20, [[0, 'rgba(11,31,143,1)'], [1, 'rgba(11,31,143,0)']], 'h')
   };
-  return GR;
+  return GRADS;
 }
 
 /* 공통 프레임: 상단 제목바 + 하단 바 */
@@ -4917,11 +5078,543 @@ async function makePdf(p, onProgress, slidesIn, titleIn) {
 }
 
 /* =====================================================================
+ * 멀티미디어 — S-Tec Media Wall 사진·현장 영상·차트·네트워크 지도 (PPT·PDF·Word 공용 이미지)
+ * Designed & Developed by Rat Rae Choi
+ * ===================================================================== */
+const MEDIA = { img: {}, vid: {}, crop: {} };
+function mediaUrls(rel) { const a = []; if (location.protocol !== 'file:') a.push(new URL(rel, location.href).href); a.push(APP.shareUrl + rel); return a; }
+function blobToDataUrl(b) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); }); }
+async function fetchFirst(rel) {
+  for (const u of mediaUrls(rel)) { try { const r = await fetch(u); if (r.ok) { const b = await r.blob(); if (b.size > 2000) return b; } } catch (e) { } }
+  return null;
+}
+/* id: 'p35' = 직원 디오라마·3D 피규어 사진, 'v05' = 현장 영상 장면 */
+async function loadMedia(id) {
+  if (MEDIA.img[id] !== undefined) return MEDIA.img[id];
+  const rel = id[0] === 'v' ? `media/scene/${id}.jpg` : `media/photo/${id}.jpg`;
+  const b = await fetchFirst(rel); if (!b) return (MEDIA.img[id] = null);
+  const src = await blobToDataUrl(b); const im = await loadImg(src);
+  return (MEDIA.img[id] = { src, w: im.naturalWidth, h: im.naturalHeight });
+}
+async function loadVideo(id) {
+  if (MEDIA.vid[id] !== undefined) return MEDIA.vid[id];
+  const b = await fetchFirst(`media/video/${id}.mp4`); if (!b) return (MEDIA.vid[id] = null);
+  return (MEDIA.vid[id] = String(await blobToDataUrl(b)).split(',')[1]);
+}
+function mediaIdsFor(p) {
+  const ids = new Set(Object.values(MEDIA_EXTRA));
+  p.jobs.forEach(j => { const m = MEDIA_MAP[j.k] || MEDIA_MAP.sec; m.fig.forEach(x => ids.add(x)); m.scene.forEach(x => ids.add(x)); });
+  Object.values(MEDIA_MAP).forEach(m => ids.add(m.fig[0]));
+  ['v02', 'v05', 'v07', 'v11', 'v04', 'v14', 'v16'].forEach(x => ids.add(x));
+  return [...ids];
+}
+async function prepMedia(p, onProg) {
+  const ids = mediaIdsFor(p); let n = 0;
+  await Promise.all(ids.map(async id => { await loadMedia(id); onProg && onProg(++n, ids.length); }));
+}
+/* 사진 가져오기 — 없으면 내장 그림으로 대체 */
+function M(id, fb) {
+  const m = MEDIA.img[id]; if (m) return m;
+  const f = fb || 'team_dio'; const d = ASSET.figDim[f] || [900, 600];
+  return { src: ASSET.fig[f] || ASSET.hero, w: d[0], h: d[1] };
+}
+/* 상자 비율로 잘라내기(cover) — PPT·PDF·Word에서 찌그러지지 않게 */
+function coverSrc(m, bw, bh, pos = 0.5) {
+  const key = m.src.length + ':' + m.src.slice(-40) + ':' + (bw / bh).toFixed(3) + ':' + pos;
+  if (MEDIA.crop[key]) return MEDIA.crop[key];
+  const ar = bw / bh, iar = m.w / m.h; let sw = m.w, sh = m.h, sx = 0, sy = 0;
+  if (iar > ar) { sw = m.h * ar; sx = (m.w - sw) * pos; } else { sh = m.w / ar; sy = (m.h - sh) * pos; }
+  const W = Math.min(1600, Math.round(sw)), H = Math.round(W / ar), cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const im = MEDIA._el && MEDIA._el[m.src];
+  const draw = img => { cv.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, W, H); return (MEDIA.crop[key] = cv.toDataURL('image/jpeg', 0.86)); };
+  if (im) return draw(im);
+  return m.src;   // 아직 디코딩 전이면 원본(비율은 Im 상자에서 contain 처리)
+}
+async function decodeAll() {
+  MEDIA._el = MEDIA._el || {};
+  const all = Object.values(MEDIA.img).filter(Boolean).map(x => x.src).concat([ASSET.hero], Object.values(ASSET.fig));
+  await Promise.all(all.map(async s => { if (!MEDIA._el[s]) { try { MEDIA._el[s] = await loadImg(s); } catch (e) { } } }));
+}
+/* 사진을 상자에 꽉 채워 넣기 */
+function Photo(x, y, w, h, id, fb, pos) { const m = typeof id === 'object' ? id : M(id, fb); return Im(x, y, w, h, coverSrc(m, w, h, pos)); }
+/* 사진을 상자 안에 비율 유지해 넣기 */
+function PhotoFit(x, y, w, h, id, fb) { const m = typeof id === 'object' ? id : M(id, fb); const r = Math.min(w / m.w, h / m.h), ww = m.w * r, hh = m.h * r; return Im(x + (w - ww) / 2, y + (h - hh) / 2, ww, hh, m.src); }
+
+/* ---------- 차트 (캔버스 → PNG) ---------- */
+const CH_FONT = "'Malgun Gothic','맑은 고딕','Apple SD Gothic Neo','Noto Sans KR','Noto Sans CJK KR',sans-serif";
+const PAL = ['#0B1F8A', '#1E8B3A', '#2A44D4', '#22A04A', '#E8750A', '#7A2E8E', '#0E7C86', '#C0392B', '#64748B'];
+function chartCanvas(w, h) { const S = 2, c = document.createElement('canvas'); c.width = w * S; c.height = h * S; const g = c.getContext('2d'); g.scale(S, S); return [c, g]; }
+function barChart(labels, values, o = {}) {
+  const W = o.w || 900, H = o.h || 460, [c, g] = chartCanvas(W, H), padL = 70, padB = 70, padT = 40, padR = 20;
+  const max = Math.max(1, ...values) * 1.15, bw = (W - padL - padR) / labels.length;
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = '#E3E7EE'; g.lineWidth = 1; g.font = `13px ${CH_FONT}`; g.fillStyle = '#6B7385'; g.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) { const y = padT + (H - padT - padB) * (1 - i / 4); g.beginPath(); g.moveTo(padL, y); g.lineTo(W - padR, y); g.stroke(); g.fillText((o.fmt || (v => Math.round(v).toLocaleString()))(max * i / 4), padL - 8, y + 4); }
+  values.forEach((v, i) => {
+    const x = padL + i * bw + bw * 0.18, bh = (H - padT - padB) * v / max, y = H - padB - bh, ww = bw * 0.64;
+    const gr = g.createLinearGradient(0, y, 0, H - padB); const col = (o.colors && o.colors[i]) || PAL[i % 2]; gr.addColorStop(0, col); gr.addColorStop(1, col + 'B0');
+    g.fillStyle = gr; g.beginPath(); g.roundRect ? g.roundRect(x, y, ww, bh, [6, 6, 0, 0]) : g.rect(x, y, ww, bh); g.fill();
+    g.fillStyle = '#18224F'; g.textAlign = 'center'; g.font = `bold 15px ${CH_FONT}`; g.fillText((o.vfmt || (v => Math.round(v).toLocaleString()))(v), x + ww / 2, y - 8);
+    g.font = `14px ${CH_FONT}`; g.fillStyle = '#3A4366'; String(labels[i]).split('\n').forEach((t, k) => g.fillText(t, x + ww / 2, H - padB + 22 + k * 17));
+  });
+  return { src: c.toDataURL('image/png'), w: W, h: H };
+}
+function donut(items, o = {}) {
+  const W = o.w || 520, H = o.h || 420, [c, g] = chartCanvas(W, H), cx = o.legend === false ? W / 2 : H / 2 + 10, cy = H / 2, R = H / 2 - 24, r = R * 0.6;
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  const tot = items.reduce((a, x) => a + x.value, 0) || 1; let a0 = -Math.PI / 2;
+  items.forEach((x, i) => { const a1 = a0 + 2 * Math.PI * x.value / tot; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R, a0, a1); g.closePath(); g.fillStyle = x.color || PAL[i % PAL.length]; g.fill(); a0 = a1; });
+  g.beginPath(); g.arc(cx, cy, r, 0, 2 * Math.PI); g.fillStyle = '#fff'; g.fill();
+  g.textAlign = 'center'; g.fillStyle = '#18224F'; g.font = `bold 30px ${CH_FONT}`; g.fillText(o.center || String(tot), cx, cy + 6);
+  if (o.sub) { g.font = `14px ${CH_FONT}`; g.fillStyle = '#6B7385'; g.fillText(o.sub, cx, cy + 28); }
+  if (o.legend !== false) items.forEach((x, i) => { const y = 40 + i * 30, lx = cx + R + 30; g.fillStyle = x.color || PAL[i % PAL.length]; g.fillRect(lx, y - 12, 16, 16); g.fillStyle = '#18224F'; g.textAlign = 'left'; g.font = `15px ${CH_FONT}`; g.fillText(`${x.label}  ${(x.value / tot * 100).toFixed(1)}%`, lx + 24, y + 2); });
+  return { src: c.toDataURL('image/png'), w: W, h: H };
+}
+/* 운영 네트워크 분포도 — 사업장 좌표(사업장 현황 지도 기준) + 지사 + 제안 대상 */
+function networkMap(focus, o = {}) {
+  const W = o.w || 900, H = o.h || 720, [c, g] = chartCanvas(W, H);
+  const pts = SITES.filter(s => s.lat), lat = pts.map(s => s.lat).concat(BRANCHES.map(b => b.lat)), lng = pts.map(s => s.lng).concat(BRANCHES.map(b => b.lng));
+  if (focus && focus.lat) { lat.push(focus.lat); lng.push(focus.lng); }
+  const la0 = Math.min(...lat) - 0.25, la1 = Math.max(...lat) + 0.25, lo0 = Math.min(...lng) - 0.3, lo1 = Math.max(...lng) + 0.3;
+  const sc = Math.min((W - 60) / ((lo1 - lo0) * 0.82), (H - 60) / (la1 - la0)), ox = (W - (lo1 - lo0) * 0.82 * sc) / 2, oy = (H - (la1 - la0) * sc) / 2;
+  const X = l => ox + (l - lo0) * 0.82 * sc, Y = l => oy + (la1 - l) * sc;
+  const bg = g.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#EEF3FB'); bg.addColorStop(1, '#E4EEF6'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(11,31,138,.06)'; for (let x = 0; x < W; x += 40) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); } for (let y = 0; y < H; y += 40) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+  const BC = { 동부: '#1E8B3A', 서부: '#0B1F8F', 남부: '#C2410C', 중부: '#6D28D9' };
+  pts.forEach(s => { const b = BRANCHES.find(x => x.key === s.br); if (b) { g.strokeStyle = (BC[s.br] || '#333') + '30'; g.beginPath(); g.moveTo(X(b.lng), Y(b.lat)); g.lineTo(X(s.lng), Y(s.lat)); g.stroke(); } });
+  pts.forEach(s => { g.beginPath(); g.arc(X(s.lng), Y(s.lat), 4.5, 0, 7); g.fillStyle = BC[s.br] || '#333'; g.globalAlpha = .75; g.fill(); g.globalAlpha = 1; });
+  BRANCHES.forEach(b => { const x = X(b.lng), y = Y(b.lat); g.beginPath(); g.arc(x, y, 13, 0, 7); g.fillStyle = '#fff'; g.fill(); g.lineWidth = 4; g.strokeStyle = BC[b.key]; g.stroke();
+    g.font = `bold 17px ${CH_FONT}`; g.fillStyle = '#0F1530'; g.textAlign = 'left'; g.fillText(b.name, x + 18, y + 6); });
+  if (focus && focus.lat) { const x = X(focus.lng), y = Y(focus.lat); g.beginPath(); g.arc(x, y, 22, 0, 7); g.fillStyle = 'rgba(232,117,10,.25)'; g.fill(); g.beginPath(); g.arc(x, y, 9, 0, 7); g.fillStyle = '#E8750A'; g.fill();
+    g.font = `bold 18px ${CH_FONT}`; g.fillStyle = '#B45309'; g.textAlign = 'right'; g.fillText(focus.name, x - 16, y - 14); }
+  g.font = `13px ${CH_FONT}`; g.fillStyle = '#6B7385'; g.textAlign = 'left'; g.fillText(`● 운영 사업장 ${pts.length}곳 · ○ 지사 ${BRANCHES.length}곳 — 사업장 현황 지도 좌표 기준`, 16, H - 14);
+  return { src: c.toDataURL('image/png'), w: W, h: H };
+}
+function kmBetween(a, b) { const R = 6371, d = x => x * Math.PI / 180, dl = d(b.lat - a.lat), dn = d(b.lng - a.lng); const h = Math.sin(dl / 2) ** 2 + Math.cos(d(a.lat)) * Math.cos(d(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+function nearBranch(st) { if (!st || !st.lat) return null; return BRANCHES.map(b => ({ b, km: kmBetween(st, b) })).sort((x, y) => x.km - y.km)[0]; }
+function nearSites(st, n = 5) { if (!st || !st.lat) return []; return SITES.filter(s => s.lat && s.id !== st.id).map(s => ({ s, km: kmBetween(st, s) })).sort((a, b) => a.km - b.km).slice(0, n); }
+/* 반투명 그라데이션 덮개 */
+function veil(dir = 'h', a0 = 0.92, a1 = 0.15, col = '7,18,79') { return gradient(800, 450, [[0, `rgba(${col},${a0})`], [1, `rgba(${col},${a1})`]], dir); }
+
+/* =====================================================================
+ * 제안 발표자료(PPT·PDF) v2.0 — 레퍼런스 제안서 수준의 세부 구성
+ * PART 1 에스텍 소개 · PART 2 현황 분석 · PART 3 운영 제안 · PART 4 가격 제안 · PART 5 약속
+ * Designed & Developed by Rat Rae Choi
+ * ===================================================================== */
+const PARTS = [
+  { n: 1, t: '에스텍 소개', en: 'Company', scene: 'v13', items: ['회사 개요·핵심 지표', '연혁', '사업 영역·운영 네트워크', '핵심 역량·경쟁력 비교'] },
+  { n: 2, t: '현황 분석', en: 'Analysis', scene: 'v07', items: ['2026 환경 트렌드', '현장 이해·포지셔닝', '리스크 진단·개선 방향', '요구사항 대응'] },
+  { n: 3, t: '운영 제안', en: 'Operation Plan', scene: 'v05', items: ['운영 전략·에스텍 특화서비스', '조직·인력·POST 운영', '업무 수행·교육·안전', '품질·스마트 운영·개시 계획'] },
+  { n: 4, t: '가격 제안', en: 'Price', scene: 'v17', items: ['제안 금액', '견적 산출 근거', '업무별 비용', '가격 조건'] },
+  { n: 5, t: '에스텍의 약속', en: 'Promise', scene: 'v16', items: ['기대효과', '고객 약속(SLA)', '맺음말'] }
+];
+const NV = '0B1F8A', NVD = '071463', GR = '1B7A34', GR2 = '22A04A', OR = 'E8750A', INK = '0F1530', MU = '667089', LN = 'E4E8F1', SOFT = 'F4F6FB';
+
+/* ---------- 공통 프레임 ---------- */
+function frameX(p, part, title, sub, no) {
+  const E = [];
+  E.push(Rc(0, 0, SW, SH, C.white));
+  E.push(Rc(0, 0, SW, 0.06, NV)); E.push(Rc(0, 0, 2.2, 0.06, GR));
+  if (part) { E.push(Rc(0.6, 0.34, 0.08, 0.36, GR)); E.push(T(0.78, 0.3, 6, 0.24, `PART ${part.n}  ·  ${part.t.toUpperCase()}`, { pt: 9.5, bold: true, color: GR })); }
+  E.push(T(0.78, part ? 0.52 : 0.36, 10, 0.6, [{ text: title, bold: true }], { max: 25, min: 17, color: INK, valign: 'middle' }));
+  if (sub) E.push(T(0.78, part ? 1.1 : 0.96, 10.4, 0.3, sub, { pt: 11, color: MU }));
+  E.push(Im(SW - 1.85, 0.36, 1.3, 1.3 * 340 / 900, ASSET.logo));
+  E.push(Rc(0.6, SH - 0.42, SW - 1.2, 0.01, LN));
+  E.push(T(0.6, SH - 0.38, 8, 0.28, `${CO.group} · ${p.f.client} ${p.pt.title}`, { pt: 8.5, color: '9AA2B5', valign: 'middle' }));
+  E.push(T(SW - 1.6, SH - 0.38, 1.0, 0.28, String(no).padStart(2, '0'), { pt: 10, bold: true, color: NV, align: 'right', valign: 'middle' }));
+  return E;
+}
+function box(x, y, w, h, fill = SOFT, line) { return Rc(x, y, w, h, fill, { line }); }
+function chip(x, y, w, text, col = NV, o = {}) { return [Rc(x, y, w, o.h || 0.32, col, { k: o.k || 'rect' }), T(x, y, w, o.h || 0.32, text, { pt: o.pt || 10, bold: true, color: C.white, align: 'center', valign: 'middle' })]; }
+function card(E, x, y, w, h, head, body, o = {}) {
+  E.push(Rc(x, y, w, h, o.fill || C.white, { line: o.line || LN })); E.push(Rc(x, y, w, 0.06, o.col || NV));
+  let yy = y + 0.16;
+  if (o.ic) { E.push(T(x + 0.18, yy, 0.6, 0.5, o.ic, { pt: o.icPt || 20 })); }
+  E.push(T(x + (o.ic ? 0.78 : 0.18), yy, w - (o.ic ? 0.96 : 0.36), 0.5, [{ text: head, bold: true }], { max: o.hPt || 14, min: 9.5, color: o.hcol || INK, valign: 'middle' }));
+  E.push(T(x + 0.18, yy + 0.58, w - 0.36, h - 0.86, typeof body === 'string' ? [{ text: body }] : body, { max: o.bPt || 11.5, min: 7.5, color: o.bcol || '3A4366', lh: 1.3 }));
+}
+function bulletsT(groups, max = 15) { return listParas(groups); }
+function divider(p, part, no) {
+  const E = [], sc = M(part.scene, 'team_dio');
+  E.push(Rc(0, 0, SW, SH, NVD));
+  E.push(Photo(0, 0, SW, SH, sc));
+  E.push(Im(0, 0, SW, SH, veil('h', 0.94, 0.12)));
+  E.push(T(0.9, 1.5, 6, 0.5, `PART ${part.n}`, { pt: 20, bold: true, color: '9FE3B0' }));
+  E.push(T(0.9, 2.05, 7.5, 1.0, [{ text: part.t, bold: true }], { pt: 44, color: C.white }));
+  E.push(T(0.9, 3.05, 6, 0.4, part.en, { pt: 16, color: 'B9C3EC' }));
+  E.push(Rc(0.9, 3.6, 0.9, 0.05, GR2));
+  part.items.forEach((t, i) => E.push(T(0.9, 3.85 + i * 0.42, 6.5, 0.38, `${String(i + 1).padStart(2, '0')}   ${t}`, { pt: 14, color: 'E6EAF8' })));
+  E.push(T(SW - 1.5, SH - 0.5, 1, 0.3, String(no).padStart(2, '0'), { pt: 10, bold: true, color: 'B9C3EC', align: 'right' }));
+  return E;
+}
+function staffBy(p) { const m = {}; p.staff.forEach(r => { const k = r.job || '기타'; m[k] = (m[k] || 0) + (+r.count || 0); }); return m; }
+function shiftPattern(text) {
+  const t = String(text || '');
+  if (/4조\s*2교대/.test(t)) return { n: '4조 2교대', teams: 4, cyc: ['주', '주', '야', '야', '비', '비', '휴', '휴'] };
+  if (/3조\s*2교대/.test(t)) return { n: '3조 2교대', teams: 3, cyc: ['주', '야', '비'] };
+  if (/격일/.test(t)) return { n: '격일제(24시간 교대)', teams: 2, cyc: ['근', '비'] };
+  if (/2조\s*2교대/.test(t)) return { n: '2조 2교대', teams: 2, cyc: ['주', '야'] };
+  return null;
+}
+
+let CUR_PART = null;
+function buildSlides(p) {
+  CUR_PART = null;
+  const f = p.f, S = [], m = p.money, on = id => p.secOn[id], N = () => S.length + 1, push = (e, fig) => { if (fig) e.fig = fig; S.push(e); return e; };
+  const P = n => PARTS[n - 1], mg = UI.manager || {};
+  const jobMain = p.jobs[0], MM = MEDIA_MAP[jobMain.k] || MEDIA_MAP.sec;
+
+  /* 01 표지 */
+  { const E = [];
+    E.push(Rc(0, 0, SW, SH, C.white));
+    E.push(Photo(5.6, 0, SW - 5.6, SH, { src: ASSET.hero, w: 2400, h: 1792 }, null, 0.45));
+    E.push(Im(5.6, 0, 2.6, SH, gradient(400, 20, [[0, 'rgba(255,255,255,1)'], [1, 'rgba(255,255,255,0)']], 'h')));
+    E.push(Rc(0, 0, 0.14, SH, NV)); E.push(Rc(0.14, 0, 0.06, SH, GR));
+    E.push(Im(0.8, 0.6, 1.25, 1.25, ASSET.icon));
+    E.push(T(0.8, 2.1, 5.2, 0.35, `${CO.group}  ·  ${p.pt.n}`, { pt: 12, bold: true, color: GR }));
+    E.push(T(0.8, 2.5, 5.4, 1.7, [{ text: p.title, bold: true }], { max: 34, min: 20, color: INK, lh: 1.12 }));
+    E.push(Rc(0.8, 4.35, 0.8, 0.05, GR));
+    E.push(T(0.8, 4.5, 5.2, 0.9, [{ text: `${f.client}${f.site ? ' · ' + f.site : ''}`, bold: true, color: '2C3554' }, { text: `${p.jobs.map(j => j.n).join(' · ')}${p.ind ? '   |   ' + p.ind.n : ''}`, size: 0.82, color: MU }], { max: 16, min: 10, gap: 4 }));
+    E.push(T(0.8, 5.65, 5.2, 0.5, [{ text: `${fmtD(parseD(f.date) || p.made)}`, bold: true, color: INK }, { text: `${CO.branch || CO.name}${f.author ? '  ' + f.author : ''}${mg.phone ? '  ·  ' + mg.phone : ''}`, size: 0.85, color: MU }], { pt: 11.5, gap: 2 }));
+    if (f.mode !== 'client') { E.push(...chip(0.8, 6.45, 1.6, '내부 검토용', C.brick)); }
+    E.push(sigEl(SW - 4.3, SH - 0.6, 0.38));
+    push(E); }
+  /* 02 오프닝 메시지 */
+  { const E = [], sc = M((MEDIA_MAP[jobMain.k] || MEDIA_MAP.sec).scene[0]);
+    E.push(Rc(0, 0, SW, SH, '05070F')); E.push(Photo(0, 0, SW, SH, sc)); E.push(Im(0, 0, SW, SH, veil('v', 0.15, 0.92, '5,7,15')));
+    E.push(T(1, 4.25, SW - 2, 0.7, [{ text: '우리는 수많은 위험 속에서 살고 있습니다', bold: true }], { pt: 30, color: C.white, align: 'center' }));
+    E.push(T(1, 5.0, SW - 2, 0.9, [{ text: `안전·청결·편의 — 고객이 의식하지 못하는 일상을 지키는 일.`, color: 'D6DCF0' }, { text: `${CO.group}이 ${f.client}의 일상을 책임지겠습니다.`, color: '9FE3B0', bold: true }], { pt: 16, align: 'center', gap: 4 }));
+    push(E); }
+  /* 03 인사말 */
+  { const E = frameX(p, null, '인사말', 'Greeting', N()), mgp = M(MEDIA_EXTRA.mgr, 'mgr');
+    E.push(Rc(0.6, 1.55, 3.6, 4.9, SOFT)); E.push(PhotoFit(0.7, 1.65, 3.4, 4.2, mgp));
+    E.push(T(0.6, 5.95, 3.6, 0.45, [{ text: `${mg.title || ''} ${mg.name || f.author || ''}`.trim() || CO.branch, bold: true }], { pt: 13, color: INK, align: 'center' }));
+    const g0 = G(p, 's00');
+    E.push(T(4.6, 1.6, 8.1, 4.6, g0.flatMap(g => g.lines).map((t, i) => ({ text: t, gap: 7, bold: i === 0, color: i === 0 ? NV : '2C3554' })), { max: 15, min: 10.5, lh: 1.45 }));
+    E.push(sigEl(SW - 4.6, 6.3, 0.42));
+    push(E, 's00'); }
+  /* 04 목차 */
+  { const E = frameX(p, null, 'Contents', '목차', N());
+    E.push(Photo(0.6, 1.55, 4.3, 5.0, M(MEDIA_EXTRA.diorama, 'team_dio')));
+    PARTS.forEach((pt, i) => { const y = 1.6 + i * 0.98; E.push(T(5.3, y, 1.2, 0.8, `0${pt.n}`, { pt: 34, bold: true, color: i % 2 ? GR : NV }));
+      E.push(T(6.55, y + 0.05, 6, 0.4, [{ text: pt.t, bold: true }], { pt: 17, color: INK })); E.push(T(6.55, y + 0.45, 6.2, 0.35, pt.items.join('  ·  '), { pt: 10.5, color: MU })); E.push(Rc(6.55, y + 0.86, 6.1, 0.01, LN)); });
+    push(E); }
+  /* 05 제안 요약 */
+  { const E = frameX(p, null, '제안 요약', `${f.client} · ${p.pt.n}`, N());
+    const cards = [['🏢', '대상', `${f.client}${f.site ? '\n' + f.site : ''}`, p.ind ? p.ind.n : ''], ['👥', '직종·인원', p.jobs.map(j => j.short).join('·'), p.heads ? `총 ${p.heads}명` : '실사 후 확정'], ['📅', '계약기간', f.from ? `${f.from}\n~ ${f.to}` : `${p.months}개월`, f.from ? `${p.months}개월` : '협의'], ['💰', '제안 금액', m.monthly ? `월 ${won(m.monthly)}원` : m.once ? `${won(m.once)}원` : '견적 연동 후', 'VAT 별도']];
+    cards.forEach((c, i) => { const x = 0.6 + i * 3.08; E.push(Rc(x, 1.6, 2.92, 2.1, i % 2 ? 'EEF7F1' : SOFT)); E.push(T(x + 0.2, 1.72, 0.6, 0.5, c[0], { pt: 22 }));
+      E.push(T(x + 0.85, 1.78, 1.9, 0.35, c[1], { pt: 12, bold: true, color: i % 2 ? GR : NV })); E.push(T(x + 0.2, 2.35, 2.55, 0.9, c[2], { max: 17, min: 10, bold: true, color: INK })); E.push(T(x + 0.2, 3.25, 2.55, 0.35, c[3], { pt: 10.5, color: MU })); });
+    E.push(T(0.6, 3.95, 6, 0.4, '핵심 제안 Point', { pt: 14, bold: true, color: INK }));
+    const pts = p.emph.slice(0, 4).map(k => [EMPH[k].ic, EMPH[k].n, EMPH[k].line]);
+    pts.forEach((c, i) => card(E, 0.6 + i * 3.08, 4.45, 2.92, 2.2, c[1], c[2], { ic: c[0], col: i % 2 ? GR : NV, hPt: 12.5, bPt: 10.5 }));
+    push(E, 's01'); }
+  if (on('s01')) { const E = frameX(p, null, '제안 개요', '배경 · 목적 · 범위', N()), g = G(p, 's01');
+    E.push(T(0.6, 1.6, 7.6, 5.0, listParas(g), { max: 14, min: 9.5 }));
+    E.push(Photo(8.6, 1.6, 4.1, 2.4, M(MM.scene[0]))); E.push(Photo(8.6, 4.15, 2.0, 2.4, M(MM.fig[0]))); E.push(Photo(10.7, 4.15, 2.0, 2.4, M(MEDIA_EXTRA.team, 'team')));
+    push(E, 's01'); }
+
+  /* ===== PART 1 ===== */
+  if (on('s02')) {
+    push(divider(p, P(1), N()));
+    /* 회사 개요 · 핵심 지표 */
+    { const E = frameX(p, P(1), `${CO.group} 개요`, '고객의 신뢰가 만들어온 성장, 안심과 품질로 보답하겠습니다', N());
+      const met = lines(CO.metrics).map(l => l.split('|')).filter(x => x.length >= 2).slice(0, 4);
+      const tot = SITES.reduce((a, s) => a + (s.total || 0), 0);
+      const all = met.concat([[String(SITES.length), '곳', '에스텍베스트 운영 사업장'], [tot.toLocaleString('ko-KR'), '명', '에스텍베스트 현장 인력']]).slice(0, 6);
+      all.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 2.75, Y = 1.6 + r * 1.75;
+        E.push(Rc(X, Y, 2.6, 1.6, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.15, Y + 0.15, 2.3, 0.75, [{ text: x[0], bold: true }], { max: 30, min: 16, color: r ? GR : NV })); E.push(T(X + 0.15, Y + 0.85, 2.3, 0.3, x[1], { pt: 11.5, bold: true, color: INK })); E.push(T(X + 0.15, Y + 1.15, 2.35, 0.4, x[2] || '', { max: 9.5, min: 7, color: MU })); });
+      E.push(T(0.6, 5.2, 8.0, 1.4, CO.intro.map(t => ({ text: '•  ' + t })), { max: 12, min: 8.5, color: '2C3554' }));
+      E.push(Photo(9.0, 1.6, 3.7, 3.35, M(MEDIA_EXTRA.hq, 'hq'))); E.push(Photo(9.0, 5.05, 3.7, 1.55, M(MEDIA_EXTRA.cube, 'hq')));
+      push(E, 's02'); }
+    /* 연혁 */
+    { const hs = lines(CO.history); if (hs.length) { const E = frameX(p, P(1), '연혁 — 성장의 발자취', 'History', N());
+      E.push(Rc(0.9, 3.55, SW - 1.8, 0.06, NV));
+      hs.slice(0, 6).forEach((h, i) => { const n = Math.min(6, hs.length), X = 0.9 + i * ((SW - 1.8) / n), w = (SW - 1.8) / n - 0.15, mt = /^(\d{4}(?:\.\d{1,2})?)\s*(.*)$/.exec(h), yr = mt ? mt[1] : '', tx = mt ? mt[2] : h;
+        E.push(Rc(X + 0.05, 3.42, 0.32, 0.32, i % 2 ? GR : NV, { k: 'ellipse' }));
+        if (i % 2 === 0) { E.push(T(X, 1.75, w, 0.5, yr || `STEP ${String(i + 1).padStart(2, '0')}`, { pt: yr ? 20 : 15, bold: true, color: NV })); E.push(T(X, 2.25, w, 1.1, tx, { max: 12, min: 8.5, color: '2C3554' })); }
+        else { E.push(T(X, 3.95, w, 0.5, yr || `STEP ${String(i + 1).padStart(2, '0')}`, { pt: yr ? 20 : 15, bold: true, color: GR })); E.push(T(X, 4.45, w, 1.2, tx, { max: 12, min: 8.5, color: '2C3554' })); } });
+      E.push(Photo(0.6, 5.75, 12.1, 0.8, M('v02'), null, 0.45));
+      push(E, 's02'); } }
+    /* 사업 영역 */
+    { const E = frameX(p, P(1), '사업 영역 — 산업 전 분야 인력 운영', '경비·보안 · 미화 · 주차 · 시설 · 안내 · 조리 · 방역 · 경호 · 특수직군', N());
+      const ks = Object.keys(JOBS);
+      ks.forEach((k, i) => { const j = JOBS[k], c = i % 5, r = Math.floor(i / 5), X = 0.6 + c * 2.44, Y = 1.55 + r * 2.55, mm = MEDIA_MAP[k] || MEDIA_MAP.sec, act = p.jobs.some(x => x.k === k);
+        E.push(Rc(X, Y, 2.32, 2.4, act ? 'EEF7F1' : SOFT, { line: act ? '9FD3AE' : null })); E.push(PhotoFit(X + 0.1, Y + 0.08, 2.12, 1.6, M(mm.fig[0])));
+        E.push(T(X + 0.1, Y + 1.72, 2.12, 0.32, `${j.ic} ${j.n}`, { pt: 12, bold: true, color: act ? GR : INK, align: 'center' })); E.push(T(X + 0.1, Y + 2.02, 2.12, 0.34, j.scope[0], { max: 8.5, min: 6.5, color: MU, align: 'center' })); });
+      E.push(T(10.4, 4.25, 2.3, 1.4, [{ text: '이번 제안 직종', bold: true, color: GR }, { text: p.jobs.map(j => j.n).join(', '), color: INK }], { max: 12, min: 9 }));
+      push(E); }
+    /* 운영 네트워크 */
+    { const E = frameX(p, P(1), '운영 네트워크 — 현장 가까이 있는 지사', '에스텍베스트 사업장·지사 분포 (사업장 현황 지도 기준)', N());
+      const fc = p.site && p.site.lat ? { lat: p.site.lat, lng: p.site.lng, name: p.site.name } : null, mp = networkMap(fc, { w: 900, h: 720 });
+      E.push(Rc(0.6, 1.55, 6.3, 5.04, SOFT)); E.push(Im(0.65, 1.6, 6.2, 4.94, mp.src));
+      const bc = BRANCHES.map(b => SITES.filter(s => s.br === b.key).length), ch = barChart(BRANCHES.map(b => b.name), bc, { w: 760, h: 380, colors: ['#1E8B3A', '#0B1F8F', '#C2410C', '#6D28D9'], vfmt: v => v + '곳' });
+      E.push(T(7.2, 1.55, 5.5, 0.35, '지사별 운영 사업장', { pt: 13, bold: true, color: INK })); E.push(Im(7.2, 1.9, 5.5, 2.75, ch.src));
+      const nb = nearBranch(p.site), ns = nearSites(p.site, 4);
+      E.push(Rc(7.2, 4.8, 5.5, 1.8, 'EEF7F1')); E.push(T(7.4, 4.9, 5.1, 1.6, nb ? [{ text: `📍 ${p.site.name} — 관할 ${nb.b.name} ${nb.km.toFixed(1)}km`, bold: true, color: GR }, { text: `차량 약 ${Math.max(10, Math.round(nb.km / 40 * 60))}분 거리 · 인근 운영 사업장 ${ns.length}곳`, color: INK }, ...ns.map(x => ({ text: `•  ${x.s.name} (${x.km.toFixed(1)}km · ${x.s.total}명)`, size: 0.85, color: '3A4366' }))]
+        : [{ text: '지사 중심의 현장 밀착 관리', bold: true, color: GR }, { text: '관할 지사가 정기 방문·불시 점검을 하고, 인근 사업장 인력으로 결원·비상 상황에 신속히 대응합니다.', color: INK }, { text: '신규 현장은 계약 후 가장 가까운 지사가 전담합니다.', size: 0.9, color: MU }], { max: 12.5, min: 8, gap: 3 }));
+      push(E, 's02'); }
+    /* 운영 현황 차트 */
+    { const E = frameX(p, P(1), '운영 현황 — 숫자로 보는 에스텍베스트', '사업장 유형 · 직종별 인력 구성', N());
+      const typ = {}; SITES.forEach(s => typ[s.type || '기타'] = (typ[s.type || '기타'] || 0) + 1);
+      const ty = Object.entries(typ).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v], i) => ({ label: k, value: v, color: PAL[i] }));
+      const sec = SITES.reduce((a, s) => a + (s.sec || 0), 0), cln = SITES.reduce((a, s) => a + (s.cln || 0), 0), etc = SITES.reduce((a, s) => a + (s.etc || 0), 0);
+      const d1 = donut(ty, { center: SITES.length + '곳', sub: '사업장 유형', w: 620, h: 400 }), d2 = donut([{ label: '보안', value: sec, color: '#0B1F8A' }, { label: '미화', value: cln, color: '#1E8B3A' }, { label: '기타 직종', value: etc, color: '#E8750A' }], { center: (sec + cln + etc).toLocaleString() + '명', sub: '직종별 인력', w: 620, h: 400 });
+      E.push(Rc(0.6, 1.6, 5.95, 4.2, SOFT)); E.push(Im(0.7, 1.75, 5.75, 3.7, d1.src)); E.push(Rc(6.75, 1.6, 5.95, 4.2, SOFT)); E.push(Im(6.85, 1.75, 5.75, 3.7, d2.src));
+      E.push(T(0.6, 5.95, 12.1, 0.6, '공장·공동주택·빌딩·학교·병원·외국공관 등 다양한 현장을 동시에 운영하며 축적한 노하우를 이번 제안에 그대로 적용합니다.', { pt: 12, color: '2C3554' }));
+      push(E, 's02'); }
+    /* 핵심 역량 */
+    { const E = frameX(p, P(1), '에스텍 핵심 역량', 'Why S-Tec', N()), g = G(p, 's02');
+      const caps = [['🏢', '그룹 역량', '에스텍시스템 그룹의 교육·법무·품질 지원과 전국 운영 노하우'], ['📍', '현장 밀착 관리', '지사 정기 방문·불시 점검, 인근 사업장 연계 대체 투입'], ['📚', '표준 매뉴얼', '통합매뉴얼 → 직종별 7권 → 직종×산업 84종 → 현장 근무지침'], ['🧭', '통합관리 플랫폼', '근태·현장 지도·견적·Complaint·매뉴얼·법률 대응을 하나의 계정으로'], ['⚖', '법규 준수 체계', '경비업법·근로기준법·파견법 준수, 법률 대응 시스템 운영'], ['🤝', '사람 중심 경영', '평생직장 개념의 인사 운영, 고용승계·근로조건 보호']];
+      caps.forEach((c, i) => card(E, 0.6 + (i % 3) * 4.08, 1.6 + Math.floor(i / 3) * 2.5, 3.92, 2.35, c[1], c[2], { ic: c[0], col: i % 2 ? GR : NV }));
+      push(E, 's02'); }
+    /* 경쟁력 비교 */
+    CUR_PART = P(1); tableSlide(S, p, '에스텍 경쟁력 비교', '에스텍 vs 일반 용역사', ['구분', '에스텍', '일반 용역사'], COMPARE, [1.6, 5.4, 4.2], { per: 7, bold: [0, 1] });
+    /* 스마트 플랫폼 */
+    { const E = frameX(p, P(1), '에스텍 통합관리 시스템', '하나의 계정으로 운영되는 9개 프로그램 — 현장 데이터를 고객사와 공유합니다', N());
+      PLATFORM.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 4.08, Y = 1.6 + r * 1.68;
+        E.push(Rc(X, Y, 3.92, 1.52, x.code === 'stpp' ? 'EEF7F1' : SOFT, { line: x.code === 'stpp' ? '9FD3AE' : null })); E.push(Im(X + 0.15, Y + 0.22, 1.05, 1.05, ASSET.apps[x.code] || ASSET.icon));
+        E.push(T(X + 1.35, Y + 0.16, 2.45, 0.4, x.ko, { pt: 13, bold: true, color: INK })); E.push(T(X + 1.35, Y + 0.52, 2.45, 0.28, x.n, { max: 8.5, min: 6.5, color: GR, bold: true })); E.push(T(X + 1.35, Y + 0.8, 2.45, 0.66, x.d, { max: 10, min: 7.5, color: MU })); });
+      push(E, 's10'); }
+  }
+
+  /* ===== PART 2 ===== */
+  if (on('s03')) {
+    push(divider(p, P(2), N()));
+    /* 트렌드 */
+    { const E = frameX(p, P(2), '2026 용역 운영 환경 변화', '법·제도·인력·기술 — 고객사가 마주한 7가지 변화', N());
+      TRENDS.forEach((t, i) => { const c = i % 4, r = Math.floor(i / 4), X = 0.6 + c * 3.06, Y = 1.55 + r * 2.55, w = 2.92;
+        card(E, X, Y, w, 2.42, t.t, t.d, { ic: t.ic, col: [NV, GR, OR, '7A2E8E', '0E7C86', '2A44D4', '1B7A34'][i], hPt: 12, bPt: 9.5 }); });
+      E.push(Rc(9.78, 4.1, 2.92, 2.42, NVD)); E.push(T(9.95, 4.25, 2.6, 2.1, [{ text: '에스텍의 해답', bold: true, color: '9FE3B0' }, { text: '법규 준수 체계 + 안전보건관리체계 + 업무량 기반 편성 + 통합관리 플랫폼으로 변화에 먼저 대응합니다.', color: C.white }], { max: 13, min: 9, gap: 5 }));
+      push(E, 's03'); }
+    /* 현장 이해 */
+    { const E = frameX(p, P(2), `${f.client} 현장 이해`, p.ind ? `${p.ind.ic} ${p.ind.n} 현장 특성` : '현장 특성', N()), g = G(p, 's03');
+      E.push(Photo(0.6, 1.55, 5.0, 3.0, M(MM.scene[0]))); E.push(Rc(0.6, 4.65, 5.0, 1.95, SOFT));
+      E.push(T(0.75, 4.75, 4.7, 1.8, p.site ? [{ text: p.site.name, bold: true, color: NV }, { text: `${p.site.addr || ''}`, size: 0.85, color: MU }, { text: `계약 업종 ${p.site.work || '-'} · ${p.site.shift || '-'} · 운영 ${p.site.total}명`, color: INK }, { text: `계약일 ${p.site.since || '-'} · 관할 ${p.site.br}지사`, size: 0.9, color: GR }] : [{ text: f.client, bold: true, color: NV }, { text: f.addr || '주소 확인 예정', size: 0.85, color: MU }, { text: `${p.ind ? p.ind.n : ''} · ${p.jobs.map(j => j.short).join('·')}`, color: INK }], { max: 13, min: 8.5, gap: 3 }));
+      E.push(T(5.9, 1.55, 6.8, 5.05, listParas(g.filter(x => !/요구사항/.test(x.title))), { max: 14, min: 9 }));
+      push(E, 's03'); }
+    /* 포지셔닝 */
+    { const E = frameX(p, P(2), '현장 운영 특성 분석 [Positioning]', '관리 복잡도 × 현장 규모 — 맞춤 운영 전략 도출', N());
+      const X0 = 0.9, Y0 = 1.6, W = 7.0, H = 4.9; E.push(Rc(X0, Y0, W, H, 'FAFBFD', { line: LN })); E.push(Rc(X0 + W / 2, Y0, 0.02, H, 'C9CED6')); E.push(Rc(X0, Y0 + H / 2, W, 0.02, 'C9CED6'));
+      [['이해관계 조정형', 0, 0, '7A2E8E'], ['고도 통제형', 1, 0, 'C0392B'], ['단순 통제형', 0, 1, '0E7C86'], ['규칙·시스템형', 1, 1, NV]].forEach(([t, c, r, col]) => E.push(T(X0 + c * W / 2 + 0.15, Y0 + r * H / 2 + 0.12, W / 2 - 0.3, 0.35, t, { pt: 12, bold: true, color: col, align: c ? 'right' : 'left' })));
+      E.push(T(X0, Y0 + H + 0.05, W, 0.3, '← 소규모·밀폐형          현장 규모          대규모·개방형 →', { pt: 10, color: MU, align: 'center' }));
+      E.push(T(X0 - 0.35, Y0, 0.3, H, '관리 복잡도', { pt: 10, color: MU, valign: 'middle' }));
+      const heads = p.heads || (p.site && p.site.total) || 10, cx = Math.min(0.92, 0.25 + heads / 80), cy = { hosp: 0.18, special: 0.15, apt: 0.25, public: 0.3, mfg: 0.4, office: 0.45, univ: 0.35, retail: 0.3, logi: 0.55, energy: 0.2, hotel: 0.4, build: 0.5 }[p.indK] ?? 0.45;
+      const others = [['오피스', 0.6, 0.6], ['물류센터', 0.55, 0.7], ['병원', 0.75, 0.2], ['공동주택', 0.8, 0.3], ['공장', 0.65, 0.45], ['외국공관', 0.2, 0.15]];
+      others.forEach(o => { E.push(Rc(X0 + o[1] * W - 0.55, Y0 + o[2] * H - 0.17, 1.1, 0.34, 'E9EDF5', { k: 'ellipse' })); E.push(T(X0 + o[1] * W - 0.55, Y0 + o[2] * H - 0.17, 1.1, 0.34, o[0], { pt: 9, color: MU, align: 'center', valign: 'middle' })); });
+      E.push(Rc(X0 + cx * W - 0.95, Y0 + cy * H - 0.25, 1.9, 0.5, OR, { k: 'ellipse' })); E.push(T(X0 + cx * W - 0.95, Y0 + cy * H - 0.25, 1.9, 0.5, f.client.slice(0, 12), { pt: 11, bold: true, color: C.white, align: 'center', valign: 'middle' }));
+      const strat = cy < 0.35 ? ['고객 요구 수준 높음 → 숙련 관리자 배치', '의사소통 채널 일원화(현장소장 단일 창구)', '정기 보고·대면 회의 정례화'] : ['표준 절차·시스템 중심 운영', '데이터 기반 인력 탄력 배치', '점검표·KPI로 품질 수치화'];
+      E.push(Rc(8.3, 1.6, 4.4, 4.9, NVD)); E.push(T(8.5, 1.75, 4.0, 4.6, [{ text: '분석 결과', bold: true, color: '9FE3B0' }, { text: `${f.client}는 ${cy < 0.35 ? '관리 복잡도가 높은' : '표준화·시스템 운영이 효과적인'} 현장입니다.`, color: C.white, bold: true }, ...strat.map(t => ({ text: '•  ' + t, color: 'D6DCF0' })), { text: `운영 인원 ${heads}명 기준`, size: 0.8, color: 'B9C3EC' }], { max: 14, min: 9.5, gap: 6 }));
+      push(E, 's03'); }
+    /* 리스크 진단 */
+    { const rk = (p.ind ? p.ind.risk : ['근무 공백', '안전사고', '고객 민원']).concat(['근무지 이탈·근무시간 미준수', '결원·이직 증가', '법규 위반(업무 범위·근로조건)']);
+      const fix = { '근무지 이탈·근무시간 미준수': '전자순찰·근태관리 시스템으로 실시간 확인, 3대 중대 위반 특별교육', '결원·이직 증가': '지사 예비 인력 풀·24시간 대체 투입, 근로조건 준수로 이직 예방', '법규 위반(업무 범위·근로조건)': '업무 범위 계약서 명시, 근로기준·최저임금 100% 준수 점검' };
+      const rows = rk.slice(0, 7).map((r, i) => [i < 3 ? '현장 특성' : '운영 공통', r, fix[r] || `예방 점검 + 즉시 대응 체계 + 재발방지 교육`]);
+      CUR_PART = P(2); tableSlide(S, p, '현장 운영 진단 — 예상 문제점 & 개선 방안', '진단 범위: 조직 관리체계 · 근무형태·인력운영 · 서비스 품질', ['구분', '예상 문제점(리스크)', '에스텍 개선 방안'], rows, [1.4, 4.2, 6.5], { per: 7, bold: [0], center: [0] }); }
+    if (p.rfp && p.rfp.rows.length) { CUR_PART = P(2); tableSlide(S, p, '제안요청 요구사항 대응표', `RFP·과업지시서 ${p.rfp.rows.length}건 — 전 항목 대응`, ['No', '구분', '요구사항', '에스텍 대응'], p.rfp.rows.map((x, i) => [i + 1, x.cat, x.req, x.how]), [0.6, 1.4, 5.4, 4.6], { per: 7, center: [0, 1] }); }
+  }
+
+  /* ===== PART 3 ===== */
+  push(divider(p, P(3), N()));
+  /* 비전 하우스 */
+  if (on('s04')) { const E = frameX(p, P(3), '운영 비전 · 전략', 'Vision & Strategy', N());
+    E.push(Rc(2.0, 1.55, 9.3, 0.75, NV, { k: 'homePlate' })); E.push(T(2.2, 1.55, 8.9, 0.75, `“${f.client}의 안전과 품질, 에스텍이 끝까지 책임집니다”`, { pt: 17, bold: true, color: C.white, align: 'center', valign: 'middle' }));
+    const pil = [['안전', '무재해·무사고 현장', '🛡'], ['품질', '수치로 관리되는 서비스', '⭐'], ['신뢰', '투명한 원가·보고', '🤝'], ['혁신', '데이터·시스템 운영', '📱']];
+    pil.forEach((x, i) => { const X = 1.4 + i * 2.7; E.push(Rc(X, 2.5, 2.45, 2.7, i % 2 ? 'EEF7F1' : SOFT, { line: LN })); E.push(T(X, 2.6, 2.45, 0.6, x[2], { pt: 26, align: 'center' })); E.push(T(X, 3.25, 2.45, 0.5, x[0], { pt: 20, bold: true, color: i % 2 ? GR : NV, align: 'center' })); E.push(T(X + 0.15, 3.85, 2.15, 1.2, x[1], { pt: 11.5, color: '3A4366', align: 'center' })); });
+    E.push(Rc(1.4, 5.35, 10.55, 0.55, GR)); E.push(T(1.4, 5.35, 10.55, 0.55, '기반: 법규 준수 · 안전보건관리체계 · 표준 매뉴얼 · 지사 현장 밀착 관리', { pt: 13, bold: true, color: C.white, align: 'center', valign: 'middle' }));
+    E.push(T(1.4, 6.0, 10.55, 0.55, p.emph.map(k => EMPH[k].n).join('  ·  ') + ' — 평가 강조점 집중 대응', { pt: 11, color: MU, align: 'center' }));
+    push(E, 's04'); }
+  /* 특화서비스 */
+  { const sp = SPECIALS.common.concat(SPECIALS[p.indK] || []).concat(p.diff.map(k => [DIFF[k].n, DIFF[k].lines.join(' ')]));
+    const pick = [], seen = new Set(); sp.forEach(x => { if (!seen.has(x[0])) { seen.add(x[0]); pick.push(x); } });
+    for (let i = 0; i < pick.length; i += 4) { const E = frameX(p, P(3), `에스텍 특화서비스 ${i ? '(' + (i / 4 + 1) + ')' : ''}`, `${f.client} 맞춤 차별화 서비스`, N());
+      pick.slice(i, i + 4).forEach((x, k) => { const X = 0.6 + (k % 2) * 6.1, Y = 1.55 + Math.floor(k / 2) * 2.55, idx = i + k + 1, ph = k % 2 ? M(['v07', 'v11', 'v14', 'v04'][idx % 4]) : M(((MEDIA_MAP[p.jobs[idx % p.jobs.length].k] || MM).scene[0]));
+        E.push(Rc(X, Y, 5.95, 2.4, C.white, { line: LN })); E.push(Photo(X, Y, 2.3, 2.4, ph)); E.push(...chip(X + 2.45, Y + 0.15, 1.15, `특화 1.${idx}`, k % 2 ? GR : NV, { pt: 10 }));
+        E.push(T(X + 2.45, Y + 0.55, 3.35, 0.5, [{ text: x[0], bold: true }], { max: 14, min: 10, color: INK })); E.push(T(X + 2.45, Y + 1.05, 3.35, 1.25, x[1], { max: 11, min: 7.5, color: '3A4366', lh: 1.3 })); });
+      push(E, 's04'); } }
+  /* 조직도 */
+  if (on('s05')) { const E = frameX(p, P(3), '운영 조직 및 보고 체계', '본사 · 지사 · 현장 3단계 관리 — 고객사 요청은 현장 책임자 단일 창구', N());
+    const node = (x, y, w, t, s, col) => { E.push(Rc(x, y, w, 0.72, col)); E.push(T(x, y + 0.04, w, 0.4, t, { pt: 12, bold: true, color: C.white, align: 'center' })); if (s) E.push(T(x, y + 0.38, w, 0.3, s, { max: 9.5, min: 7, color: 'D6DCF0', align: 'center' })); };
+    node(5.4, 1.55, 2.5, `${CO.group} 본사`, '교육·법무·품질·인사 지원', NVD); E.push(Rc(6.64, 2.27, 0.03, 0.35, 'B0B8CC'));
+    node(5.4, 2.62, 2.5, CO.branch || '관할 지사', `지사장${mg.name && /지사장/.test(mg.title || '') ? ' ' + mg.name : ''} · 정기·불시 점검`, NV); E.push(Rc(6.64, 3.34, 0.03, 0.35, 'B0B8CC'));
+    node(5.4, 3.69, 2.5, '현장 책임자(소장)', '고객사 단일 창구', GR);
+    E.push(Rc(1.3, 4.41, 10.75, 0.03, 'B0B8CC')); E.push(Rc(6.64, 4.41, 0.03, 0.0, 'B0B8CC'));
+    const js = p.jobs.slice(0, 5), w = Math.min(2.3, 10.7 / js.length - 0.2), by = staffBy(p);
+    js.forEach((j, i) => { const X = 1.2 + i * (10.9 / js.length) + (10.9 / js.length - w) / 2; E.push(Rc(X + w / 2 - 0.015, 4.41, 0.03, 0.3, 'B0B8CC'));
+      E.push(Rc(X, 4.71, w, 1.75, SOFT, { line: LN })); E.push(PhotoFit(X + 0.05, 4.76, 0.95, 1.2, M((MEDIA_MAP[j.k] || MM).fig[0])));
+      const cnt = Object.entries(by).filter(([k]) => j.kw.some(w2 => k.includes(w2)) || k.includes(j.short)).reduce((a, x) => a + x[1], 0);
+      E.push(T(X + 1.0, 4.8, w - 1.05, 0.8, [{ text: j.n, bold: true, color: INK }, { text: cnt ? `${cnt}명` : '편성 예정', color: GR, bold: true }], { max: 12, min: 8, gap: 2 }));
+      E.push(T(X + 0.08, 6.0, w - 0.16, 0.42, '팀장·조장 → 요원', { max: 9, min: 7, color: MU, align: 'center' })); });
+    E.push(Rc(0.6, 1.55, 4.3, 2.65, 'EEF7F1')); E.push(T(0.75, 1.65, 4.0, 2.5, [{ text: '보고 체계', bold: true, color: GR }, { text: '•  일일: 근무일지·특이사항(현장→지사)', color: INK }, { text: '•  주간: 운영 현황 대면 보고(고객사)', color: INK }, { text: '•  월간: 운영 보고서(근태·교육·민원)', color: INK }, { text: '•  분기: 품질평가·개선 과제 회의', color: INK }, { text: '•  비상: 5분 이내 최초 보고', color: C.brick, bold: true }], { max: 12, min: 8.5, gap: 3 }));
+    E.push(Rc(8.4, 1.55, 4.3, 2.65, SOFT)); E.push(T(8.55, 1.65, 4.0, 2.5, [{ text: '도급 운영 원칙', bold: true, color: NV }, { text: '•  업무 지시는 현장 책임자를 거쳐 전달', color: INK }, { text: '•  고객사의 직접 지휘·명령 배제(불법파견 방지)', color: INK }, { text: '•  업무 범위 계약서·근무지침 명시', color: INK }, { text: '•  변경 요청은 서면 협의 후 반영', color: INK }], { max: 12, min: 8.5, gap: 3 }));
+    push(E, 's05'); }
+  /* 인력 편성 */
+  if (on('s05') && p.staff.length) {
+    { const E = frameX(p, P(3), '인력 운영 계획', `총 ${staffTotal(p)}명 — 직종·직책·근무형태별 편성`, N()), by = staffBy(p), ks = Object.keys(by);
+      const ch = barChart(ks.map(k => k.replace(/\(.*\)/, '')), ks.map(k => by[k]), { w: 700, h: 520, vfmt: v => v + '명', colors: ks.map((_, i) => PAL[i % PAL.length]) });
+      E.push(Rc(0.6, 1.55, 4.9, 5.0, SOFT)); E.push(T(0.75, 1.62, 4.6, 0.35, '직종별 인원', { pt: 12, bold: true, color: INK })); E.push(Im(0.7, 2.0, 4.7, 3.5, ch.src));
+      E.push(T(0.75, 5.6, 4.6, 0.85, [{ text: `총 ${staffTotal(p)}명`, bold: true, color: NV }, { text: '결원 시 지사 예비 인력 24시간 내 대체', size: 0.75, color: MU }], { pt: 18 }));
+      const rows = p.staff.slice(0, 10), y0 = 1.55, X0 = 5.8, W = 6.9, cw = [1.4, 2.0, 0.9, 2.6];
+      E.push(Rc(X0, y0, W, 0.42, NV)); ['직종', '직책', '인원', '근무형태'].forEach((h, j) => E.push(T(X0 + cw.slice(0, j).reduce((a, b) => a + b, 0) + 0.08, y0, cw[j] - 0.16, 0.42, h, { pt: 11, bold: true, color: C.white, valign: 'middle', align: j === 2 ? 'center' : 'left' })));
+      const rh = Math.min(0.46, 4.3 / rows.length);
+      rows.forEach((r, i) => { const y = y0 + 0.42 + i * rh; if (i % 2) E.push(Rc(X0, y, W, rh, 'F6F8FB')); [r.job, r.title || '-', r.count + '명', r.shift || '-'].forEach((c, j) => E.push(T(X0 + cw.slice(0, j).reduce((a, b) => a + b, 0) + 0.08, y, cw[j] - 0.16, rh, String(c), { max: 11.5, min: 8, color: INK, valign: 'middle', bold: j === 0, align: j === 2 ? 'center' : 'left' }))); });
+      push(E, 's05'); }
+    /* POST 배치 개념도 */
+    { const E = frameX(p, P(3), 'POST 배치 개념도', `${p.ind ? p.ind.n : '현장'} 표준 근무 거점 — 현장 실사 후 확정`, N()), posts = (POSTS[p.indK] || POSTS.office).slice(0, 7);
+      E.push(Rc(0.6, 1.55, 8.0, 5.0, 'EEF3F8', { line: LN })); E.push(Rc(3.0, 2.85, 3.2, 2.3, 'D6DEEA')); E.push(T(3.0, 2.85, 3.2, 2.3, [{ text: f.client.slice(0, 14), bold: true }, { text: p.ind ? p.ind.n : '', size: 0.75 }], { pt: 14, color: '5A6480', align: 'center', valign: 'middle' }));
+      const pos = [[0.9, 1.75], [6.3, 1.75], [6.3, 5.55], [0.9, 5.55], [3.6, 1.75], [6.5, 3.7], [0.75, 3.7]];
+      posts.forEach((t, i) => { const [x, y] = pos[i]; E.push(Rc(x, y, 2.0, 0.78, i === 0 ? OR : i % 2 ? NV : GR)); E.push(T(x + 0.05, y, 1.9, 0.78, [{ text: `P${i + 1}`, bold: true }, { text: t, size: 0.8 }], { max: 11, min: 7, color: C.white, align: 'center', valign: 'middle', gap: 1 })); });
+      E.push(Rc(1.0, 5.05, 1.6, 0.04, OR)); E.push(T(1.0, 5.08, 2.0, 0.3, '순찰 동선 →', { pt: 9, color: OR, bold: true }));
+      E.push(T(8.9, 1.55, 3.8, 5.0, [{ text: 'POST 운영 원칙', bold: true, color: NV }, ...posts.map((t, i) => ({ text: `P${i + 1}  ${t}`, color: INK, size: 0.92 })), { text: '근무 공백 없는 교대 · 피크 시간 탄력 배치 · 2시간 단위 전자순찰', color: GR, bold: true, size: 0.9 }], { max: 13, min: 8.5, gap: 4 }));
+      push(E, 's05'); }
+    /* 교대 근무표 */
+    { const sp = p.staff.map(r => shiftPattern(r.shift)).find(Boolean);
+      if (sp) { const E = frameX(p, P(3), `근무 편성표 — ${sp.n}`, '14일 순환 예시 · 법정 휴게시간 부여 · 근무 공백 없는 교대', N()), days = 14, X0 = 1.9, cw = (SW - X0 - 0.6) / days;
+        for (let d = 0; d < days; d++) { E.push(Rc(X0 + d * cw, 1.6, cw - 0.04, 0.45, d % 7 >= 5 ? 'FBE9E7' : SOFT)); E.push(T(X0 + d * cw, 1.6, cw - 0.04, 0.45, `${d + 1}일`, { pt: 10, bold: true, color: INK, align: 'center', valign: 'middle' })); }
+        const col = { 주: NV, 야: '2C3554', 비: 'C9CED6', 휴: 'E3E7EE', 근: GR };
+        for (let t = 0; t < sp.teams; t++) { const y = 2.15 + t * 0.62; E.push(T(0.6, y, 1.25, 0.52, `${String.fromCharCode(65 + t)}조`, { pt: 13, bold: true, color: INK, valign: 'middle' }));
+          for (let d = 0; d < days; d++) { const s = sp.cyc[(d + t * Math.max(1, Math.round(sp.cyc.length / sp.teams))) % sp.cyc.length]; E.push(Rc(X0 + d * cw, y, cw - 0.04, 0.52, col[s] || SOFT)); E.push(T(X0 + d * cw, y, cw - 0.04, 0.52, s, { pt: 12, bold: true, color: /비|휴/.test(s) ? '5A6480' : C.white, align: 'center', valign: 'middle' })); } }
+        const yb = 2.3 + sp.teams * 0.62;
+        E.push(T(0.6, yb, 12.1, 2.0, [{ text: '편성 기준', bold: true, color: GR }, { text: '•  주(주간)·야(야간)·비(비번)·휴(휴무) — 실제 근무시간·인원은 연동 견적의 근무형태 기준', color: INK }, { text: '•  감시·단속적 근로 승인 여부, 휴게시간(4시간당 30분 이상) 부여 계획을 근무지침에 명시', color: INK }, { text: '•  야간 근무자 특수건강진단 대상 관리, 연속 야간 근무 제한', color: INK }, { text: '•  대체근무·연차 사용은 근태관리 시스템으로 자동 집계해 월간 보고', color: INK }], { max: 13, min: 9, gap: 4 }));
+        push(E, 's05'); } }
+  }
+  /* 시간대 집중업무 */
+  { const tf = TIMEFOCUS[p.indK] || TIMEFOCUS.default;
+    CUR_PART = P(3); tableSlide(S, p, '데이터 기반 시간대별 집중 운영', '시간대·이용자 특성 분석 → POST 탄력 배치', ['시간대', '구분', '집중 업무'], tf, [2.2, 2.2, 7.7], { per: 7, bold: [0], center: [0, 1] }); }
+  /* 직종별 업무 수행 + 일과 + 영상 */
+  if (on('s06')) p.jobs.forEach(j => {
+    const mm = MEDIA_MAP[j.k] || MM, g = G(p, 's06').filter(x => x.title.includes(j.n));
+    { const E = frameX(p, P(3), `${j.n} 업무 수행 방안`, `${j.ic} 업무 범위 · 운영 방법 · ${p.ind ? p.ind.n + ' 특화' : '현장 특화'}`, N());
+      E.push(Photo(0.6, 1.55, 3.6, 5.0, M(mm.fig[0]), null, 0.4));
+      E.push(T(4.5, 1.55, 8.2, 5.0, listParas(g.length ? g : [{ title: '업무 범위', lines: j.scope }, { title: '운영 방법', lines: j.run }]), { max: 13.5, min: 8.5 }));
+      push(E, 's06'); }
+    { const E = frameX(p, P(3), `${j.n} 하루 일과 (Standard Routine)`, '근무 표준화 — 언제, 무엇을, 어떻게', N()), rt = ROUTINE[j.k] || ROUTINE.spc;
+      E.push(Rc(0.6, 3.15, SW - 1.2, 0.05, 'C9CED6'));
+      rt.forEach((r, i) => { const X = 0.6 + i * ((SW - 1.2) / rt.length), w = (SW - 1.2) / rt.length - 0.12;
+        E.push(Rc(X, 1.6, w, 1.35, i % 2 ? 'EEF7F1' : SOFT)); E.push(T(X + 0.1, 1.68, w - 0.2, 0.36, String(i + 1).padStart(2, '0'), { pt: 18, bold: true, color: i % 2 ? GR : NV })); E.push(T(X + 0.1, 2.1, w - 0.2, 0.8, r[0], { max: 13, min: 9, bold: true, color: INK }));
+        E.push(Rc(X + w / 2 - 0.12, 3.05, 0.24, 0.24, i % 2 ? GR : NV, { k: 'ellipse' }));
+        E.push(T(X + 0.05, 3.45, w - 0.1, 1.3, r[1], { max: 11.5, min: 8, color: '3A4366' })); });
+      E.push(Photo(0.6, 4.95, 4.0, 1.6, M(mm.scene[0]))); E.push(Photo(4.75, 4.95, 4.0, 1.6, M(mm.scene[1] || 'v07'))); E.push(Rc(8.9, 4.95, 3.8, 1.6, NVD));
+      E.push(T(9.05, 5.05, 3.5, 1.4, [{ text: '근무 기록·점검', bold: true, color: '9FE3B0' }, { text: `${j.kpi.slice(0, 2).join(' · ')}`, color: C.white }], { max: 12, min: 8.5, gap: 3 }));
+      push(E); }
+    { const v = mm.video, E = frameX(p, P(3), `현장 근무 영상 — ${j.n}`, `▶ ${VIDEO_TITLE[v] || '현장 근무'} · PPT에서 바로 재생 (PDF는 대표 장면)`, N());
+      E.push(Rc(0.6, 1.55, 8.2, 4.62, '0F1530')); E.push(Object.assign(Photo(0.65, 1.6, 8.1, 4.52, M(v)), { t: 'video', key: v }));
+      E.push(Rc(9.1, 1.55, 3.6, 5.0, SOFT)); E.push(PhotoFit(9.2, 1.65, 3.4, 2.4, M(mm.fig[1] || mm.fig[0])));
+      E.push(T(9.25, 4.15, 3.3, 2.3, [{ text: '영상으로 보는 근무 기준', bold: true, color: GR }, ...j.run.slice(0, 3).map(t => ({ text: '•  ' + t, size: 0.9, color: INK }))], { max: 12, min: 8, gap: 3 }));
+      push(E); }
+  });
+  /* 교육 */
+  if (on('s07')) {
+    { const E = frameX(p, P(3), '교육·훈련 체계', '법정 교육 + 현장 특별교육 + 비상 훈련 — 이수 기록 100% 관리', N()), g = G(p, 's07');
+      E.push(T(0.6, 1.55, 6.6, 5.0, listParas(g), { max: 13, min: 8.5 }));
+      E.push(Photo(7.5, 1.55, 5.2, 2.4, M('v13'))); E.push(Photo(7.5, 4.1, 2.55, 2.45, M(MEDIA_EXTRA.team, 'team'))); E.push(Photo(10.15, 4.1, 2.55, 2.45, M(MM.fig[2] || MM.fig[0])));
+      push(E, 's07'); }
+    { const E = frameX(p, P(3), '연간 교육 계획', 'Annual Training Calendar', N()), X0 = 3.5, cw = (SW - X0 - 0.6) / 12;
+      for (let mo = 1; mo <= 12; mo++) { E.push(Rc(X0 + (mo - 1) * cw, 1.55, cw - 0.04, 0.42, NV)); E.push(T(X0 + (mo - 1) * cw, 1.55, cw - 0.04, 0.42, mo + '월', { pt: 10.5, bold: true, color: C.white, align: 'center', valign: 'middle' })); }
+      EDU_CAL.forEach((r, i) => { const y = 2.05 + i * 0.56; E.push(Rc(0.6, y, 2.85, 0.5, i % 2 ? 'F6F8FB' : SOFT)); E.push(T(0.7, y, 2.7, 0.5, r[0], { max: 11.5, min: 8, bold: true, color: INK, valign: 'middle' }));
+        for (let mo = 1; mo <= 12; mo++) { const onm = r[1].includes(mo); E.push(Rc(X0 + (mo - 1) * cw, y, cw - 0.04, 0.5, onm ? (i % 2 ? GR : '2A44D4') : 'F3F5F8')); if (onm) E.push(T(X0 + (mo - 1) * cw, y, cw - 0.04, 0.5, '●', { pt: 10, color: C.white, align: 'center', valign: 'middle' })); } });
+      E.push(T(0.6, 2.15 + EDU_CAL.length * 0.56, 12.1, 0.5, EDU_CAL.map(r => `${r[0]}: ${r[2]}`).slice(0, 3).join('   |   '), { max: 9.5, min: 7, color: MU }));
+      push(E, 's07'); }
+  }
+  /* 안전보건·비상 대응 */
+  if (on('s08')) {
+    { const E = frameX(p, P(3), '안전보건 관리체계', '중대재해처벌법 대응 — Plan · Do · Check · Act', N());
+      const pd = [['Plan', '위험성평가·안전보건 계획', NV], ['Do', 'TBM·보호구·안전교육', GR], ['Check', '현장 점검·불시 점검', OR], ['Act', '개선·재발방지·보고', '7A2E8E']];
+      const cx = 3.4, cy = 4.0; pd.forEach((x, i) => { const ang = -Math.PI / 2 + i * Math.PI / 2, X = cx + Math.cos(ang) * 1.65 - 0.95, Y = cy + Math.sin(ang) * 1.65 - 0.55;
+        E.push(Rc(X, Y, 1.9, 1.1, x[2], { k: 'ellipse' })); E.push(T(X, Y + 0.08, 1.9, 0.95, [{ text: x[0], bold: true }, { text: x[1], size: 0.62 }], { pt: 16, color: C.white, align: 'center', valign: 'middle', gap: 1 })); });
+      E.push(Rc(cx - 0.75, cy - 0.3, 1.5, 0.6, C.white, { line: LN, k: 'ellipse' })); E.push(T(cx - 0.75, cy - 0.3, 1.5, 0.6, '무재해', { pt: 13, bold: true, color: INK, align: 'center', valign: 'middle' }));
+      const g = G(p, 's08').filter(x => !/적용 법령/.test(x.title));
+      E.push(T(6.9, 1.55, 5.8, 5.0, listParas(g), { max: 13, min: 8.5 }));
+      push(E, 's08'); }
+    CUR_PART = P(3); tableSlide(S, p, '비상 상황별 대응 체계', '초기 대응 → 보고 → 후속 조치 — 5분 이내 최초 보고', ['상황', '초기 대응', '보고', '후속 조치'], EMERGENCY, [1.7, 3.6, 3.0, 3.8], { per: 7, bold: [0] });
+    CUR_PART = P(3); tableSlide(S, p, '관계 법령 준수', '국가법령정보센터(law.go.kr) 기준', ['법령', '조항', '주요 내용'], p.laws.map(id => [LAWS[id].law, `${LAWS[id].art} ${LAWS[id].t}`, LAWS[id].s]), [2.6, 2.4, 7], { per: 7, bold: [0] });
+  }
+  /* 품질 KPI · Complaint */
+  if (on('s09')) {
+    { const E = frameX(p, P(3), '품질관리 KPI 대시보드', '측정하지 않으면 관리할 수 없습니다 — 월간 보고로 공유', N()), kp = uniq(p.jobs.flatMap(j => j.kpi).concat(p.ind ? p.ind.kpi : [])).slice(0, 8);
+      kp.forEach((t, i) => { const c = i % 4, r = Math.floor(i / 4), X = 0.6 + c * 3.06, Y = 1.55 + r * 1.75, mt = /(\d+%|\d+분|\d+건|0건|100%)/.exec(t);
+        E.push(Rc(X, Y, 2.92, 1.6, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.15, Y + 0.1, 2.6, 0.7, [{ text: mt ? mt[1] : '▲', bold: true }], { max: 26, min: 14, color: r ? GR : NV })); E.push(T(X + 0.15, Y + 0.85, 2.65, 0.7, t, { max: 11, min: 7.5, color: INK })); });
+      const rp = [['일일', '근무일지 · 특이사항'], ['주간', '운영 현황 대면 보고'], ['월간', '운영 보고서(근태·교육·민원)'], ['분기', '품질평가 · 개선 과제']];
+      rp.forEach((x, i) => { const X = 0.6 + i * 3.06; E.push(Rc(X, 5.25, 2.92, 1.3, NVD, { k: i < 3 ? 'homePlate' : 'rect' })); E.push(T(X + 0.2, 5.3, 2.4, 1.2, [{ text: x[0], bold: true, color: '9FE3B0' }, { text: x[1], color: C.white, size: 0.8 }], { pt: 15, valign: 'middle', gap: 2 })); });
+      push(E, 's09'); }
+    { const E = frameX(p, P(3), 'Complaint 대응 프로세스', 'S-Tec Complaint Response System — 대·중·소 분류 · 표준 대응 · 재발방지', N());
+      const st = [['D+0', '접수·1차 조치', '접수 즉시 현장 조치\n경위 1차 보고'], ['D+1~3', '원인 분석', '관련자 면담\n사실 확인·조치'], ['D+7', '재발방지 회신', '대책 서면 회신\n근무자 재교육'], ['상시', '사후관리', '월간 보고 반영\n재발 여부 점검']];
+      st.forEach((x, i) => { const X = 0.6 + i * 3.08; E.push(Rc(X, 1.65, 2.98, 0.75, i % 2 ? GR : NV, { k: 'homePlate' })); E.push(T(X + 0.2, 1.65, 2.5, 0.75, `${x[0]}  ${x[1]}`, { pt: 14, bold: true, color: C.white, valign: 'middle' })); E.push(Rc(X, 2.55, 2.85, 1.45, SOFT)); E.push(T(X + 0.18, 2.65, 2.5, 1.3, x[2], { max: 13, min: 9, color: INK })); });
+      ['v19', 'v21', 'v27'].forEach((v, i) => E.push(Photo(0.6 + i * 2.75, 4.25, 2.6, 2.3, M(v))));
+      E.push(Rc(8.95, 4.25, 3.75, 2.3, 'FDF1EF')); E.push(T(9.1, 4.35, 3.45, 2.1, [{ text: '3대 중대 위반 무관용', bold: true, color: C.brick }, { text: '근무지 이탈 · 근무시간 미준수 · 지시 불이행', color: INK, bold: true }, { text: '실제 Complaint 사례 영상으로 재교육하고, 재발 시 인사 조치 기준을 사전 고지합니다.', size: 0.85, color: '3A4366' }], { max: 13, min: 8.5, gap: 4 }));
+      push(E, 's09'); }
+  }
+  /* 스마트 운영 */
+  if (on('s10')) { const E = frameX(p, P(3), '스마트 운영관리 — 고객사 리포트', '현장 데이터를 실시간으로, 보고서는 자동으로', N()), g = G(p, 's10');
+    E.push(Rc(0.6, 1.55, 6.6, 5.0, '0F1530')); E.push(Photo(0.7, 1.65, 6.4, 3.0, M(MEDIA_EXTRA.control)));
+    [['근태', '실시간'], ['순찰', '전자기록'], ['민원', 'D+0'], ['교육', '이수 100%']].forEach((x, i) => { const X = 0.8 + i * 1.6; E.push(Rc(X, 4.8, 1.45, 1.6, '1C2550')); E.push(T(X, 4.9, 1.45, 1.4, [{ text: x[1], bold: true, color: '9FE3B0' }, { text: x[0], color: C.white, size: 0.7 }], { pt: 16, align: 'center', valign: 'middle', gap: 3 })); });
+    E.push(T(7.5, 1.55, 5.2, 5.0, listParas(g.filter(x => !/통합관리 시스템/.test(x.title)).concat([{ title: '주요 프로그램', lines: PLATFORM.slice(0, 6).map(x => `${x.ko} — ${x.d}`) }])), { max: 12.5, min: 8 }));
+    push(E, 's10'); }
+  /* 운영 개시 · 인수인계 */
+  if (on('s11')) { const E = frameX(p, P(3), '운영 개시 · 인수인계 계획', `운영 개시일 ${p.timeline[3].date} 기준 — 공백 없는 전환`, N()), tl = p.timeline;
+    const X0 = 3.6, W = SW - X0 - 0.6, d0 = -30, d1 = 30, xx = d => X0 + (d - d0) / (d1 - d0) * W, dd = [-30, -14, -7, 0, 30];
+    [-30, -21, -14, -7, 0, 10, 20, 30].forEach(d => { E.push(Rc(xx(d), 1.6, 0.01, 4.1, 'E3E7EE')); E.push(T(xx(d) - 0.4, 1.55, 0.8, 0.3, d === 0 ? 'D-Day' : (d < 0 ? 'D' + d : 'D+' + d), { pt: 9, bold: true, color: d === 0 ? C.brick : MU, align: 'center' })); });
+    const bars = [['인력 선발·면접·고용승계 면담', -30, -14, NV], ['법정 교육·자격 확인·OJT', -14, -7, '2A44D4'], ['장비·피복·시스템 준비', -14, -3, '0E7C86'], ['현장 인수인계(업무·시설·비품)', -7, -1, GR], ['운영 개시·지사 상주 지원', 0, 7, C.brick], ['안정화 점검·첫 월간 보고', 7, 30, '7A2E8E']];
+    bars.forEach((b, i) => { const y = 2.0 + i * 0.6; E.push(T(0.6, y, 2.9, 0.48, b[0], { max: 11, min: 8, color: INK, bold: true, valign: 'middle' })); E.push(Rc(xx(b[1]), y + 0.06, Math.max(0.2, xx(b[2]) - xx(b[1])), 0.38, b[3])); });
+    E.push(T(0.6, 5.85, 12.1, 0.7, tl.map(t => `${t.d} ${t.date} ${t.t}`).join('   →   '), { max: 11, min: 8, color: GR, bold: true }));
+    push(E, 's11'); }
+
+  /* ===== PART 4 가격 ===== */
+  if (on('s12')) {
+    push(divider(p, P(4), N()));
+    { const E = frameX(p, P(4), '제안 금액', '연동 견적 기준 · 부가가치세 별도', N());
+      const big = m.monthly ? [['월 도급비', won(m.monthly) + '원', '공급가액'], ['월 합계(VAT 포함)', won(m.monthly + m.vat) + '원', `부가세 ${won(m.vat)}원`], [`${p.months}개월 총액`, won(m.monthly * p.months) + '원', `일금 ${korWon(m.monthly * p.months)}원정`]] : m.once ? [['단기 인력', won(m.once) + '원', '공급가액'], ['합계(VAT 포함)', won(m.once + m.onceVat) + '원', `부가세 ${won(m.onceVat)}원`], ['투입 인원', m.heads + '명', '연동 견적 기준']] : [['제안 금액', '견적 연동 후 기재', '「📑 제안서로 보내기」'], ['운영 인원', (p.heads || '-') + '명', ''], ['계약기간', p.months + '개월', '']];
+      big.forEach((b, i) => { const X = 0.6 + i * 4.08; E.push(Rc(X, 1.55, 3.92, 1.9, i ? SOFT : NV)); E.push(T(X + 0.22, 1.68, 3.5, 0.4, b[0], { pt: 13, bold: true, color: i ? NV : 'C9D1F0' })); E.push(T(X + 0.22, 2.1, 3.5, 0.8, b[1], { max: 28, min: 14, bold: true, color: i ? INK : C.white })); E.push(T(X + 0.22, 2.92, 3.5, 0.4, b[2], { max: 10.5, min: 7, color: i ? MU : 'C9D1F0' })); });
+      if (p.est.length) { const rows = priceRows(p), ch = barChart(p.est.map(e => SRC[e.src].n + '\n' + e.title.slice(0, 10)), p.est.map(e => e.unit === '건' ? (e.supply || 0) : (e.monthly || 0)), { w: 760, h: 420, vfmt: v => (v / 10000).toFixed(0) + '만', fmt: v => (v / 10000).toFixed(0) + '만', colors: p.est.map(e => '#' + SRC[e.src].color) });
+        E.push(Rc(0.6, 3.65, 5.8, 2.95, SOFT)); E.push(Im(0.7, 3.72, 5.6, 2.8, ch.src));
+        const y0 = 3.65; E.push(Rc(6.6, y0, 6.1, 0.4, NV)); ['산출 프로그램 · 견적', '인원', '공급가액(원)'].forEach((h, j) => E.push(T([6.7, 10.0, 10.8][j], y0, [3.2, 0.8, 1.8][j], 0.4, h, { pt: 10.5, bold: true, color: C.white, valign: 'middle', align: j ? 'right' : 'left' })));
+        rows.slice(0, 5).forEach((r, i) => { const y = y0 + 0.4 + i * 0.5; if (i % 2) E.push(Rc(6.6, y, 6.1, 0.5, 'F6F8FB')); [`${r[0]} · ${r[1]}`, r[2], r[4]].forEach((c, j) => E.push(T([6.7, 10.0, 10.8][j], y, [3.2, 0.8, 1.8][j], 0.5, String(c), { max: 10.5, min: 7.5, color: INK, valign: 'middle', align: j ? 'right' : 'left', bold: j === 2 }))); }); }
+      push(E, 's12'); }
+    const mixE = p.est.filter(e => e.mix); if (mixE.length) { const mx = mixE.reduce((a, e) => { Object.entries(e.mix).forEach(([k, v]) => a[k] = (a[k] || 0) + (+v || 0)); return a; }, {}), tot = Object.values(mx).reduce((a, b) => a + b, 0);
+      if (tot > 0) { const E = frameX(p, P(4), '원가 구성 — 투명한 산출', '법정 원가(인건비·4대보험·퇴직급여) 우선 반영', N());
+        const d = donut([{ label: '인건비', value: mx.labor || 0, color: '#0B1F8A' }, { label: '경비', value: mx.expense || 0, color: '#1E8B3A' }, { label: '부대비용', value: mx.addon || 0, color: '#E8750A' }, { label: '일반관리비·이윤', value: mx.marg || 0, color: '#64748B' }].filter(x => x.value > 0), { center: Math.round((mx.labor || 0) / tot * 100) + '%', sub: '인건비 비중', w: 760, h: 440 });
+        E.push(Rc(0.6, 1.55, 7.0, 4.6, SOFT)); E.push(Im(0.7, 1.7, 6.8, 3.95, d.src));
+        E.push(T(7.9, 1.55, 4.8, 4.6, [{ text: '가격 산출 원칙', bold: true, color: NV }, { text: '•  최저임금(2026년 10,320원 · 2027년 10,700원)·4대보험 법정 요율 적용', color: INK }, { text: '•  연장·야간·휴일 가산, 연차·퇴직급여 원가 반영', color: INK }, { text: '•  일반관리비·이윤은 합리적 수준으로 최소화', color: INK }, { text: '•  산출내역서 공개 — 항목별 검증 가능', color: GR, bold: true }], { max: 13, min: 9, gap: 5 }));
+        push(E, 's12'); } }
+    const wb = p.est.find(e => e.src === 'wbe' && e.tasks.some(t => t.cost != null));
+    if (wb) { const E = frameX(p, P(4), '업무별 비용 배분 — 업무량 기반 산정', `${wb.title} · 월 업무량 ${wb.hours || '-'}시간 · ${wb.staff || ''}`, N());
+      const ch = barChart(wb.tasks.map(t => t.name.slice(0, 7)), wb.tasks.map(t => t.cost || 0), { w: 1100, h: 460, vfmt: v => (v / 10000).toFixed(0) + '만', fmt: v => (v / 10000).toFixed(0) + '만', colors: wb.tasks.map((_, i) => PAL[i % PAL.length]) });
+      E.push(Rc(0.6, 1.55, 12.1, 3.55, SOFT)); E.push(Im(0.8, 1.6, 11.7, 3.45, ch.src));
+      E.push(T(0.6, 5.25, 12.1, 1.3, [{ text: '「인당 단가」가 아닌 「업무 단가」', bold: true, color: GR }, { text: wb.tasks.map(t => `${t.name} ${t.share != null ? (t.share * 100).toFixed(1) + '%' : ''}`).join('  ·  '), color: INK, size: 0.85 }, { text: '업무를 추가·축소하면 비용이 업무량에 비례해 조정되어 예산 협의가 명확해집니다.', color: MU, size: 0.85 }], { max: 13, min: 8.5, gap: 4 }));
+      push(E, 's12'); }
+    CUR_PART = P(4); listSlides(S, p, '가격 산출 근거 · 조건', '⑫ 가격 제안', G(p, 's12').slice(1));
+  }
+
+  /* ===== PART 5 ===== */
+  push(divider(p, P(5), N()));
+  { const E = frameX(p, P(5), '기대효과', 'Before → After', N()), eff = G(p, 's13').find(x => x.title === '기대효과');
+    const before = ['결원·근무 공백 발생', '수기 기록·사후 보고', '사안 발생 후 대응', '인당 단가 위주 견적'], after = ['24시간 내 대체 투입·공백 0', '전자기록·월간 데이터 보고', '예방 중심·5분 보고 체계', '업무량·법정 원가 기반 투명 견적'];
+    E.push(Rc(0.6, 1.55, 5.2, 0.5, '8A93A3')); E.push(T(0.6, 1.55, 5.2, 0.5, 'BEFORE', { pt: 14, bold: true, color: C.white, align: 'center', valign: 'middle' })); E.push(Rc(7.5, 1.55, 5.2, 0.5, GR)); E.push(T(7.5, 1.55, 5.2, 0.5, 'AFTER · with S-Tec', { pt: 14, bold: true, color: C.white, align: 'center', valign: 'middle' }));
+    before.forEach((t, i) => { const y = 2.2 + i * 0.75; E.push(Rc(0.6, y, 5.2, 0.62, 'F3F5F8')); E.push(T(0.8, y, 4.9, 0.62, t, { pt: 13, color: '5A6480', valign: 'middle' })); E.push(T(6.0, y, 1.3, 0.62, '➜', { pt: 22, color: GR, align: 'center', valign: 'middle' })); E.push(Rc(7.5, y, 5.2, 0.62, 'EEF7F1')); E.push(T(7.7, y, 4.9, 0.62, after[i], { pt: 13, bold: true, color: INK, valign: 'middle' })); });
+    if (eff) E.push(T(0.6, 5.3, 12.1, 1.3, eff.lines.map(t => ({ text: '✔  ' + t })), { max: 12, min: 8.5, color: '2C3554' }));
+    push(E, 's13'); }
+  { const E = frameX(p, P(5), '에스텍의 약속 (SLA)', '말이 아닌 숫자로 약속합니다', N());
+    PROMISES.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 4.08, Y = 1.55 + r * 2.5;
+      E.push(Rc(X, Y, 3.92, 2.35, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.2, Y + 0.12, 3.5, 0.85, [{ text: x[0], bold: true }], { max: 34, min: 18, color: r ? GR : NV })); E.push(T(X + 0.2, Y + 0.98, 3.5, 0.4, x[1], { pt: 14, bold: true, color: INK })); E.push(T(X + 0.2, Y + 1.4, 3.55, 0.9, x[2], { max: 10.5, min: 7.5, color: '3A4366' })); });
+    push(E, 's13'); }
+  { const E = [], sc = M(MEDIA_EXTRA.team, 'team');
+    E.push(Rc(0, 0, SW, SH, C.white)); E.push(Photo(0, 0, SW, 4.9, M('v16'), null, 0.4)); E.push(Im(0, 0, SW, 4.9, veil('v', 0.1, 0.85, '7,18,79')));
+    const cl = G(p, 's13').find(x => x.title === '맺음말');
+    E.push(T(0.8, 2.6, SW - 1.6, 0.9, [{ text: cl ? cl.lines[0] : 'The Best Choice, S-Tec', bold: true }], { max: 26, min: 16, color: C.white, align: 'center' }));
+    E.push(T(0.8, 3.55, SW - 1.6, 0.8, (cl ? cl.lines.slice(1, 2) : []).map(t => ({ text: t })), { max: 15, min: 10, color: 'D6DCF0', align: 'center' }));
+    E.push(T(0.8, 5.05, SW - 1.6, 0.6, [{ text: 'The Best Choice, S-Tec', bold: true }], { pt: 26, color: INK, align: 'center' }));
+    E.push(Rc(SW / 2 - 0.6, 5.7, 1.2, 0.05, GR));
+    E.push(T(0.8, 5.85, SW - 1.6, 0.4, `${CO.group} · ${CO.branch || CO.name}${mg.name ? `  |  ${mg.name}${mg.title ? ' ' + mg.title : ''}${mg.phone ? ' · ' + mg.phone : ''}${mg.email ? ' · ' + mg.email : ''}` : ''}`, { pt: 11, color: MU, align: 'center' }));
+    E.push(Im(0.7, SH - 0.75, 1.3, 1.3 * 340 / 900, ASSET.logo)); E.push(sigEl(SW - 4.3, SH - 0.62, 0.38));
+    push(E); }
+  return S;
+}
+
+/* =====================================================================
  * 제안서 출력 — Word 제안서 · PPT 발표자료 · PDF / 제출 이력 · 시작
  * Designed & Developed by Rat Rae Choi
  * ===================================================================== */
 const docTitle = p => p.title;
-async function fetchVideo() { return null; }
+async function fetchVideo(k) { return await loadVideo(k); }
 async function toPng(u) { return u; }
 const ROMAN = ['', 'Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ', 'Ⅷ', 'Ⅸ', 'Ⅹ', 'Ⅺ', 'Ⅻ', 'ⅩⅢ', 'ⅩⅣ'];
 const imgType = src => /^data:image\/png/.test(src) ? 'png' : 'jpg';
@@ -4946,91 +5639,126 @@ function secParas(groups) { return bullets(groups); }
 function priceRows(p) {
   return p.est.map(e => [SRC[e.src].n, e.title, e.heads ? e.heads + '명' : '-', e.unit === '건' ? '건' : '월', e.unit === '건' ? won(e.supply ?? (e.total != null ? Math.round(e.total / 1.1) : null)) : won(e.monthly), e.unit === '건' ? won(e.vat) : won(e.vat ?? (e.monthly != null ? Math.round(e.monthly * 0.1) : null))]);
 }
-async function makeDocx(p) {
-  const f = p.f, isClient = f.mode === 'client', ch = [], on = id => p.secOn[id];
-  let n = 1; const S = t => H1(`${ROMAN[n++]}. ${t}`);
+const SEC_PART = { s02: 1, s03: 2, s04: 3, s05: 3, s06: 3, s07: 3, s08: 3, s09: 3, s10: 3, s11: 3, s12: 4, s13: 5 };
+async function slideJpeg(els, scale = 1.25) {
+  const host = $('#render'); host.innerHTML = ''; const d = slideDom(els); host.appendChild(d);
+  await Promise.all([...d.querySelectorAll('img')].map(im => im.decode ? im.decode().catch(() => { }) : null));
+  const cv = await html2canvas(d, { scale, backgroundColor: '#ffffff', logging: false, useCORS: true }); host.innerHTML = '';
+  return cv.toDataURL('image/jpeg', 0.86);
+}
+function figPara(src, caption, wIn = 6.65) {
+  const out = [new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 100, after: 40 }, keepNext: true, children: [imgRun(src, wIn * 96, wIn * 96 * 7.5 / 13.333)] })];
+  if (caption) out.push(P([R(caption, { size: 16, color: C.gray, it: true })], { align: AL().CENTER, after: 140 }));
+  return out;
+}
+function photoPara(m, wIn, hIn) { return new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 60, after: 60 }, children: [imgRun(coverSrc(m, wIn, hIn), wIn * 96, hIn * 96)] }); }
+async function makeDocx(p, onProg) {
+  const f = p.f, isClient = f.mode === 'client', ch = [], on = id => p.secOn[id], mg = UI.manager || {};
+  const slides = buildSlides(p), figs = {};
+  const pick = slides.filter(e => e.fig && !['s00', 's01'].includes(e.fig));
+  for (let i = 0; i < pick.length; i++) { onProg && onProg(i + 1, pick.length); const e = pick[i]; (figs[e.fig] = figs[e.fig] || []).push(await slideJpeg(e)); }
+  const tt = e => (e.find(x => x.t === 'text' && x.pt >= 17 && x.paras && x.paras[0] && x.paras[0].bold) || { paras: [{ text: '' }] }).paras[0].text;
+  const figTitle = {}; pick.forEach(e => (figTitle[e.fig] = figTitle[e.fig] || []).push(tt(e)));
+  let n = 1, figNo = 1; const S = t => H1(`${ROMAN[n++]}. ${t}`);
+  const BR = () => new docx.Paragraph({ children: [new docx.PageBreak()] });
   /* 표지 */
-  ch.push(P([R(isClient ? '' : '내부 검토용 · 대외비', { size: 18, bold: true, color: C.brick })], { align: AL().RIGHT, after: 200 }));
-  ch.push(P([imgRun(ASSET.icon, 96, 96)], { align: AL().CENTER, before: 300, after: 160 }));
-  ch.push(P([R(p.pt.n.toUpperCase(), { size: 20, bold: true, color: C.green })], { align: AL().CENTER, after: 80 }));
-  ch.push(P([R(p.title, { size: 44, bold: true, color: C.navy })], { align: AL().CENTER, after: 120 }));
-  ch.push(P([R(`${f.client}${f.site ? ' · ' + f.site : ''}`, { size: 26, color: C.ink })], { align: AL().CENTER, after: 280 }));
-  ch.push(P([imgRun(ASSET.hero, 600, 600 * 1792 / 2400)], { align: AL().CENTER, after: 280 }));
-  ch.push(P([R(fmtD(parseD(f.date) || p.made), { size: 22, color: C.gray })], { align: AL().CENTER, after: 60 }));
-  ch.push(P([R(`${CO.group} · ${CO.branch || CO.name}`, { size: 26, bold: true, color: C.ink })], { align: AL().CENTER, after: 40 }));
-  ch.push(P([R(`${f.to_ ? '수신: ' + f.to_ + '   ' : ''}문서번호 ${p.docNo}`, { size: 17, color: C.gray })], { align: AL().CENTER, after: 0 }));
-  ch.push(new docx.Paragraph({ children: [new docx.PageBreak()] }));
+  ch.push(P([R(isClient ? '' : '내부 검토용 · 대외비', { size: 18, bold: true, color: C.brick })], { align: AL().RIGHT, after: 120 }));
+  ch.push(new docx.Paragraph({ alignment: AL().CENTER, spacing: { after: 200 }, children: [imgRun(coverSrc({ src: ASSET.hero, w: 2400, h: 1792 }, 6.7, 3.9), 6.7 * 96, 3.9 * 96)] }));
+  ch.push(P([R(`${CO.group}  ·  ${p.pt.n}`, { size: 22, bold: true, color: C.green })], { align: AL().CENTER, after: 80 }));
+  ch.push(P([R(p.title, { size: 46, bold: true, color: C.navy })], { align: AL().CENTER, after: 120 }));
+  ch.push(P([R(`${f.client}${f.site ? ' · ' + f.site : ''}`, { size: 28, color: C.ink })], { align: AL().CENTER, after: 60 }));
+  ch.push(P([R(`${p.jobs.map(j => j.n).join(' · ')}${p.ind ? '  |  ' + p.ind.n : ''}`, { size: 20, color: C.gray })], { align: AL().CENTER, after: 360 }));
+  ch.push(P([imgRun(ASSET.icon, 72, 72)], { align: AL().CENTER, after: 80 }));
+  ch.push(P([R(fmtD(parseD(f.date) || p.made), { size: 22, color: C.gray })], { align: AL().CENTER, after: 40 }));
+  ch.push(P([R(`${CO.branch || CO.name}${mg.title ? ' ' + mg.title : ''}${mg.name ? ' ' + mg.name : ''}`, { size: 24, bold: true, color: C.ink })], { align: AL().CENTER, after: 40 }));
+  ch.push(P([R(`${f.to_ ? '수신: ' + f.to_ + '   ·   ' : ''}문서번호 ${p.docNo}`, { size: 17, color: C.gray })], { align: AL().CENTER, after: 0 }));
+  ch.push(BR());
+  /* 인사말 */
+  if (on('s00')) {
+    ch.push(P([R('인 사 말', { size: 34, bold: true, color: C.navy })], { align: AL().CENTER, after: 240, border: { bottom: { style: docx.BorderStyle.DOUBLE, size: 6, color: C.navy, space: 6 } } }));
+    const ls = G(p, 's00').flatMap(g => g.lines);
+    ls.forEach((l, i) => ch.push(P([R(l, { size: i === 0 ? 24 : 22, bold: i === 0 || i === ls.length - 1, color: i === 0 ? C.navy : C.ink })], { align: i === ls.length - 1 ? AL().RIGHT : undefined, after: 160, line: 360, indent: i && i < ls.length - 1 ? { firstLine: 300 } : undefined })));
+    ch.push(new docx.Paragraph({ alignment: AL().RIGHT, children: [imgRun(state.sigDataUrl, 300, 300 * 210 / state.sigPx)] }));
+    ch.push(BR());
+  }
   /* 목차 */
-  ch.push(P([R('목   차', { size: 32, bold: true, color: C.navy })], { align: AL().CENTER, after: 240, border: { bottom: { style: docx.BorderStyle.DOUBLE, size: 6, color: C.navy, space: 6 } } }));
-  let k = 1; SECTIONS.filter(s => on(s.id)).forEach(s => ch.push(P([R(`${ROMAN[k++]}.  `, { size: 22, bold: true, color: C.green }), R(s.n, { size: 22, color: C.ink })], { indent: { left: 1200 }, after: 90 })));
-  if (p.est.length) ch.push(P([R('붙임.  ', { size: 22, bold: true, color: C.green }), R('연동 견적 상세', { size: 22 })], { indent: { left: 1200 }, after: 90 }));
-  if (!isClient) ch.push(P([R('별첨.  ', { size: 22, bold: true, color: C.brick }), R('검토·승인 기록 (내부용)', { size: 22 })], { indent: { left: 1200 }, after: 90 }));
-  ch.push(new docx.Paragraph({ children: [new docx.PageBreak()] }));
-  /* 요약 */
+  ch.push(P([R('목   차', { size: 34, bold: true, color: C.navy })], { align: AL().CENTER, after: 240, border: { bottom: { style: docx.BorderStyle.DOUBLE, size: 6, color: C.navy, space: 6 } } }));
+  let k = 1, lastP = 0;
+  SECTIONS.filter(s => on(s.id) && s.id !== 's00').forEach(s => { const pt = SEC_PART[s.id]; if (pt && pt !== lastP) { lastP = pt; const P0 = PARTS[pt - 1]; ch.push(P([R(`PART ${pt}.  ${P0.t}`, { size: 22, bold: true, color: C.green })], { indent: { left: 700 }, before: 120, after: 60 })); }
+    ch.push(P([R(`${ROMAN[k++]}.  `, { size: 21, bold: true, color: C.navy }), R(s.n, { size: 21, color: C.ink })], { indent: { left: 1200 }, after: 70 })); });
+  if (p.est.length) ch.push(P([R('붙임.  ', { size: 21, bold: true, color: C.green }), R('연동 견적 상세', { size: 21 })], { indent: { left: 1200 }, before: 100, after: 70 }));
+  if (!isClient) ch.push(P([R('별첨.  ', { size: 21, bold: true, color: C.brick }), R('검토·승인 기록 (내부용)', { size: 21 })], { indent: { left: 1200 }, after: 70 }));
+  ch.push(BR());
+  /* 제안 요약 */
   const m = p.money;
-  ch.push(boxPara([P([R('□ 제안 요약', { size: 22, bold: true, color: C.greenD })], { after: 80 })].concat([
-    `제안명: ${p.title}`, `대상: ${f.client}${f.site ? ' · ' + f.site : ''}${p.ind ? ` (${p.ind.n})` : ''}`, `직종: ${p.jobs.map(j => j.n).join(', ')} · 운영 인원 ${p.heads || '-'}명`,
-    m.monthly ? `제안 금액: 월 ${won(m.monthly)}원 (VAT 별도) · ${p.months}개월 ${won(m.monthly * p.months)}원` : m.once ? `제안 금액: ${won(m.once)}원 (VAT 별도)` : '제안 금액: 견적 연동 후 기재',
-    `핵심: ${p.emph.map(x => EMPH[x].n).join(' · ')}`
-  ].map(l => P([R('· ', { bold: true, color: C.green }), R(l, { size: 20 })], { indent: { left: 240, hanging: 200 }, after: 30 })))));
+  ch.push(P([R('제안 요약', { size: 30, bold: true, color: C.navy })], { after: 160 }));
+  ch.push(table([[
+    cell([P([R('제안 금액', { size: 18, color: C.white })], { align: AL().CENTER, after: 0 }), P([R(m.monthly ? `월 ${won(m.monthly)}원` : m.once ? `${won(m.once)}원` : '견적 연동 후', { size: 30, bold: true, color: C.white })], { align: AL().CENTER, after: 0 }), P([R('VAT 별도', { size: 16, color: 'C9D1F0' })], { align: AL().CENTER, after: 0 })], { w: 3212, fill: C.navy }),
+    cell([P([R('운영 인원', { size: 18, color: C.gray })], { align: AL().CENTER, after: 0 }), P([R(p.heads ? `${p.heads}명` : '실사 후 확정', { size: 30, bold: true, color: C.green })], { align: AL().CENTER, after: 0 }), P([R(p.jobs.map(j => j.short).join('·'), { size: 16, color: C.gray })], { align: AL().CENTER, after: 0 })], { w: 3213, fill: 'EEF7F1' }),
+    cell([P([R('계약기간', { size: 18, color: C.gray })], { align: AL().CENTER, after: 0 }), P([R(`${p.months}개월`, { size: 30, bold: true, color: C.navy })], { align: AL().CENTER, after: 0 }), P([R(f.from ? `${f.from} ~ ${f.to}` : '협의', { size: 16, color: C.gray })], { align: AL().CENTER, after: 0 })], { w: 3213, fill: 'F4F6FB' })]], [3212, 3213, 3213]));
+  ch.push(P([R('')], { after: 80 }));
+  ch.push(boxPara([P([R('□ 핵심 제안', { size: 22, bold: true, color: C.greenD })], { after: 80 })].concat(p.emph.map(x => P([R(`${EMPH[x].ic} ${EMPH[x].n}: `, { bold: true, color: C.navy }), R(EMPH[x].line, { size: 20 })], { indent: { left: 240, hanging: 200 }, after: 40 })))));
+  ch.push(P([R('')], { after: 60 }));
+  ch.push(photoPara(M((MEDIA_MAP[p.jobs[0].k] || MEDIA_MAP.sec).scene[0]), 6.65, 2.6));
+  lastP = 0;
   for (const s of SECTIONS) {
-    if (!on(s.id)) continue;
+    if (!on(s.id) || s.id === 's00') continue;
+    const pt = SEC_PART[s.id];
+    if (pt && pt !== lastP) { lastP = pt; const P0 = PARTS[pt - 1];
+      ch.push(BR());
+      ch.push(new docx.Paragraph({ alignment: AL().CENTER, spacing: { before: 200, after: 200 }, children: [imgRun(coverSrc(M(P0.scene, 'team_dio'), 6.65, 4.2), 6.65 * 96, 4.2 * 96)] }));
+      ch.push(P([R(`PART ${pt}`, { size: 28, bold: true, color: C.green })], { align: AL().CENTER, after: 40 }));
+      ch.push(P([R(P0.t, { size: 52, bold: true, color: C.navy })], { align: AL().CENTER, after: 60 }));
+      ch.push(P([R(P0.en, { size: 22, color: C.gray, it: true })], { align: AL().CENTER, after: 200 }));
+      P0.items.forEach((t, i) => ch.push(P([R(`${String(i + 1).padStart(2, '0')}  `, { size: 22, bold: true, color: C.green }), R(t, { size: 22 })], { align: AL().CENTER, after: 50 })));
+      ch.push(BR()); }
     ch.push(S(s.n));
     const g = G(p, s.id);
-    if (s.id === 's01') {
-      ch.push(kvTable([['제안명', p.title, null], ['고객사', f.client, '현장', f.site || '-'], ['업종', p.ind ? p.ind.n : '-', '제안 유형', p.pt.n], ['직종', p.jobs.map(j => j.n).join(', '), '운영 인원', p.heads ? p.heads + '명' : '-'],
-        ['계약기간', f.from ? `${f.from} ~ ${f.to}` : `${p.months}개월`, '제출일', fmtD(parseD(f.date) || p.made)], ['제출', `${CO.branch || CO.name} · ${f.author || ''}`, '수신', f.to_ || '-']]));
-      ch.push(P([R('')], { after: 60 }));
-    }
-    if (s.id === 's02') {
-      const tot = SITES.reduce((a, x) => a + (x.total || 0), 0);
-      ch.push(table([[cell([P([R(String(SITES.length), { size: 40, bold: true, color: C.navy })], { align: AL().CENTER, after: 0 }), P([R('운영 사업장(곳)', { size: 17, color: C.gray })], { align: AL().CENTER, after: 0 })], { w: 3212, fill: 'F4F6FB' }),
-        cell([P([R(tot.toLocaleString('ko-KR'), { size: 40, bold: true, color: C.green })], { align: AL().CENTER, after: 0 }), P([R('현장 인력(명)', { size: 17, color: C.gray })], { align: AL().CENTER, after: 0 })], { w: 3213, fill: 'F2F7F3' }),
-        cell([P([R(String(BRANCHES.length), { size: 40, bold: true, color: C.navy })], { align: AL().CENTER, after: 0 }), P([R('관할 지사', { size: 17, color: C.gray })], { align: AL().CENTER, after: 0 })], { w: 3213, fill: 'F4F6FB' })]], [3212, 3213, 3213]));
-      ch.push(P([R('※ 에스텍베스트 사업장 현황 지도(S-Tec Business Site Overview) 등록 기준', { size: 15, color: C.gray, it: true })], { align: AL().RIGHT, after: 80 }));
-    }
-    ch.push(...secParas(g));
+    if (s.id === 's01') { ch.push(kvTable([['제안명', p.title, null], ['고객사', f.client, '현장', f.site || '-'], ['업종', p.ind ? p.ind.n : '-', '제안 유형', p.pt.n], ['직종', p.jobs.map(j => j.n).join(', '), '운영 인원', p.heads ? p.heads + '명' : '-'],
+      ['계약기간', f.from ? `${f.from} ~ ${f.to}` : `${p.months}개월`, '제출일', fmtD(parseD(f.date) || p.made)], ['제출', `${CO.branch || CO.name} · ${f.author || ''}`, '수신', f.to_ || '-']])); ch.push(P([R('')], { after: 60 })); }
+    /* 직종별 사진 + 업무 */
+    if (s.id === 's06') {
+      p.jobs.forEach(j => { const mm = MEDIA_MAP[j.k] || MEDIA_MAP.sec, gg = g.filter(x => x.title.includes(j.n));
+        ch.push(H2(`${j.ic} ${j.n}`));
+        ch.push(table([[cell([photoPara(M(mm.fig[0]), 1.7, 2.3)], { w: 2200, borders: noB() }), cell([photoPara(M(mm.scene[0]), 3.5, 2.0), P([R(`▶ ${VIDEO_TITLE[mm.video] || '현장 근무 영상'} — PPT 발표자료에서 재생`, { size: 15, color: C.gray, it: true })], { align: AL().CENTER, after: 0 })], { w: 7438, borders: noB() })]], [2200, 7438]));
+        ch.push(...bullets(gg));
+        const rt = ROUTINE[j.k] || ROUTINE.spc;
+        ch.push(gridTable(['순서', '일과', '세부 내용'], rt.map((r, i) => [String(i + 1), r[0], r[1]]), [800, 2600, 6238], { center: [0], bold: [1], size: 17 }));
+        ch.push(P([R('')], { after: 60 })); });
+    } else ch.push(...secParas(g));
     if (s.id === 's03' && p.rfp && p.rfp.rows.length) {
       ch.push(H2(`제안요청 요구사항 대응표 (${p.rfp.rows.length}건)`));
-      ch.push(gridTable(['No', '구분', '요구사항', '대응 방안', '반영'], p.rfp.rows.map((x, i) => [String(i + 1), x.cat, x.req, `${SECTIONS.find(s2 => s2.id === x.sec).ic} ${x.how}`, x.st]), [500, 1100, 3700, 3538, 800], { size: 16, center: [0, 1, 4] }));
+      ch.push(gridTable(['No', '구분', '요구사항', '에스텍 대응 방안', '반영'], p.rfp.rows.map((x, i) => [String(i + 1), x.cat, x.req, `${SECTIONS.find(s2 => s2.id === x.sec).ic} ${x.how}`, x.st]), [500, 1100, 3700, 3538, 800], { size: 16, center: [0, 1, 4] }));
     }
+    if (s.id === 's03') { ch.push(H2('예상 문제점 및 개선 방안')); const rk = (p.ind ? p.ind.risk : []).concat(['근무지 이탈·근무시간 미준수', '결원·이직', '법규 위반(업무 범위·근로조건)']); ch.push(gridTable(['예상 문제점(리스크)', '에스텍 개선 방안'], rk.map(r => [r, '예방 점검 + 즉시 대응 체계 + 재발방지 교육 — 월간 보고로 이행 확인']), [3600, 6038], { size: 17 })); }
     if (s.id === 's05' && p.staff.length) {
       ch.push(H2('직종별 편성표'));
       ch.push(gridTable(['직종', '직책', '인원', '근무형태', '근거'], p.staff.map(r => [r.job, r.title || '-', `${r.count}명`, r.shift || '-', r.src === 'site' ? '현행 운영' : r.src === 'rfp' ? 'RFP' : SRC[r.src] ? SRC[r.src].n : '-']).concat([['합계', '', `${staffTotal(p)}명`, '', '']]), [1800, 2400, 1100, 2538, 1800], { center: [2], zebra: true }));
     }
+    if (s.id === 's07') { ch.push(H2('연간 교육 계획표')); ch.push(table([[th('교육', 2238)].concat([...Array(12)].map((_, i) => th(`${i + 1}`, 600)))].concat(EDU_CAL.map(r => [td(r[0], 2238, { size: 16, bold: true })].concat([...Array(12)].map((_, i) => td(r[1].includes(i + 1) ? '●' : '', 600, { align: AL().CENTER, color: C.green, fill: r[1].includes(i + 1) ? 'EEF7F1' : undefined }))))), [2238].concat(Array(12).fill(600)), { header: true })); }
     if (s.id === 's08') {
+      ch.push(H2('비상 상황별 대응 체계'));
+      ch.push(gridTable(['상황', '초기 대응', '보고', '후속 조치'], EMERGENCY, [1500, 3000, 2338, 2800], { size: 16, bold: [0] }));
       ch.push(H2('관계 법령 요약'));
       ch.push(table([[th('법령', 2300), th('조항', 1500), th('주요 내용', 5838)]].concat(p.laws.map(id => { const x = LAWS[id]; return [cell([P([R(x.law, { size: 18, bold: true, color: C.navy })], { after: 10 }), P([HLINK('원문 보기 ↗', lawUrl(x))], { after: 0 })], { w: 2300 }), td(`${x.art}\n${x.t}`, 1500, { size: 16, align: AL().CENTER }), td(x.s, 5838, { size: 17 })]; })), [2300, 1500, 5838], { header: true }));
     }
-    if (s.id === 's10') {
-      ch.push(H2('에스텍 통합관리 시스템 구성'));
-      ch.push(table([[th('', 900), th('프로그램', 3200), th('기능', 5538)]].concat(PLATFORM.map(x => [cell([P([imgRun(ASSET.apps[x.code] || ASSET.icon, 34, 34)], { align: AL().CENTER, after: 0 })], { w: 900 }), td(`${x.ko}\n${x.n}`, 3200, { size: 17, bold: true }), td(x.d, 5538, { size: 17 })])), [900, 3200, 5538], { header: true }));
-    }
-    if (s.id === 's11') {
-      ch.push(H2('운영 개시 일정표'));
-      const tc = [C.navy, C.navy, C.green, C.brick, C.greenD];
-      ch.push(table([[th('단계', 1100), th('일자', 1500), th('구분', 2000), th('주요 내용', 5038)]].concat(p.timeline.map((t, i) => [td(t.d, 1100, { bold: true, align: AL().CENTER, color: C.white, fill: tc[i] }), td(t.date, 1500, { align: AL().CENTER }), td(t.t, 2000, { bold: true }), td(t.a, 5038)])), [1100, 1500, 2000, 5038], { header: true }));
-    }
+    if (s.id === 's09') { ch.push(H2('고객 약속(SLA)')); ch.push(gridTable(['약속', '항목', '내용'], PROMISES, [1300, 2200, 6138], { center: [0], bold: [0, 1] })); }
+    if (s.id === 's10') { ch.push(H2('에스텍 통합관리 시스템 구성'));
+      ch.push(table([[th('', 900), th('프로그램', 3200), th('기능', 5538)]].concat(PLATFORM.map(x => [cell([P([imgRun(ASSET.apps[x.code] || ASSET.icon, 34, 34)], { align: AL().CENTER, after: 0 })], { w: 900 }), td(`${x.ko}\n${x.n}`, 3200, { size: 17, bold: true }), td(x.d, 5538, { size: 17 })])), [900, 3200, 5538], { header: true })); }
+    if (s.id === 's11') { ch.push(H2('운영 개시 일정표')); const tc = [C.navy, C.navy, C.green, C.brick, C.greenD];
+      ch.push(table([[th('단계', 1100), th('일자', 1500), th('구분', 2000), th('주요 내용', 5038)]].concat(p.timeline.map((t, i) => [td(t.d, 1100, { bold: true, align: AL().CENTER, color: C.white, fill: tc[i] }), td(t.date, 1500, { align: AL().CENTER }), td(t.t, 2000, { bold: true }), td(t.a, 5038)])), [1100, 1500, 2000, 5038], { header: true })); }
     if (s.id === 's12') {
-      if (p.est.length) {
-        ch.push(H2('견적 요약표 (VAT 별도)'));
-        ch.push(gridTable(['산출 프로그램', '견적', '인원', '단위', '공급가액(원)', '부가세(원)'], priceRows(p).concat(m.monthly || m.once ? [['합계', '', `${m.heads}명`, '', won((m.monthly || 0) + (m.once || 0)), won((m.vat || 0) + (m.onceVat || 0))]] : []), [1700, 2938, 900, 700, 1800, 1600], { center: [2, 3], right: [4, 5] }));
-      }
+      if (p.est.length) { ch.push(H2('견적 요약표 (VAT 별도)'));
+        ch.push(gridTable(['산출 프로그램', '견적', '인원', '단위', '공급가액(원)', '부가세(원)'], priceRows(p).concat(m.monthly || m.once ? [['합계', '', `${m.heads}명`, '', won((m.monthly || 0) + (m.once || 0)), won((m.vat || 0) + (m.onceVat || 0))]] : []), [1700, 2938, 900, 700, 1800, 1600], { center: [2, 3], right: [4, 5] })); }
       const wb = p.est.find(e => e.src === 'wbe' && e.tasks.some(t => t.cost != null));
-      if (wb) {
-        ch.push(H2(`업무별 비용 배분 — ${wb.title}`));
-        ch.push(gridTable(['업무(대분류)', '월 업무시간', '비중', '월 비용(원)'], wb.tasks.map(t => [t.name, t.hours != null ? t.hours.toFixed(1) + 'h' : '-', t.share != null ? (t.share * 100).toFixed(1) + '%' : '-', won(t.cost)]), [4038, 1800, 1500, 2300], { center: [1, 2], right: [3] }));
-      }
-      if (!isClient && m.monthly) {
-        const mix = p.est.filter(e => e.mix).reduce((a, e) => { Object.entries(e.mix).forEach(([k2, v]) => a[k2] = (a[k2] || 0) + (+v || 0)); return a; }, {});
-        if (Object.keys(mix).length) { ch.push(H2('원가 구성 (내부용)')); ch.push(gridTable(['인건비', '경비', '부대비용', '일반관리비·이윤'], [[won(mix.labor), won(mix.expense), won(mix.addon), won(mix.marg)]], [2409, 2410, 2409, 2410], { right: [0, 1, 2, 3] })); }
-      }
+      if (wb) { ch.push(H2(`업무별 비용 배분 — ${wb.title}`)); ch.push(gridTable(['업무(대분류)', '월 업무시간', '비중', '월 비용(원)'], wb.tasks.map(t => [t.name, t.hours != null ? t.hours.toFixed(1) + 'h' : '-', t.share != null ? (t.share * 100).toFixed(1) + '%' : '-', won(t.cost)]), [4038, 1800, 1500, 2300], { center: [1, 2], right: [3] })); }
     }
+    /* 도해(슬라이드 이미지) */
+    (figs[s.id] || []).slice(0, 4).forEach((src, i) => ch.push(...figPara(src, `[그림 ${figNo++}] ${(figTitle[s.id] || [])[i] || s.n}`)));
   }
   /* 붙임: 연동 견적 상세 */
   if (p.est.length) {
-    ch.push(new docx.Paragraph({ children: [new docx.PageBreak()] }));
-    ch.push(H1('붙임. 연동 견적 상세'));
+    ch.push(BR()); ch.push(H1('붙임. 연동 견적 상세'));
     p.est.forEach((e, i) => {
       ch.push(H2(`${i + 1}. ${SRC[e.src].n} — ${e.title}`));
       ch.push(P([R(`${e.client || f.client}${e.period && e.period.from ? ` · ${e.period.from} ~ ${e.period.to || ''}` : ''}${e.at ? ` · 연동 ${String(e.at).slice(0, 10)}` : ''} · ${e.origin === 'raw' ? '견적 보관함' : e.origin === 'manual' ? '직접 입력' : e.origin === 'file' ? '연동 파일' : '「제안서로 보내기」 연동'}`, { size: 17, color: C.gray })], { after: 60 }));
@@ -5040,11 +5768,9 @@ async function makeDocx(p) {
       e.notes.forEach(t => ch.push(P([R('※ ' + t, { size: 16, color: C.gray, it: true })], { after: 20 })));
     });
   }
-  /* 별첨: 검토·승인 (내부용) */
   if (!isClient) {
     const a = p.approval;
-    ch.push(new docx.Paragraph({ children: [new docx.PageBreak()] }));
-    ch.push(H1('별첨. 검토·승인 기록 (내부용)'));
+    ch.push(BR()); ch.push(H1('별첨. 검토·승인 기록 (내부용)'));
     ch.push(table([[th('구분', 1600), th('작성', 2679), th('검토', 2679), th('승인', 2680)], [td('성명', 1600, { align: AL().CENTER, bold: true, fill: C.silverL }), td(a.writer || '', 2679, { align: AL().CENTER }), td(a.reviewer || '', 2679, { align: AL().CENTER }), td(a.approver || '', 2680, { align: AL().CENTER })],
       [td('서명', 1600, { align: AL().CENTER, bold: true, fill: C.silverL }), td('\n\n', 2679), td('\n\n', 2679), td('\n\n', 2680)]], [1600, 2679, 2679, 2680]));
     ch.push(P([R(`진행 상태: ${STATUS[a.status].n}`, { size: 20, bold: true, color: STATUS[a.status].c })], { before: 120, after: 60 }));
@@ -5052,35 +5778,15 @@ async function makeDocx(p) {
     a.log.forEach(l => ch.push(P([R('· ' + l, { size: 17, color: C.gray })], { indent: { left: 300 }, after: 10 })));
   }
   ch.push(P([R('- 끝 -', { size: 20, bold: true })], { align: AL().CENTER, before: 240, after: 120 }));
-  ch.push(P([R(`※ 법령 요약은 국가법령정보센터(law.go.kr) 기준 실무 참고용입니다. 회사 수치·실적은 내부 자료 기준이며, 견적 금액은 연동 견적 프로그램 산출 결과입니다.  |  ${APP.name} ${APP.version}`, { size: 15, color: '8A93A3' })], { align: AL().CENTER }));
+  ch.push(P([R(`※ 법령 요약은 국가법령정보센터(law.go.kr) 기준 실무 참고용입니다. 회사 수치·실적은 내부 자료로 확인 후 사용하십시오. 사진·영상: S-Tec Media Wall  |  ${APP.name} ${APP.version} · Designed & Developed by Rat Rae Choi`, { size: 15, color: '8A93A3' })], { align: AL().CENTER }));
   return await packDocx(ch, p.title);
 }
 
-/* =====================================================================
- * 슬라이드 (PPT·PDF 공용)
- * ===================================================================== */
-function coverSlide(p) {
-  const c = [], f = p.f;
-  c.push(Rc(0, 0, SW, SH, C.white));
-  c.push(Im(6.35, 0, SW - 6.35, (SW - 6.35) * 1792 / 2400, ASSET.hero));
-  c.push(Rc(6.35, (SW - 6.35) * 1792 / 2400, SW - 6.35, SH - (SW - 6.35) * 1792 / 2400, 'F3F5F8'));
-  c.push(Rc(0, 0, 0.12, SH, K.ink)); c.push(Rc(0.12, 0, 0.05, SH, C.green));
-  c.push(Im(0.85, 0.6, 1.35, 1.35, ASSET.icon));
-  c.push(Rc(0.85, 2.3, 0.5, 0.05, C.green));
-  c.push(T(0.85, 2.45, 5.3, 0.4, `${APP.org}  ·  ${p.pt.n}`, { pt: 13, color: C.green, bold: true }));
-  c.push(T(0.85, 2.85, 5.3, 1.6, [{ text: p.title, bold: true }], { max: 34, min: 20, color: K.ink, lh: 1.15 }));
-  c.push(T(0.85, 4.55, 5.3, 0.9, [{ text: `${f.client}${f.site ? ' · ' + f.site : ''}`, bold: true, color: '3A4366' }, { text: `${p.jobs.map(j => j.n).join(' · ')}${p.ind ? '  |  ' + p.ind.n : ''}`, size: 0.8, color: K.mute }], { max: 16, min: 10.5, gap: 4 }));
-  c.push(Rc(0.85, 5.6, 5.0, 0.012, K.line));
-  c.push(T(0.85, 5.7, 5.4, 0.4, `${fmtD(parseD(f.date) || p.made)}   |   ${CO.branch || CO.name}${f.author ? ' ' + f.author : ''}`, { pt: 10.5, color: K.mute }));
-  if (f.mode !== 'client') { c.push(Rc(0.85, 6.25, 1.9, 0.36, C.brick, { k: 'para' })); c.push(T(0.85, 6.25, 1.9, 0.36, '내부 검토용', { pt: 10.5, bold: true, color: C.white, align: 'center', valign: 'middle' })); }
-  c.push(sigEl(SW - 4.25, SH - 0.62, 0.4));
-  return c;
-}
 function listSlides(S, p, title, sub, groups, opt = {}) {
   const w = opt.fig ? 8.9 : 12.1, pages = paginate(listParas(groups), w, 4.75, 12.5);
   pages.forEach((pg, i) => {
-    const o = frame(title + (pages.length > 1 ? ` (${i + 1}/${pages.length})` : ''), sub, S.length + 1, p);
-    o.push(T(0.6, 1.6, w, 4.95, pg, { max: 16, min: 11 }));
+    const o = frameX(p, opt.part || CUR_PART, title + (pages.length > 1 ? ` (${i + 1}/${pages.length})` : ''), sub, S.length + 1);
+    o.push(T(0.6, 1.55, w, 5.0, pg, { max: 15, min: 10 }));
     if (opt.fig) { o.push(Rc(9.75, 1.6, 3.0, 4.95, 'F7F8FA', { line: K.line })); o.push(figBox(opt.fig, 9.85, 1.75, 2.8, 4.1)); if (opt.cap) o.push(T(9.75, 5.95, 3.0, 0.4, opt.cap, { pt: 10.5, color: K.mute, align: 'center' })); }
     S.push(o);
   });
@@ -5088,7 +5794,7 @@ function listSlides(S, p, title, sub, groups, opt = {}) {
 function tableSlide(S, p, title, sub, head, rows, widths, opt = {}) {
   const per = opt.per || 9;
   for (let i = 0; i < Math.max(1, rows.length); i += per) {
-    const part = rows.slice(i, i + per), o = frame(title + (rows.length > per ? ` (${i / per + 1}/${Math.ceil(rows.length / per)})` : ''), sub, S.length + 1, p);
+    const part = rows.slice(i, i + per), o = frameX(p, opt.part || CUR_PART, title + (rows.length > per ? ` (${i / per + 1}/${Math.ceil(rows.length / per)})` : ''), sub, S.length + 1);
     const X0 = 0.6, W = 12.1, tot = widths.reduce((a, b) => a + b, 0), xs = []; let x = X0; widths.forEach(wd => { xs.push(x); x += W * wd / tot; });
     const rh = Math.min(0.52, 4.6 / Math.max(1, part.length)), y0 = 1.6;
     o.push(Rc(X0, y0, W, 0.44, C.navy));
@@ -5102,82 +5808,6 @@ function tableSlide(S, p, title, sub, head, rows, widths, opt = {}) {
     S.push(o);
   }
 }
-function buildSlides(p) {
-  const f = p.f, S = [], on = id => p.secOn[id], m = p.money;
-  S.push(coverSlide(p));
-  /* 목차 */
-  { const o = frame('목차', 'Contents', 2, p), secs = SECTIONS.filter(s => on(s.id)), half = Math.ceil(secs.length / 2);
-    secs.forEach((s, i) => { const col = i < half ? 0 : 1, row = col ? i - half : i, x = 0.9 + col * 6.2, y = 1.75 + row * 0.66;
-      o.push(Rc(x, y, 0.62, 0.48, i % 2 ? C.green : C.navy, { k: 'para' })); o.push(T(x, y, 0.62, 0.48, String(i + 1).padStart(2, '0'), { pt: 13, bold: true, color: C.white, align: 'center', valign: 'middle' }));
-      o.push(T(x + 0.8, y, 5.0, 0.48, s.n, { pt: 15, bold: true, color: K.ink, valign: 'middle' })); o.push(Rc(x + 0.8, y + 0.53, 4.9, 0.01, K.line)); });
-    S.push(o); }
-  /* 제안 요약 */
-  { const o = frame('제안 요약', `${f.client} · ${p.pt.n}`, S.length + 1, p);
-    const cards = [['대상', `${f.client}${f.site ? '\n' + f.site : ''}`, p.ind ? p.ind.n : ''], ['직종·인원', p.jobs.map(j => j.short).join('·'), p.heads ? `총 ${p.heads}명` : '현장 실사 후 확정'],
-      ['계약기간', f.from ? `${f.from}\n~ ${f.to}` : `${p.months}개월`, f.from ? `${p.months}개월` : '협의'], ['제안 금액', m.monthly ? `월 ${won(m.monthly)}원` : m.once ? `${won(m.once)}원` : '견적 연동 후', 'VAT 별도']];
-    cards.forEach((c, i) => { const x = 0.6 + i * 3.08; o.push(Rc(x, 1.65, 2.9, 2.2, i % 2 ? 'F2F7F3' : 'F4F6FB', { line: K.line })); o.push(Rc(x, 1.65, 2.9, 0.07, i % 2 ? C.green : C.navy));
-      o.push(T(x + 0.2, 1.85, 2.5, 0.35, c[0], { pt: 12, bold: true, color: i % 2 ? C.greenD : C.navy })); o.push(T(x + 0.2, 2.25, 2.5, 1.0, c[1], { max: 18, min: 11, bold: true, color: K.ink })); o.push(T(x + 0.2, 3.3, 2.5, 0.4, c[2], { pt: 11, color: K.mute })); });
-    o.push(T(0.6, 4.1, 12.1, 0.4, '핵심 제안', { pt: 14, bold: true, color: C.greenD }));
-    p.emph.slice(0, 4).forEach((k, i) => { const x = 0.6 + i * 3.08; o.push(Rc(x, 4.55, 2.9, 1.95, C.white, { line: K.line })); o.push(T(x + 0.15, 4.65, 2.6, 0.4, `${EMPH[k].ic} ${EMPH[k].n}`, { pt: 12.5, bold: true, color: K.ink })); o.push(T(x + 0.15, 5.1, 2.6, 1.3, EMPH[k].line, { max: 11.5, min: 8.5, color: K.mute })); });
-    S.push(o); }
-  for (const s of SECTIONS) {
-    if (!on(s.id)) continue;
-    const g = G(p, s.id), sub = `${s.ic} ${s.n}`;
-    if (s.id === 's02') {
-      const o = frame('회사 소개', CO.group + ' · ' + CO.name, S.length + 1, p), tot = SITES.reduce((a, x) => a + (x.total || 0), 0);
-      [[String(SITES.length), '운영 사업장(곳)', C.navy], [tot.toLocaleString('ko-KR'), '현장 인력(명)', C.green], [String(BRANCHES.length), '관할 지사', C.navy]].forEach((x, i) => { const y = 1.65 + i * 1.62; o.push(Rc(9.4, y, 3.35, 1.45, i % 2 ? 'F2F7F3' : 'F4F6FB', { line: K.line })); o.push(T(9.5, y + 0.12, 3.15, 0.8, x[0], { pt: 34, bold: true, color: x[2], align: 'center' })); o.push(T(9.5, y + 0.92, 3.15, 0.4, x[1], { pt: 12, color: K.mute, align: 'center' })); });
-      o.push(T(9.4, 6.5, 3.35, 0.3, '사업장 현황 지도 기준', { pt: 9, color: K.mute, align: 'center' }));
-      o.push(T(0.6, 1.6, 8.5, 4.95, listParas(g), { max: 15, min: 9.5 }));
-      S.push(o); continue;
-    }
-    if (s.id === 's05' && p.staff.length) { listSlides(S, p, s.n, sub, g.slice(0, 1).concat(g.slice(2))); tableSlide(S, p, '직종별 편성표', sub, ['직종', '직책', '인원', '근무형태'], p.staff.map(r => [r.job, r.title || '-', r.count + '명', r.shift || '-']).concat([['합계', '', staffTotal(p) + '명', '']]), [2, 3, 1.2, 3], { center: [2], bold: [0] }); continue; }
-    if (s.id === 's06') { p.jobs.forEach(j => { const gg = g.filter(x => x.title.includes(j.n)); listSlides(S, p, `${j.n} 업무 수행 방안`, sub, gg.length ? gg : g, { fig: figName('dio', j.fig), cap: `${j.n} 현장` }); }); continue; }
-    if (s.id === 's08') { listSlides(S, p, s.n, sub, g.filter(x => !/적용 법령/.test(x.title)), { fig: figName('cute', 'sec'), cap: '무재해·법규 준수' }); tableSlide(S, p, '관계 법령', sub + ' · 국가법령정보센터 기준', ['법령', '조항', '주요 내용'], p.laws.map(id => [LAWS[id].law, `${LAWS[id].art} ${LAWS[id].t}`, LAWS[id].s]), [2.6, 2.4, 7], { per: 7, bold: [0] }); continue; }
-    if (s.id === 's09') {
-      listSlides(S, p, s.n, sub, g.filter(x => !/Complaint/.test(x.title)));
-      const o = frame('Complaint 대응 절차', sub, S.length + 1, p), st = [['D+0', '접수·1차 조치', '접수 즉시 현장 조치\n경위 1차 보고'], ['D+1~3', '원인 분석', '관련자 면담\n사실 확인·조치'], ['D+7', '재발방지 회신', '대책 서면 회신\n근무자 재교육'], ['상시', '사후관리', '월간 보고 반영\n재발 여부 점검']];
-      st.forEach((x, i) => { const X = 0.6 + i * 3.08; o.push(Rc(X, 1.9, 2.95, 0.7, i % 2 ? C.green : C.navy, { k: 'homePlate' })); o.push(T(X + 0.15, 1.9, 2.5, 0.7, `${x[0]}  ${x[1]}`, { pt: 13.5, bold: true, color: C.white, valign: 'middle' })); o.push(Rc(X, 2.75, 2.85, 1.8, 'F7F8FA', { line: K.line })); o.push(T(X + 0.15, 2.9, 2.55, 1.5, x[2], { max: 14, min: 10, color: K.ink })); });
-      o.push(T(0.6, 4.85, 12.1, 1.5, [{ text: '고객사 Complaint 대응 프로그램(S-Tec Complaint Response System)으로 대·중·소 분류·대응방안·개선 보고서를 표준 양식으로 작성해 회신합니다.', color: K.mute }], { max: 13, min: 10 }));
-      S.push(o); continue;
-    }
-    if (s.id === 's10') {
-      const o = frame('스마트 운영관리 체계', '에스텍 통합관리 시스템 · 하나의 계정으로 9개 프로그램', S.length + 1, p);
-      PLATFORM.forEach((x, i) => { const col = i % 3, row = Math.floor(i / 3), X = 0.6 + col * 4.08, Y = 1.6 + row * 1.6;
-        o.push(Rc(X, Y, 3.9, 1.45, x.code === 'stpp' ? 'EEF7F1' : 'F7F8FA', { line: x.code === 'stpp' ? '9FD3AE' : K.line })); o.push(Im(X + 0.15, Y + 0.2, 0.95, 0.95, ASSET.apps[x.code] || ASSET.icon));
-        o.push(T(X + 1.25, Y + 0.15, 2.55, 0.42, x.ko, { pt: 13, bold: true, color: K.ink })); o.push(T(X + 1.25, Y + 0.55, 2.55, 0.8, x.d, { max: 10.5, min: 8, color: K.mute })); });
-      S.push(o); continue;
-    }
-    if (s.id === 's11') {
-      const o = frame('운영 개시·인수인계 일정', sub, S.length + 1, p);
-      p.timeline.forEach((t, i) => { const X = 0.6 + i * 2.45; o.push(Rc(X, 1.75, 2.38, 0.8, [C.navy, C.navy, C.green, C.brick, C.greenD][i], { k: 'chevron' })); o.push(T(X + 0.35, 1.75, 1.8, 0.8, [{ text: t.d, bold: true }, { text: t.date, size: 0.75 }], { pt: 13, color: C.white, align: 'center', valign: 'middle', gap: 1 }));
-        o.push(T(X + 0.1, 2.75, 2.2, 0.45, t.t, { pt: 13, bold: true, color: K.ink, align: 'center' })); o.push(T(X + 0.1, 3.2, 2.2, 1.6, t.a, { max: 11.5, min: 9, color: K.mute, align: 'center' })); });
-      const g2 = g.filter(x => !/일정/.test(x.title)); o.push(Rc(0.6, 5.0, 12.1, 1.5, 'F7F8FA', { line: K.line })); o.push(T(0.8, 5.1, 11.7, 1.3, listParas(g2), { max: 13, min: 9 }));
-      S.push(o); continue;
-    }
-    if (s.id === 's12') {
-      const o = frame('가격 제안', '연동 견적 기준 · VAT 별도', S.length + 1, p);
-      const big = m.monthly ? [['월 도급비', won(m.monthly) + '원', '공급가액(VAT 별도)'], ['부가세 포함 월 합계', won(m.monthly + m.vat) + '원', `부가세 ${won(m.vat)}원`], [`${p.months}개월 총액`, won(m.monthly * p.months) + '원', '공급가액(VAT 별도)']] : m.once ? [['단기 인력', won(m.once) + '원', '공급가액(VAT 별도)'], ['부가세 포함', won(m.once + m.onceVat) + '원', `부가세 ${won(m.onceVat)}원`], ['투입 인원', m.heads + '명', '연동 견적 기준']] : [['제안 금액', '견적 연동 후 기재', '견적 프로그램 「제안서로 보내기」'], ['운영 인원', (p.heads || '-') + '명', ''], ['계약기간', p.months + '개월', '']];
-      big.forEach((b, i) => { const X = 0.6 + i * 4.08; o.push(Rc(X, 1.6, 3.9, 1.75, i === 0 ? C.navy : 'F4F6FB', { line: i ? K.line : null })); o.push(T(X + 0.2, 1.72, 3.5, 0.4, b[0], { pt: 12.5, bold: true, color: i ? C.navy : 'C9D1F0' })); o.push(T(X + 0.2, 2.12, 3.5, 0.75, b[1], { max: 26, min: 14, bold: true, color: i ? K.ink : C.white })); o.push(T(X + 0.2, 2.88, 3.5, 0.35, b[2], { pt: 10.5, color: i ? K.mute : 'C9D1F0' })); });
-      if (p.est.length) {
-        const rows = priceRows(p).slice(0, 5); const y0 = 3.6;
-        o.push(Rc(0.6, y0, 12.1, 0.4, C.navy)); ['산출 프로그램', '견적', '인원', '공급가액(원)'].forEach((h, j) => o.push(T([0.7, 3.4, 8.3, 9.7][j], y0, [2.6, 4.8, 1.3, 2.9][j], 0.4, h, { pt: 11, bold: true, color: C.white, valign: 'middle', align: j > 1 ? 'right' : 'left' })));
-        rows.forEach((r, i) => { const y = y0 + 0.4 + i * 0.42; if (i % 2) o.push(Rc(0.6, y, 12.1, 0.42, 'F6F8FB')); [r[0], r[1], r[2], r[4]].forEach((c, j) => o.push(T([0.7, 3.4, 8.3, 9.7][j], y, [2.6, 4.8, 1.3, 2.9][j], 0.42, String(c), { max: 11.5, min: 8.5, color: K.ink, valign: 'middle', align: j > 1 ? 'right' : 'left', bold: j === 3 }))); });
-      } else o.push(T(0.6, 3.7, 12.1, 2.6, listParas(g.slice(1)), { max: 14, min: 10 }));
-      S.push(o);
-      const wb = p.est.find(e => e.src === 'wbe' && e.tasks.some(t => t.cost != null));
-      if (wb) tableSlide(S, p, '업무별 비용 배분', `업무량 기반 산정 · ${wb.title}`, ['업무(대분류)', '월 업무시간', '비중', '월 비용(원)'], wb.tasks.map(t => [t.name, t.hours != null ? t.hours.toFixed(1) + 'h' : '-', t.share != null ? (t.share * 100).toFixed(1) + '%' : '-', won(t.cost)]), [5, 2, 1.5, 2.5], { center: [1, 2], right: [3], bold: [0] });
-      listSlides(S, p, '가격 산출 근거·조건', sub, g.slice(1));
-      continue;
-    }
-    if (s.id === 's03' && p.rfp && p.rfp.rows.length) { listSlides(S, p, s.n, sub, g.filter(x => !/요구사항/.test(x.title)), { fig: figName('dio', p.jobs[0].fig), cap: p.ind ? p.ind.n : '' }); tableSlide(S, p, '요구사항 대응표', `RFP·과업지시서 ${p.rfp.rows.length}건`, ['No', '구분', '요구사항', '대응'], p.rfp.rows.map((x, i) => [i + 1, x.cat, x.req, SECTIONS.find(s2 => s2.id === x.sec).ic + ' ' + x.how]), [0.6, 1.4, 5.5, 4.5], { per: 7, center: [0, 1] }); continue; }
-    if (s.id === 's13') { listSlides(S, p, s.n, sub, g.filter(x => x.title !== '맺음말')); continue; }
-    const figs = { s01: figName('dio', p.jobs[0].fig), s04: 'mgr', s07: figName('cute', p.jobs[0].fig === 'cln' ? 'cln' : 'sec'), s03: figName('dio', p.jobs[0].fig) };
-    listSlides(S, p, s.n, sub, g, figs[s.id] && ASSET.fig[figs[s.id]] ? { fig: figs[s.id] } : {});
-  }
-  S.push(closingSlide({ fig: 'team_dio', tag: G(p, 's13').find(x => x.title === '맺음말') ? G(p, 's13').find(x => x.title === '맺음말').lines[0] : `${f.client}의 신뢰받는 파트너, 에스텍`, org: `${CO.group} · ${CO.branch || CO.name}${UI.manager ? `  |  ${UI.manager.name}${UI.manager.title ? ' ' + UI.manager.title : ''}${UI.manager.phone ? ' · ' + UI.manager.phone : ''}` : ''}` }));
-  return S;
-}
-
 /* =====================================================================
  * 실행 · 제출 이력
  * ===================================================================== */
@@ -5188,7 +5818,8 @@ async function run(kind) {
   if (p.f.mode === 'client' && !['approved', 'submitted'].includes(p.approval.status)) toast('※ 아직 승인 전입니다 — 대외 제출 전 「검토·승인」을 마치세요.', 3500);
   try {
     const base = fileBase(p);
-    if (kind === 'docx' || kind === 'all') { busy(true, 'Word 제안서 만드는 중…'); await download(await makeDocx(p), base + '.docx'); }
+    busy(true, '사진·영상 준비 중…'); await prepMedia(p, (i, n) => busy(true, `사진·영상 준비 중… ${i}/${n}`)); await decodeAll();
+    if (kind === 'docx' || kind === 'all') { busy(true, 'Word 제안서 만드는 중…'); await download(await makeDocx(p, (i, n) => busy(true, `Word 도해 만드는 중… ${i}/${n}`)), base + '.docx'); }
     if (kind === 'pptx' || kind === 'all') { busy(true, 'PPT 발표자료 만드는 중…'); await download(await makePptx(p, null, p.title), base + '_발표.pptx'); }
     if (kind === 'pdf' || kind === 'all') { await download(await makePdf(p, (i, n) => busy(true, `PDF 변환 중… ${i}/${n}`), null, p.title), base + '_발표.pdf'); }
     p.printed = true; p.approval.log.push(`${fmtD(kstNow())} 출력(${{ docx: 'Word', pptx: 'PPT', pdf: 'PDF', all: 'Word·PPT·PDF' }[kind]})`); saveProject(true); renderApproval(); updStepper();
