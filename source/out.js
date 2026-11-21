@@ -70,7 +70,7 @@ async function makeDocx(p, onProg) {
   const BR = () => new docx.Paragraph({ children: [new docx.PageBreak()] });
   /* 표지 */
   ch.push(P([R(isClient ? '' : '내부 검토용 · 대외비', { size: 18, bold: true, color: C.brick })], { align: AL().RIGHT, after: 120 }));
-  ch.push(new docx.Paragraph({ alignment: AL().CENTER, spacing: { after: 200 }, children: [imgRun(coverSrc({ src: ASSET.hero, w: 2400, h: 1792 }, 6.7, 3.9), 6.7 * 96, 3.9 * 96)] }));
+  ch.push(new docx.Paragraph({ alignment: AL().CENTER, spacing: { after: 200 }, children: [imgRun(coverSrc({ src: ASSET.hero, w: 1280, h: 720 }, 6.7, 3.9), 6.7 * 96, 3.9 * 96)] }));
   ch.push(P([R(`${CO.group}  ·  ${p.pt.n}`, { size: 22, bold: true, color: C.green })], { align: AL().CENTER, after: 80 }));
   ch.push(P([R(p.title, { size: 46, bold: true, color: C.navy })], { align: AL().CENTER, after: 120 }));
   ch.push(P([R(`${f.client}${f.site ? ' · ' + f.site : ''}`, { size: 28, color: C.ink })], { align: AL().CENTER, after: 60 }));

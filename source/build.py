@@ -10,7 +10,8 @@ def uri(p, mime): return f'data:{mime};base64,' + base64.b64encode(open(p, 'rb')
 asset = json.loads(rd(V + 'assets-base.json'))
 asset['icon'] = uri(V + 'icon.png', 'image/png')       # 메인화면 좌측 상단 아이콘 · 앱 아이콘 (사진 2)
 asset['voc'] = asset['icon']                            # 표지 로고 = 앱 아이콘
-asset['hero'] = uri(V + 'hero.jpg', 'image/jpeg')       # 메인화면 디오라마 (사진 1) · 제안서 표지
+asset['hero'] = uri(V + 'hero.jpg', 'image/jpeg')       # 제안서 출력물(PPT · Word · PDF) 표지용 정지 그림 (디오라마 애니메이션의 한 장면)
+asset['heroAnim'] = uri(V + 'hero-anim.gif', 'image/gif')  # 메인화면 히어로 — 제안서 제작 디오라마 애니메이션 (원본 GIF 640×360)
 asset['apps'] = {f[:-4]: uri(V + 'apps/' + f, 'image/png') for f in sorted(os.listdir(V + 'apps')) if f.endswith('.png')}
 html = rd(S + 'index.html')
 APPJS = '\n'.join(rd(S + f) for f in ['link.js', 'rfp.js', 'xlsest.js', 'ui.js', 'app.js', 'engine.js', 'media.js', 'deck.js', 'out.js'])

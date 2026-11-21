@@ -1,5 +1,5 @@
 /* =====================================================================
- * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.1.0 — 앱 로직
+ * S-Tec Proposal Production System (에스텍 제안서 제작시스템) v2.1.1 — 앱 로직
  * 흐름: RFP 분석 → 기획 → 집필 → 검토·승인 → 제작·제본(Word·PPT·PDF) → 제출
  * 견적 연동: S-Tec-Quotation-System · Workload-Based Cost and Labor Estimation Method · S-Tec short estimate
  * Program & Design by Rat Rae Choi (제작자 서명 — 하드코딩)
@@ -7,7 +7,7 @@
 const APP = {
   name: 'S-Tec Proposal Production System',
   ko: '에스텍 제안서 제작시스템',
-  version: 'v2.1.0',
+  version: 'v2.1.1',
   build: '2026-11-19',
   shareUrl: 'https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/',
   apkUrl: 'https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk',

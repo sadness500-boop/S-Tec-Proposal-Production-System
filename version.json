@@ -1,7 +1,7 @@
 {
-  "version": "2.1.0",
+  "version": "2.1.1",
   "date": "2026-11-19",
-  "note": "엑셀·PDF 견적서 불러오기(견적표·원가분석표 자동 인식), 영상 실제 재생(PPT 내장·웹 발표본 자동 재생·PDF/Word 누르면 재생), 간결체·큰 글씨로 시인성 개선, 회사 실적을 연결재무제표(감사보고서) 기준으로 변경",
-  "html": "releases/S-Tec-Proposal-Production-System_v2.1.0.html",
-  "apk": "releases/S-Tec-Proposal-Production-System_v2.1.0.apk"
+  "note": "메인화면 히어로를 제안서 제작 디오라마 애니메이션(GIF)으로 교체 — 통합 출입관리 시스템과 같은 방식(원본 16:9 전체 표시 · 왼쪽 스며듦), 출력물 표지 그림도 같은 디오라마로 교체",
+  "html": "releases/S-Tec-Proposal-Production-System_v2.1.1.html",
+  "apk": "releases/S-Tec-Proposal-Production-System_v2.1.1.apk"
 }

@@ -230,7 +230,7 @@ function renderSiteInfo() {
 }
 
 function uiInit() {
-  $('#appIcon').src = ASSET.icon; $('#gateLogo').src = ASSET.icon; $('#heroImg').src = ASSET.hero;
+  $('#appIcon').src = ASSET.icon; $('#gateLogo').src = ASSET.icon; $('#heroImg').src = ASSET.heroAnim || ASSET.hero;
   $('#ver').textContent = APP.version;
   const chips = () => { const allow = (window.APP_ACCESS && APP_ACCESS.branches && APP_ACCESS.branches.length) ? APP_ACCESS.branches : null;
     $('#brChips').innerHTML = `<button data-br="">${allow ? '담당 전체' : '전체'}</button>` + BRANCHES.filter(b => !allow || allow.includes(b.key)).map(b => `<button data-br="${b.key}">${b.key}</button>`).join('');

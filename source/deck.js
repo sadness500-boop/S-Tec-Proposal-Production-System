@@ -69,7 +69,7 @@ function buildSlides(p) {
   /* 01 표지 */
   { const E = [];
     E.push(Rc(0, 0, SW, SH, C.white));
-    E.push(Photo(5.6, 0, SW - 5.6, SH, { src: ASSET.hero, w: 2400, h: 1792 }, null, 0.45));
+    E.push(Photo(5.6, 0, SW - 5.6, SH, { src: ASSET.hero, w: 1280, h: 720 }, null, 0.45));
     E.push(Im(5.6, 0, 2.6, SH, gradient(400, 20, [[0, 'rgba(255,255,255,1)'], [1, 'rgba(255,255,255,0)']], 'h')));
     E.push(Rc(0, 0, 0.14, SH, NV)); E.push(Rc(0.14, 0, 0.06, SH, GR));
     E.push(Im(0.8, 0.6, 1.25, 1.25, ASSET.icon));
