@@ -13,7 +13,7 @@
 | 구분 | 주소 |
 |---|---|
 | 웹 버전 | https://sadness500-boop.github.io/S-Tec-Proposal-Production-System/ |
-| 파일 하나로 여는 배포본 | `releases/S-Tec-Proposal-Production-System_v2.1.1.html` |
+| 파일 하나로 여는 배포본 | `releases/S-Tec-Proposal-Production-System_v2.1.2.html` |
 | 안드로이드 앱 (최신) | https://github.com/sadness500-boop/S-Tec-Proposal-Production-System/releases/download/app-latest/stpp-latest.apk |
 
 - **APK는 GitHub Actions가 만듭니다.** `index.html`·`version.json`을 올리면 Actions 「Android APK」가 약 5분 뒤 `releases/`와 릴리스에 APK를 올립니다.
@@ -74,6 +74,7 @@ icons/ · assets/ · manifest.webmanifest · sw.js   앱 아이콘 · 디오라�
 
 ## 변경 이력
 
+- **v2.1.2** (2026-11-22): 현재 화면 기준 배포본(PC HTML · 안드로이드 APK) — 함께 쓰는 사이트를 메인 프로그램 카드로, 하단 좌·우 배치 · 제작자/날짜 간격 정리. 아이폰은 사파리 「홈 화면에 추가」로 설치
 - **v2.1.1** (2026-11-21): 메인화면 히어로를 제안서 제작 디오라마 애니메이션(GIF 640×360)으로 교체 — 통합 출입관리 시스템과 같은 방식(그림 칸 16:9 원본 비율로 디오라마 전체 표시, 왼쪽은 부드럽게 스며듦, 모바일은 위쪽 배치). 제안서 표지(PPT·PDF·Word) 그림도 같은 디오라마 장면으로 교체
 - **v2.1.0** (2026-11-19): 엑셀 견적서 · 실제 영상 · 시인성
   - 「📊 엑셀 견적서 불러오기」: .xlsx·.xls·.csv·PDF 견적서에서 고객사·용역기간·월 견적금액·직종·인원·단가를 읽고, 원가분석표(인원·12. 계)가 있으면 원가 구성(인건비·제비용·일반관리비·이윤)과 전년·대안 산출까지 함께 연동 — 견적 연동 칸에 끌어다 놓아도 됨
