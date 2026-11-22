@@ -22,6 +22,7 @@
     { id: 'wbe', name: '업무량 산정', full: 'Workload-Based Cost and Labor Estimation' }
   ];
   const BR = ['동부', '서부', '남부', '중부'];
+  try{ if(window.StecMaster) StecMaster.branchKeys(BR); }catch(e){} /*sm-brk*/
   const ROLE = { owner: '제작자', admin: '관리자', user: '사용자' };
   const STAT = { pending: '승인 대기', active: '사용 중', suspended: '차단' };
   const E = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

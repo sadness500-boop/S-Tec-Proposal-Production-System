@@ -122,7 +122,7 @@ function buildSlides(p) {
     { const E = frameX(p, P(1), `${CO.group} 개요`, '고객의 신뢰가 만들어온 성장, 안심과 품질로 보답하겠습니다', N());
       const met = lines(CO.metrics).map(l => l.split('|')).filter(x => x.length >= 2).slice(0, 4);
       const tot = SITES.reduce((a, s) => a + (s.total || 0), 0);
-      const all = met.concat([[String(SITES.length), '곳', '에스텍베스트 운영 사업장'], [tot.toLocaleString('ko-KR'), '명', '에스텍베스트 현장 인력']]).slice(0, 6);
+      const all = met.concat([[String(SITES.length), '곳', '에스텍 그룹 운영 사업장'], [tot.toLocaleString('ko-KR'), '명', '에스텍 그룹 현장 인력']]).slice(0, 6);
       all.forEach((x, i) => { const c = i % 3, r = Math.floor(i / 3), X = 0.6 + c * 2.75, Y = 1.6 + r * 1.75;
         E.push(Rc(X, Y, 2.6, 1.6, r ? 'EEF7F1' : SOFT)); E.push(T(X + 0.15, Y + 0.15, 2.3, 0.75, [{ text: x[0], bold: true }], { max: 30, min: 16, color: r ? GR : NV })); E.push(T(X + 0.15, Y + 0.85, 2.3, 0.3, x[1], { pt: 11.5, bold: true, color: INK })); E.push(T(X + 0.15, Y + 1.15, 2.35, 0.4, x[2] || '', { max: 9.5, min: 7, color: MU })); });
       E.push(T(0.6, 5.2, 8.0, 1.4, CO.intro.map(t => ({ text: '•  ' + t })), { max: 12, min: 8.5, color: '2C3554' }));
@@ -147,7 +147,7 @@ function buildSlides(p) {
       E.push(T(10.4, 4.25, 2.3, 1.4, [{ text: '이번 제안 직종', bold: true, color: GR }, { text: p.jobs.map(j => j.n).join(', '), color: INK }], { max: 12, min: 9 }));
       push(E); }
     /* 운영 네트워크 */
-    { const E = frameX(p, P(1), '운영 네트워크 — 현장 가까이 있는 지사', '에스텍베스트 사업장·지사 분포 (사업장 현황 지도 기준)', N());
+    { const E = frameX(p, P(1), '운영 네트워크 — 현장 가까이 있는 지사', '에스텍 그룹 사업장·지사 분포 (사업장 현황 지도 기준)', N());
       const fc = p.site && p.site.lat ? { lat: p.site.lat, lng: p.site.lng, name: p.site.name } : null, mp = networkMap(fc, { w: 900, h: 720 });
       E.push(Rc(0.6, 1.55, 6.3, 5.04, SOFT)); E.push(Im(0.65, 1.6, 6.2, 4.94, mp.src));
       const bc = BRANCHES.map(b => SITES.filter(s => s.br === b.key).length), ch = barChart(BRANCHES.map(b => b.name), bc, { w: 760, h: 380, colors: ['#1E8B3A', '#0B1F8F', '#C2410C', '#6D28D9'], vfmt: v => v + '곳' });
@@ -157,7 +157,7 @@ function buildSlides(p) {
         : [{ text: '지사 중심의 현장 밀착 관리', bold: true, color: GR }, { text: '관할 지사가 정기 방문·불시 점검을 하고, 인근 사업장 인력으로 결원·비상 상황에 신속히 대응합니다.', color: INK }, { text: '신규 현장은 계약 후 가장 가까운 지사가 전담합니다.', size: 0.9, color: MU }], { max: 12.5, min: 8, gap: 3 }));
       push(E, 's02'); }
     /* 운영 현황 차트 */
-    { const E = frameX(p, P(1), '운영 현황 — 숫자로 보는 에스텍베스트', '사업장 유형 · 직종별 인력 구성', N());
+    { const E = frameX(p, P(1), '운영 현황 — 숫자로 보는 에스텍 그룹', '사업장 유형 · 직종별 인력 구성', N());
       const typ = {}; SITES.forEach(s => typ[s.type || '기타'] = (typ[s.type || '기타'] || 0) + 1);
       const ty = Object.entries(typ).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v], i) => ({ label: k, value: v, color: PAL[i] }));
       const sec = SITES.reduce((a, s) => a + (s.sec || 0), 0), cln = SITES.reduce((a, s) => a + (s.cln || 0), 0), etc = SITES.reduce((a, s) => a + (s.etc || 0), 0);
